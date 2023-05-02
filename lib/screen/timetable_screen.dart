@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 
 class TimeTableScreen extends StatelessWidget {
@@ -86,28 +87,23 @@ class TimeTableScreen extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+            padding: const EdgeInsets.all(8.0),
+            child: SpeedDial(
+              icon: Icons.add,
+              backgroundColor: Colors.blueGrey,
               children: [
-                Positioned(
-                  child: FloatingActionButton(
-                    onPressed: () {},
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.add),
-                  ),
+                SpeedDialChild(
+                  child: const Icon(Icons.schedule),
+                  label: '일정 추가',
+                  backgroundColor: Colors.red,
+                  onTap: () {},
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Positioned(
-                    child: FloatingActionButton(
-                  onPressed: () {},
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(Icons.add),
-                ))
+                SpeedDialChild(
+                  child: const Icon(Icons.class_outlined),
+                  label: '강의 추가',
+                  backgroundColor: Colors.blue,
+                  onTap: () {},
+                )
               ],
             ),
           ),
