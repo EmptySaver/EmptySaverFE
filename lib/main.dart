@@ -1,6 +1,6 @@
 import 'package:emptysaver_fe/fcm_setting.dart';
-import 'package:emptysaver_fe/widgets/bar_screen.dart';
-import 'package:emptysaver_fe/widgets/login_screen.dart';
+import 'package:emptysaver_fe/screen/bar_screen.dart';
+import 'package:emptysaver_fe/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -38,6 +38,19 @@ class MyApp extends StatelessWidget {
       routes: {
         '/bar': (context) => const BarScreen(),
       },
+      theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            toolbarHeight: 50,
+            centerTitle: true,
+            backgroundColor: Colors.grey,
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(
+                color: Colors.grey,
+              ),
+            ),
+          )),
     );
   }
 }

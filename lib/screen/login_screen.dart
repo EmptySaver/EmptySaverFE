@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:emptysaver_fe/widgets/find_password_screen.dart';
-import 'package:emptysaver_fe/widgets/signup_screen.dart';
+import 'package:emptysaver_fe/screen/find_password_screen.dart';
+import 'package:emptysaver_fe/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   String? firebaseToken;
-
   LoginScreen({
     super.key,
     required this.firebaseToken,
@@ -18,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String? jwtToken;
   bool? isAutoLogin = false;
   bool? isIdSave = false;
   TextEditingController addrTecLogin = TextEditingController();
@@ -36,12 +36,15 @@ class _LoginScreenState extends State<LoginScreen> {
         'Content-Type': 'application/json; charset=UTF-8'
       },
     );
-    print(response.statusCode);
-    // if (response.statusCode == 200) {
-    //   Navigator.pushNamedAndRemoveUntil(context, '/bar', (route) => false);
-    // } else {
-    //   print(response.statusCode);
-    // }
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      jwtToken = response.body;
+      print(response.headers['authorization']);
+      Navigator.pushNamedAndRemoveUntil(context, '/bar', (route) => false);
+    } else {
+      print(response.statusCode);
+    }
   }
 
   @override
@@ -71,8 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: addrTecLogin,
+                    decoration: const InputDecoration(
                       labelText: '주소',
                       hintText: '@uos.ac.kr',
                       border: OutlineInputBorder(
@@ -88,15 +92,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: pwdTecLogin,
+                    decoration: const InputDecoration(
                       labelText: '비밀번호',
                       hintText: 'Enter your password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     ),
-                    keyboardType: TextInputType.visiblePassword,
                   ),
                   Row(
                     children: [

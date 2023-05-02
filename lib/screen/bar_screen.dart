@@ -1,4 +1,7 @@
-import 'package:emptysaver_fe/widgets/timetable_screen.dart';
+import 'package:emptysaver_fe/screen/friend_group_screen.dart';
+import 'package:emptysaver_fe/screen/mypage_screen.dart';
+import 'package:emptysaver_fe/screen/notifications_screen.dart';
+import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +20,7 @@ class _BarScreenState extends State<BarScreen> {
   int selectedIndex = 0;
   var bodyWidgets = [
     TimeTableScreen(),
-    const Text('친구/그룹'),
+    const FriendGroupScreen(),
     const Text('그룹 찾기'),
     const Text('정보'),
   ];
@@ -26,13 +29,28 @@ class _BarScreenState extends State<BarScreen> {
     // print('barscreen : ${widget.firebaseToken}');
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
-        centerTitle: true,
         title: const Text('공강구조대!'),
-        backgroundColor: Colors.grey,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.person))
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationsScreen(),
+                  ));
+            },
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MypageScreen(),
+                  ));
+            },
+            icon: const Icon(Icons.person),
+          )
         ],
         leading: IconButton(
           onPressed: () async {
@@ -47,6 +65,7 @@ class _BarScreenState extends State<BarScreen> {
               Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             } else {
               print(response.statusCode);
+              print((response.body).runtimeType);
             }
           },
           icon: const Icon(Icons.logout),

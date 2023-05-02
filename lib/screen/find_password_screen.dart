@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class FindPasswordScreen extends StatefulWidget {
   const FindPasswordScreen({super.key});
@@ -8,11 +12,32 @@ class FindPasswordScreen extends StatefulWidget {
 }
 
 class _FindPasswordScreenState extends State<FindPasswordScreen> {
-  var isClicked = false;
+  var isSended = false;
 
   TextEditingController addrTecFind = TextEditingController();
 
   TextEditingController nameTecFind = TextEditingController();
+
+  void findMyPwd() async {
+    var url = Uri.parse('http://43.201.208.100:8080/auth/findPassword');
+    var response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        'email': addrTecFind.text,
+        'name': nameTecFind.text
+      }),
+      headers: <String, String>{'Content-Type': 'text/plain; charset=UTF-8'},
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+      isSended = true;
+      Fluttertoast.showToast(msg: '이메일로 새 비밀번호를 전송했습니다');
+      Navigator.pop(context);
+    } else {
+      print(jsonDecode(response.body));
+      Fluttertoast.showToast(msg: '인증이 실패했습니다');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,51 +99,51 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              isClicked = true;
-                            });
-                          },
-                          child: const Text(
-                            '인증하기',
-                            style: TextStyle(color: Colors.black),
+                          onPressed: isSended
+                              ? null
+                              : () {
+                                  findMyPwd();
+                                },
+                          child: Text(
+                            isSended ? '완료' : '인증하기',
+                            style: const TextStyle(color: Colors.black),
                           ))
                     ],
                   ),
-                  Visibility(
-                    visible: isClicked,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const TextField(
-                          decoration: InputDecoration(
-                            labelText: '인증코드',
-                            hintText: '코드를 입력하세요',
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        //전송, 재전송버튼
-                        OutlinedButton(
-                          onPressed: () {
-                            isClicked = true;
-                          },
-                          child: const Text(
-                            '확인',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                  // Visibility(
+                  //   visible: isClicked,
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.end,
+                  //     children: [
+                  //       const TextField(
+                  //         decoration: InputDecoration(
+                  //           labelText: '인증코드',
+                  //           hintText: '코드를 입력하세요',
+                  //           border: OutlineInputBorder(
+                  //             borderRadius:
+                  //                 BorderRadius.all(Radius.circular(10)),
+                  //           ),
+                  //         ),
+                  //         keyboardType: TextInputType.number,
+                  //       ),
+                  //       const SizedBox(
+                  //         height: 10,
+                  //       ),
+                  //       //전송, 재전송버튼
+                  //       OutlinedButton(
+                  //         onPressed: () {
+                  //           //요청이 성공하면 끝 , 실패하면 토스트
+                  //         },
+                  //         child: const Text(
+                  //           '확인',
+                  //           style: TextStyle(
+                  //             color: Colors.black,
+                  //           ),
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
