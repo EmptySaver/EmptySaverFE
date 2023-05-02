@@ -1,8 +1,18 @@
-import 'package:emptysaver_fe/widgets/auth_send_screen.dart';
 import 'package:flutter/material.dart';
 
-class EmailAuthScreen extends StatelessWidget {
-  const EmailAuthScreen({super.key});
+class FindPasswordScreen extends StatefulWidget {
+  const FindPasswordScreen({super.key});
+
+  @override
+  State<FindPasswordScreen> createState() => _FindPasswordScreenState();
+}
+
+class _FindPasswordScreenState extends State<FindPasswordScreen> {
+  var isClicked = false;
+
+  TextEditingController addrTecFind = TextEditingController();
+
+  TextEditingController nameTecFind = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +39,9 @@ class EmailAuthScreen extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: addrTecFind,
+                    decoration: const InputDecoration(
                       labelText: '주소',
                       hintText: '@uos.ac.kr',
                       border: OutlineInputBorder(
@@ -46,8 +57,9 @@ class EmailAuthScreen extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: nameTecFind,
+                    decoration: const InputDecoration(
                       labelText: '이름',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -63,18 +75,50 @@ class EmailAuthScreen extends StatelessWidget {
                     children: [
                       OutlinedButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const AuthSendScreen(),
-                                ));
+                            setState(() {
+                              isClicked = true;
+                            });
                           },
                           child: const Text(
                             '인증하기',
                             style: TextStyle(color: Colors.black),
                           ))
                     ],
-                  )
+                  ),
+                  Visibility(
+                    visible: isClicked,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const TextField(
+                          decoration: InputDecoration(
+                            labelText: '인증코드',
+                            hintText: '코드를 입력하세요',
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        //전송, 재전송버튼
+                        OutlinedButton(
+                          onPressed: () {
+                            isClicked = true;
+                          },
+                          child: const Text(
+                            '확인',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

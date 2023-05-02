@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1075771428579",
+    "project_id": "emptysaver-d27f2",
+    "storage_bucket": "emptysaver-d27f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075771428579:android:d6aafc9924a9aefc78bfd6",
+        "android_client_info": {
+          "package_name": "com.example.emptysaver_fe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075771428579-s38t9b4slefa9sto2ubo16lglm62vnd9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpVQYMlTDtuo3qLBzp1-xE2ZKU02An1fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075771428579-s38t9b4slefa9sto2ubo16lglm62vnd9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

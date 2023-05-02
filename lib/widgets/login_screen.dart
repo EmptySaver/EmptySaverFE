@@ -1,8 +1,17 @@
+import 'dart:convert';
+
+import 'package:emptysaver_fe/widgets/find_password_screen.dart';
 import 'package:emptysaver_fe/widgets/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  String? firebaseToken;
+
+  LoginScreen({
+    super.key,
+    required this.firebaseToken,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -10,11 +19,34 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool? isAutoLogin = false;
-
   bool? isIdSave = false;
+  TextEditingController addrTecLogin = TextEditingController();
+  TextEditingController pwdTecLogin = TextEditingController();
+
+  void postLogin() async {
+    var url = Uri.parse('http://43.201.208.100:8080/auth/login');
+    var response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        'email': addrTecLogin.text,
+        'password': pwdTecLogin.text,
+        'fcmToken': widget.firebaseToken!,
+      }),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+    );
+    print(response.statusCode);
+    // if (response.statusCode == 200) {
+    //   Navigator.pushNamedAndRemoveUntil(context, '/bar', (route) => false);
+    // } else {
+    //   print(response.statusCode);
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('login:${widget.firebaseToken}');
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -89,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       OutlinedButton(
-                          onPressed: () {},
+                          onPressed: postLogin,
                           style: OutlinedButton.styleFrom(
                               // shape: const StadiumBorder(),
                               side: const BorderSide(color: Colors.grey)),
@@ -109,7 +141,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const FindPasswordScreen(),
+                                  ));
+                            },
                             child: const Text('비밀번호 찾기'),
                           ),
                           TextButton(

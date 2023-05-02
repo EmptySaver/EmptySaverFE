@@ -1,10 +1,12 @@
-import 'package:emptysaver_fe/widgets/login_screen.dart';
 import 'package:emptysaver_fe/widgets/timetable_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class BarScreen extends StatefulWidget {
+  // String? firebaseToken;
   const BarScreen({
     super.key,
+    // required this.firebaseToken,
   });
 
   @override
@@ -21,6 +23,7 @@ class _BarScreenState extends State<BarScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    // print('barscreen : ${widget.firebaseToken}');
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -32,14 +35,21 @@ class _BarScreenState extends State<BarScreen> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.person))
         ],
         leading: IconButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ));
+          onPressed: () async {
+            var url = Uri.parse('http://43.201.208.100:8080/afterAuth/logout');
+            var response = await http.post(
+              url,
+              // headers: <String, String>{
+              //   'Content-Type': 'application/json; charset=UTF-8'
+              // },
+            );
+            if (response.statusCode == 200) {
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            } else {
+              print(response.statusCode);
+            }
           },
-          icon: const Icon(Icons.mail),
+          icon: const Icon(Icons.logout),
         ),
       ),
       body: bodyWidgets.elementAt(selectedIndex),
