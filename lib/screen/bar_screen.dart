@@ -4,22 +4,21 @@ import 'package:emptysaver_fe/screen/mypage_screen.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:emptysaver_fe/main.dart';
 
-class BarScreen extends StatefulWidget {
+class BarScreen extends ConsumerStatefulWidget {
   // String? firebaseToken;
-  var jwtToken;
-
-  BarScreen(
-      {super.key,
-      // required this.firebaseToken,
-      required this.jwtToken});
+  const BarScreen({
+    super.key,
+  });
 
   @override
-  State<BarScreen> createState() => _BarScreenState();
+  ConsumerState<BarScreen> createState() => _BarScreenState();
 }
 
-class _BarScreenState extends State<BarScreen> {
+class _BarScreenState extends ConsumerState<BarScreen> {
   int selectedIndex = 0;
   var bodyWidgets = [
     TimeTableScreen(),
@@ -29,8 +28,8 @@ class _BarScreenState extends State<BarScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    // print('barscreen : ${widget.firebaseToken}');
-    print('barjwt : ${widget.jwtToken}');
+    var jwtToken = ref.read(tokensProvider.notifier).state;
+    print('barproviderjwt : $jwtToken');
     http.post(
       Uri.parse('http://43.201.208.100:8080/notification/send'),
       // body: jsonEncode(<String, dynamic>{
@@ -39,7 +38,7 @@ class _BarScreenState extends State<BarScreen> {
       //   'body': '테스트중',
       // }),
       headers: <String, String>{
-        'authorization': 'Bearer ${widget.jwtToken}',
+        'authorization': 'Bearer',
         'Content-Type': 'application/json',
       },
     );
@@ -75,10 +74,11 @@ class _BarScreenState extends State<BarScreen> {
               url,
               headers: <String, String>{
                 'Content-Type': 'application/json',
-                'authorization': 'Bearer ${widget.jwtToken}'
+                'authorization': 'Bearer ${jwtToken[0]}'
               },
             );
             if (response.statusCode == 200) {
+              ref.read(tokensProvider.notifier).removeToken(jwtToken[0]);
               Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             } else {
               print(response.statusCode);

@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:emptysaver_fe/screen/bar_screen.dart';
+import 'package:emptysaver_fe/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
 import 'package:emptysaver_fe/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'bar_screen.dart';
 import 'package:http/http.dart' as http;
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   String? firebaseToken;
   LoginScreen({
     super.key,
@@ -14,10 +16,10 @@ class LoginScreen extends StatefulWidget {
   });
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final storage = const FlutterSecureStorage();
   bool? isAutoLogin = false;
   bool? isIdSave = false;
@@ -38,15 +40,17 @@ class _LoginScreenState extends State<LoginScreen> {
         // 'authorization' :
       },
     );
-    print(response.body);
 
     if (response.statusCode == 200) {
       await storage.write(key: 'login', value: response.body);
       var jwtToken = await storage.read(key: 'login');
+      ref.read(tokensProvider.notifier).addToken(jwtToken);
+      // var test = ref.read(tokensProvider.notifier).state[1];
+      // print('됐냐 : $test');
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => BarScreen(jwtToken: jwtToken),
+            builder: (context) => const BarScreen(),
           ),
           (route) => false);
     } else {
@@ -56,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('login:${widget.firebaseToken}');
+    // print('login:${widget.firebaseToken}');
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
