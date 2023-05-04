@@ -1,5 +1,4 @@
 import 'package:emptysaver_fe/fcm_setting.dart';
-import 'package:emptysaver_fe/screen/bar_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -35,9 +34,9 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(
         firebaseToken: firebaseToken,
       ),
-      routes: {
-        '/bar': (context) => const BarScreen(),
-      },
+      // routes: {
+      //   '/bar': (context) => BarScreen(),
+      // },
       theme: ThemeData(
           appBarTheme: const AppBarTheme(
             toolbarHeight: 50,

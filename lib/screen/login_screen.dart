@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:emptysaver_fe/screen/bar_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
 import 'package:emptysaver_fe/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String? jwtToken;
+  final storage = const FlutterSecureStorage();
   bool? isAutoLogin = false;
   bool? isIdSave = false;
   TextEditingController addrTecLogin = TextEditingController();
@@ -33,15 +34,21 @@ class _LoginScreenState extends State<LoginScreen> {
         'fcmToken': widget.firebaseToken!,
       }),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8'
+        'Content-Type': 'application/json; charset=UTF-8',
+        // 'authorization' :
       },
     );
     print(response.body);
 
     if (response.statusCode == 200) {
-      jwtToken = response.body;
-      print(response.headers['authorization']);
-      Navigator.pushNamedAndRemoveUntil(context, '/bar', (route) => false);
+      await storage.write(key: 'login', value: response.body);
+      var jwtToken = await storage.read(key: 'login');
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BarScreen(jwtToken: jwtToken),
+          ),
+          (route) => false);
     } else {
       print(response.statusCode);
     }
