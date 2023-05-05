@@ -349,6 +349,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  omni_datetime_picker:
+    dependency: "direct main"
+    description:
+      name: omni_datetime_picker
+      sha256: c70ca19eba89b7ed3663ae8eab2e7922c12b443826cf06c841a7f0a19e22870d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   path:
     dependency: transitive
     description:
@@ -522,6 +530,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  swipe:
+    dependency: "direct main"
+    description:
+      name: swipe
+      sha256: e2f823093ef0161698cc380f5f868a6be380cb5c90c1c0ddc7fa2b0a7eadfa0e
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   term_glyph:
     dependency: transitive
     description:

@@ -47,6 +47,8 @@ dependencies:
   flutter_speed_dial: ^6.2.0
   flutter_secure_storage: ^8.0.0
   flutter_riverpod: ^2.3.6
+  omni_datetime_picker: ^1.0.7
+  swipe: ^0.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
