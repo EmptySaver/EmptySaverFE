@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/get_timetable_factory.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +10,55 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
-class TimeTableScreen extends ConsumerWidget {
-  TimeTableScreen({super.key});
+class TimeTableScreen extends ConsumerStatefulWidget {
+  const TimeTableScreen({super.key});
+
+  @override
+  ConsumerState<TimeTableScreen> createState() => _TimeTableScreenState();
+}
+
+class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   var baseUri = '43.201.208.100:8080';
   final ScrollController controller = ScrollController();
   final ScrollController controller2 = ScrollController();
+  late var jwtToken;
+  late Future<ScheduleList> scheduleList;
+
+  Future<ScheduleList> getSchedule(
+      String? jwtToken, ScheduleList? scheduleList) async {
+    {
+      var url = Uri.http(baseUri, '/timetable/getTimeTable');
+      var response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer $jwtToken'
+        },
+        body: jsonEncode({"startDate": "2023-05-06", "endDate": "2023-05-06"}),
+      );
+      if (response.statusCode == 200) {
+        print('getsuccess');
+        var parsedJson = jsonDecode(response.body);
+        scheduleList = ScheduleList.fromJson(parsedJson);
+        print(scheduleList.scheduleListPerDays![0][0]);
+      } else {
+        print('getfail');
+        print(response.statusCode);
+      }
+      return scheduleList!;
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
+  void initState() {
+    super.initState();
+    jwtToken = ref.read(tokensProvider.notifier).state[0];
+    scheduleList = getSchedule(jwtToken, ScheduleList());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('있냐? : $scheduleList');
     return Stack(
       children: [
         Padding(
@@ -61,32 +103,42 @@ class TimeTableScreen extends ConsumerWidget {
                               )
                           ],
                         ),
-                        Row(
-                          children: [
-                            for (int i = 0; i < 5; i++)
-                              Column(
-                                children: [
-                                  for (int j = 0; j < 32; j++)
-                                    Container(
-                                      width: 75,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                        left: const BorderSide(
-                                            color: Colors.blueGrey, width: 0.2),
-                                        right: const BorderSide(
-                                            color: Colors.blueGrey, width: 0.2),
-                                        bottom: (j % 2 == 1)
-                                            ? const BorderSide(
+                        FutureBuilder(
+                          future: scheduleList,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return const Text('hi');
+                            }
+                            return Row(
+                              children: [
+                                for (int i = 0; i < 5; i++)
+                                  Column(
+                                    children: [
+                                      for (int j = 0; j < 32; j++)
+                                        Container(
+                                          width: 75,
+                                          height: 35,
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                            left: const BorderSide(
                                                 color: Colors.blueGrey,
-                                                width: 0.2)
-                                            : BorderSide.none,
-                                      )),
-                                    )
-                                ],
-                              ),
-                          ],
-                        )
+                                                width: 0.2),
+                                            right: const BorderSide(
+                                                color: Colors.blueGrey,
+                                                width: 0.2),
+                                            bottom: (j % 2 == 1)
+                                                ? const BorderSide(
+                                                    color: Colors.blueGrey,
+                                                    width: 0.2)
+                                                : BorderSide.none,
+                                          )),
+                                        )
+                                    ],
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                     )
                   ]),
@@ -122,62 +174,18 @@ class TimeTableScreen extends ConsumerWidget {
                   onTap: () {},
                 ),
                 SpeedDialChild(
-                  child: const Icon(Icons.get_app),
-                  label: '불러오기',
-                  backgroundColor: Colors.green,
-                  onTap: () async {
-                    var url = Uri.http(baseUri, '/timetable/getTimeTable');
-                    var response = await http.post(
-                      url,
-                      headers: <String, String>{
-                        'Content-Type': 'application/json',
-                        'authorization': 'Bearer $jwtToken'
-                      },
-                      body: jsonEncode(
-                          {"startDate": "2023-05-06", "endDate": "2023-05-06"}),
-                    );
-                    if (response.statusCode == 200) {
-                      print('getsuccess');
-                      print(response.body);
-                    } else {
-                      print('getfail');
-                      print(response.statusCode);
-                    }
-                  },
-                ),
+                    child: const Icon(Icons.get_app),
+                    label: '불러오기',
+                    backgroundColor: Colors.green,
+                    onTap: () {
+                      getSchedule(jwtToken, ScheduleList());
+                    }),
               ],
             ),
           ),
         )
       ],
     );
-
-    // int deviceHeight = MediaQuery.of(context).size.height.toInt();
-    // return Scrollbar(
-    //   controller: controller2,
-    //   // thumbVisibility: true,
-    //   child: SingleChildScrollView(
-    //     controller: controller2,
-    //     scrollDirection: Axis.horizontal,
-    //     child: Scrollbar(
-    //       controller: controller,
-    //       // thumbVisibility: true,
-    //       child: SingleChildScrollView(
-    //         controller: controller,
-    //         child: Row(
-    //           children: [
-    //             for (int i = 1; i < 10; i++)
-    //               Column(
-    //                 children: [
-    //                   for (int j = 1; j < 100; j++) const DefaultBox(),
-    //                 ],
-    //               ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 

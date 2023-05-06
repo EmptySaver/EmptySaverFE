@@ -1,8 +1,8 @@
 class ScheduleList {
   String? startDate;
   String? endDate;
-  List<List<bool>>? bitListsPerDay;
-  List<Map<String, dynamic>>? scheduleListPerDays;
+  List<dynamic>? bitListsPerDay;
+  List<dynamic>? scheduleListPerDays;
 
   ScheduleList({
     this.startDate,
