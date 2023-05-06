@@ -28,20 +28,20 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    var jwtToken = ref.read(tokensProvider.notifier).state;
+    var jwtToken = ref.read(tokensProvider.notifier).state[0];
     print('barproviderjwt : $jwtToken');
-    http.post(
-      Uri.parse('http://43.201.208.100:8080/notification/send'),
-      // body: jsonEncode(<String, dynamic>{
-      //   'userId': '1',
-      //   'title': 'test',
-      //   'body': '테스트중',
-      // }),
-      headers: <String, String>{
-        'authorization': 'Bearer',
-        'Content-Type': 'application/json',
-      },
-    );
+    // http.post(
+    //   Uri.parse('http://43.201.208.100:8080/notification/send'),
+    //   body: jsonEncode(<String, dynamic>{
+    //     'userId': '1',
+    //     'title': 'test',
+    //     'body': '테스트중',
+    //   }),
+    //   headers: <String, String>{
+    //     'authorization': 'Bearer',
+    //     'Content-Type': 'application/json',
+    //   },
+    // );
     return Scaffold(
       appBar: AppBar(
         title: const Text('공강구조대!'),
@@ -74,11 +74,11 @@ class _BarScreenState extends ConsumerState<BarScreen> {
               url,
               headers: <String, String>{
                 'Content-Type': 'application/json',
-                'authorization': 'Bearer ${jwtToken[0]}'
+                'authorization': 'Bearer $jwtToken'
               },
             );
             if (response.statusCode == 200) {
-              ref.read(tokensProvider.notifier).removeToken(jwtToken[0]);
+              ref.read(tokensProvider.notifier).removeToken(jwtToken);
               Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             } else {
               print(response.statusCode);

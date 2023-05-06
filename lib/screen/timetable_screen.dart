@@ -1,14 +1,22 @@
+import 'dart:convert';
+
+import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/screen/add_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
-class TimeTableScreen extends StatelessWidget {
+class TimeTableScreen extends ConsumerWidget {
   TimeTableScreen({super.key});
+  var baseUri = '43.201.208.100:8080';
   final ScrollController controller = ScrollController();
   final ScrollController controller2 = ScrollController();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var jwtToken = ref.read(tokensProvider.notifier).state[0];
     return Stack(
       children: [
         Padding(
@@ -99,20 +107,51 @@ class TimeTableScreen extends StatelessWidget {
                   child: const Icon(Icons.schedule),
                   label: '일정 추가',
                   backgroundColor: Colors.red,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddScheduleScreen(),
+                        ));
+                  },
                 ),
                 SpeedDialChild(
                   child: const Icon(Icons.class_outlined),
                   label: '강의 추가',
                   backgroundColor: Colors.blue,
                   onTap: () {},
-                )
+                ),
+                SpeedDialChild(
+                  child: const Icon(Icons.get_app),
+                  label: '불러오기',
+                  backgroundColor: Colors.green,
+                  onTap: () async {
+                    var url = Uri.http(baseUri, '/timetable/getTimeTable');
+                    var response = await http.post(
+                      url,
+                      headers: <String, String>{
+                        'Content-Type': 'application/json',
+                        'authorization': 'Bearer $jwtToken'
+                      },
+                      body: jsonEncode(
+                          {"startDate": "2023-05-06", "endDate": "2023-05-06"}),
+                    );
+                    if (response.statusCode == 200) {
+                      print('getsuccess');
+                      print(response.body);
+                    } else {
+                      print('getfail');
+                      print(response.statusCode);
+                    }
+                  },
+                ),
               ],
             ),
           ),
         )
       ],
     );
+
     // int deviceHeight = MediaQuery.of(context).size.height.toInt();
     // return Scrollbar(
     //   controller: controller2,

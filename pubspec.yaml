@@ -49,6 +49,10 @@ dependencies:
   flutter_riverpod: ^2.3.6
   omni_datetime_picker: ^1.0.7
   swipe: ^0.0.1
+  day_picker: ^2.1.1
+  datetime_picker_field_platform: ^0.0.1
+  flutter_time_picker_spinner: ^2.0.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
