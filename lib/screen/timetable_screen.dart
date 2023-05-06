@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:emptysaver_fe/element/get_timetable_factory.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen.dart';
@@ -9,6 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+
+const double defaultBoxWidth = 75;
+const double defaultBoxHeight = 35;
 
 class TimeTableScreen extends ConsumerStatefulWidget {
   const TimeTableScreen({super.key});
@@ -23,6 +26,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   final ScrollController controller2 = ScrollController();
   late var jwtToken;
   late Future<ScheduleList> scheduleList;
+  var trueIndexLists = [];
+  final random = Random();
 
   Future<ScheduleList> getSchedule(
       String? jwtToken, ScheduleList? scheduleList) async {
@@ -40,7 +45,18 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         print('getsuccess');
         var parsedJson = jsonDecode(response.body);
         scheduleList = ScheduleList.fromJson(parsedJson);
-        print(scheduleList.scheduleListPerDays![0][0]);
+        print(scheduleList.scheduleListPerDays![0][0]['timeData']);
+        var firstDayMap = scheduleList.scheduleListPerDays![0];
+        for (int i = 0; i < firstDayMap.length; i++) {
+          List<int> trueIndexList = [];
+          for (int j = 16; j < 48; j++) {
+            if (firstDayMap[i]['timeData'][j] == true) {
+              trueIndexList.add(j - 16);
+            }
+          }
+          trueIndexLists.add(trueIndexList);
+        }
+        print(trueIndexLists);
       } else {
         print('getfail');
         print(response.statusCode);
@@ -107,36 +123,34 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                           future: scheduleList,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              return const Text('hi');
+                              return Stack(
+                                children: [
+                                  const defaultTimeTableFrame(),
+                                  for (int i = 0;
+                                      i < trueIndexLists.length;
+                                      i++)
+                                    Positioned(
+                                      top: defaultBoxHeight *
+                                          trueIndexLists[i][0],
+                                      child: Container(
+                                        height: defaultBoxHeight *
+                                            (trueIndexLists[i].length),
+                                        width: defaultBoxWidth,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(width: 1),
+                                          color: Color.fromARGB(
+                                            random.nextInt(256),
+                                            random.nextInt(256),
+                                            random.nextInt(256),
+                                            random.nextInt(256),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              );
                             }
-                            return Row(
-                              children: [
-                                for (int i = 0; i < 5; i++)
-                                  Column(
-                                    children: [
-                                      for (int j = 0; j < 32; j++)
-                                        Container(
-                                          width: 75,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                              border: Border(
-                                            left: const BorderSide(
-                                                color: Colors.blueGrey,
-                                                width: 0.2),
-                                            right: const BorderSide(
-                                                color: Colors.blueGrey,
-                                                width: 0.2),
-                                            bottom: (j % 2 == 1)
-                                                ? const BorderSide(
-                                                    color: Colors.blueGrey,
-                                                    width: 0.2)
-                                                : BorderSide.none,
-                                          )),
-                                        )
-                                    ],
-                                  ),
-                              ],
-                            );
+                            return const defaultTimeTableFrame();
                           },
                         ),
                       ],
@@ -185,6 +199,52 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
           ),
         )
       ],
+    );
+  }
+}
+
+class defaultTimeTableFrame extends StatelessWidget {
+  const defaultTimeTableFrame({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (int i = 0; i < 5; i++)
+          Column(
+            children: [for (int j = 0; j < 32; j++) defaultBox(tag: j)],
+          ),
+      ],
+    );
+  }
+}
+
+class defaultBox extends StatelessWidget {
+  defaultBox({
+    super.key,
+    required this.tag,
+  });
+
+  final int tag;
+  bool isFill = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: defaultBoxWidth,
+      height: defaultBoxHeight,
+      decoration: BoxDecoration(
+        color: isFill ? Colors.black : Colors.white,
+        border: Border(
+          left: const BorderSide(color: Colors.blueGrey, width: 0.2),
+          right: const BorderSide(color: Colors.blueGrey, width: 0.2),
+          bottom: (tag % 2 == 1)
+              ? const BorderSide(color: Colors.blueGrey, width: 0.2)
+              : BorderSide.none,
+        ),
+      ),
     );
   }
 }
