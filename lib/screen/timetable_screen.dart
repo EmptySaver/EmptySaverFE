@@ -26,7 +26,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   final ScrollController controller2 = ScrollController();
   late var jwtToken;
   late Future<ScheduleList> scheduleList;
-  var trueIndexLists = [];
+  late var trueIndexListsTotal;
+
   final random = Random();
 
   Future<ScheduleList> getSchedule(
@@ -39,24 +40,30 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
           'Content-Type': 'application/json',
           'authorization': 'Bearer $jwtToken'
         },
-        body: jsonEncode({"startDate": "2023-05-06", "endDate": "2023-05-06"}),
+        body: jsonEncode({"startDate": "2023-05-07", "endDate": "2023-05-11"}),
       );
       if (response.statusCode == 200) {
         print('getsuccess');
         var parsedJson = jsonDecode(response.body);
         scheduleList = ScheduleList.fromJson(parsedJson);
-        print(scheduleList.scheduleListPerDays![0][0]['timeData']);
-        var firstDayMap = scheduleList.scheduleListPerDays![0];
-        for (int i = 0; i < firstDayMap.length; i++) {
-          List<int> trueIndexList = [];
-          for (int j = 16; j < 48; j++) {
-            if (firstDayMap[i]['timeData'][j] == true) {
-              trueIndexList.add(j - 16);
+        for (int h = 0; h < scheduleList.scheduleListPerDays!.length; h++) {
+          var trueIndexLists = [];
+          var dayMap = scheduleList.scheduleListPerDays![h];
+          for (int i = 0; i < dayMap.length; i++) {
+            List<int> trueIndexList = [];
+            for (int j = 16; j < 48; j++) {
+              // print(dayMap[i]['timeData']);
+              if (dayMap[i]['timeData'][j] == true) {
+                trueIndexList.add(j - 16);
+              }
             }
+            trueIndexLists.add(trueIndexList);
           }
-          trueIndexLists.add(trueIndexList);
+          // print('요일 하나 : $trueIndexLists');
+          trueIndexListsTotal.add(trueIndexLists);
         }
-        print(trueIndexLists);
+
+        // print('요일 전체 : $trueIndexListsTotal');
       } else {
         print('getfail');
         print(response.statusCode);
@@ -68,13 +75,14 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   @override
   void initState() {
     super.initState();
+    trueIndexListsTotal = [];
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     scheduleList = getSchedule(jwtToken, ScheduleList());
   }
 
   @override
   Widget build(BuildContext context) {
-    print('있냐? : $scheduleList');
+    trueIndexListsTotal = [];
     return Stack(
       children: [
         Padding(
@@ -90,69 +98,80 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
             itemBuilder: (context, index, big) {
               int realIndex = big - 10000;
               print('rebuildtimetable : $index, $big, $realIndex');
-              return SingleChildScrollView(
-                child: Container(
-                  decoration: BoxDecoration(border: Border.all()),
-                  child: Row(children: [
-                    Column(children: [
-                      const SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      for (int i = 1; i < 17; i++)
-                        TimeHeaderBox(timeText: i + 7),
-                    ]),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            for (int i = 0; i < 5; i++)
-                              DefaultHeaderBox(
-                                nowDate: '${DateFormat('E', 'ko').format(
-                                  DateTime.now().add(
-                                    Duration(
-                                      days: (i - 5 + (realIndex + 1) * 5),
-                                      hours: 9,
-                                    ),
-                                  ),
-                                )} ${DateFormat('Md').format(DateTime.now().add(Duration(days: (i - 5 + (realIndex + 1) * 5), hours: 9)))}',
-                              )
-                          ],
+              return RefreshIndicator(
+                onRefresh: () async {
+                  scheduleList = getSchedule(jwtToken, ScheduleList());
+                  setState(() {});
+                },
+                child: SingleChildScrollView(
+                  child: Container(
+                    decoration: BoxDecoration(border: Border.all()),
+                    child: Row(children: [
+                      Column(children: [
+                        const SizedBox(
+                          width: 20,
+                          height: 20,
                         ),
-                        FutureBuilder(
-                          future: scheduleList,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return Stack(
-                                children: [
-                                  const defaultTimeTableFrame(),
-                                  for (int i = 0;
-                                      i < trueIndexLists.length;
-                                      i++)
-                                    Positioned(
-                                      top: defaultBoxHeight *
-                                          trueIndexLists[i][0],
-                                      child: Container(
-                                        height: defaultBoxHeight *
-                                            (trueIndexLists[i].length),
-                                        width: defaultBoxWidth,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(width: 1),
-                                          color: Colors.primaries[
-                                              random.nextInt(
-                                                  Colors.primaries.length)],
-                                        ),
+                        for (int i = 1; i < 17; i++)
+                          TimeHeaderBox(timeText: i + 7),
+                      ]),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              for (int i = 0; i < 5; i++)
+                                DefaultHeaderBox(
+                                  nowDate: '${DateFormat('E', 'ko').format(
+                                    DateTime.now().add(
+                                      Duration(
+                                        days: (i - 5 + (realIndex + 1) * 5),
+                                        hours: 9,
                                       ),
-                                    )
-                                ],
-                              );
-                            }
-                            return const defaultTimeTableFrame();
-                          },
-                        ),
-                      ],
-                    )
-                  ]),
+                                    ),
+                                  )} ${DateFormat('Md').format(DateTime.now().add(Duration(days: (i - 5 + (realIndex + 1) * 5), hours: 9)))}',
+                                )
+                            ],
+                          ),
+                          FutureBuilder(
+                            future: scheduleList,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Stack(
+                                  children: [
+                                    const defaultTimeTableFrame(),
+                                    for (int h = 0;
+                                        h < trueIndexListsTotal.length;
+                                        h++)
+                                      for (int i = 0;
+                                          i < trueIndexListsTotal[h].length;
+                                          i++)
+                                        Positioned(
+                                          top: defaultBoxHeight *
+                                              trueIndexListsTotal[h][i][0],
+                                          left: defaultBoxWidth * h,
+                                          child: Container(
+                                            height: defaultBoxHeight *
+                                                (trueIndexListsTotal[h][i]
+                                                    .length),
+                                            width: defaultBoxWidth,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(width: 1),
+                                              color: Colors.primaries[
+                                                  random.nextInt(
+                                                      Colors.primaries.length)],
+                                            ),
+                                          ),
+                                        )
+                                  ],
+                                );
+                              }
+                              return const defaultTimeTableFrame();
+                            },
+                          ),
+                        ],
+                      )
+                    ]),
+                  ),
                 ),
               );
             },

@@ -3,12 +3,14 @@ class ScheduleList {
   String? endDate;
   List<dynamic>? bitListsPerDay;
   List<dynamic>? scheduleListPerDays;
+  String? timeStringData;
 
   ScheduleList({
     this.startDate,
     this.endDate,
     this.bitListsPerDay,
     this.scheduleListPerDays,
+    this.timeStringData,
   });
 
   factory ScheduleList.fromJson(Map<String, dynamic> parsedJson) {
@@ -17,6 +19,7 @@ class ScheduleList {
       endDate: parsedJson['endData'],
       bitListsPerDay: parsedJson['bitListsPerDay'],
       scheduleListPerDays: parsedJson['scheduleListPerDays'],
+      timeStringData: parsedJson['timeStringData'],
     );
   }
 }
