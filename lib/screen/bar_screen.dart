@@ -21,7 +21,7 @@ class BarScreen extends ConsumerStatefulWidget {
 class _BarScreenState extends ConsumerState<BarScreen> {
   int selectedIndex = 0;
   var bodyWidgets = [
-    TimeTableScreen(),
+    const TimeTableScreen(),
     const FriendGroupScreen(),
     const GroupFinderScreen(),
     const Text('정보'),
@@ -33,15 +33,16 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     // http.post(
     //   Uri.parse('http://43.201.208.100:8080/notification/send'),
     //   body: jsonEncode(<String, dynamic>{
-    //     'userId': '1',
+    //     'userId': 1,
     //     'title': 'test',
     //     'body': '테스트중',
     //   }),
     //   headers: <String, String>{
-    //     'authorization': 'Bearer',
+    //     'authorization': 'Bearer $jwtToken',
     //     'Content-Type': 'application/json',
     //   },
     // );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('공강구조대!'),

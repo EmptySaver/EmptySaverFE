@@ -138,12 +138,9 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                         width: defaultBoxWidth,
                                         decoration: BoxDecoration(
                                           border: Border.all(width: 1),
-                                          color: Color.fromARGB(
-                                            random.nextInt(256),
-                                            random.nextInt(256),
-                                            random.nextInt(256),
-                                            random.nextInt(256),
-                                          ),
+                                          color: Colors.primaries[
+                                              random.nextInt(
+                                                  Colors.primaries.length)],
                                         ),
                                       ),
                                     )
