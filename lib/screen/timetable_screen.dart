@@ -27,6 +27,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   late var jwtToken;
   late Future<ScheduleList> scheduleList;
   late var trueIndexListsTotal;
+  late var nameListsTotal;
+  late var bodyListsTotal;
 
   final random = Random();
 
@@ -48,6 +50,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         scheduleList = ScheduleList.fromJson(parsedJson);
         for (int h = 0; h < scheduleList.scheduleListPerDays!.length; h++) {
           var trueIndexLists = [];
+          var nameLists = [];
+          var bodyLists = [];
           var dayMap = scheduleList.scheduleListPerDays![h];
           for (int i = 0; i < dayMap.length; i++) {
             List<int> trueIndexList = [];
@@ -58,9 +62,13 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               }
             }
             trueIndexLists.add(trueIndexList);
+            nameLists.add(dayMap[i]['name']);
+            bodyLists.add(dayMap[i]['body']);
           }
           // print('요일 하나 : $trueIndexLists');
           trueIndexListsTotal.add(trueIndexLists);
+          nameListsTotal.add(nameLists);
+          bodyListsTotal.add(bodyLists);
         }
 
         // print('요일 전체 : $trueIndexListsTotal');
@@ -76,6 +84,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   void initState() {
     super.initState();
     trueIndexListsTotal = [];
+    nameListsTotal = [];
+    bodyListsTotal = [];
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     scheduleList = getSchedule(jwtToken, ScheduleList());
   }
@@ -83,6 +93,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   @override
   Widget build(BuildContext context) {
     trueIndexListsTotal = [];
+    nameListsTotal = [];
+    bodyListsTotal = [];
     return Stack(
       children: [
         Padding(
@@ -159,6 +171,14 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                               color: Colors.primaries[
                                                   random.nextInt(
                                                       Colors.primaries.length)],
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(nameListsTotal[h][i]),
+                                                // Text(bodyListsTotal[h][i])
+                                              ],
                                             ),
                                           ),
                                         )
