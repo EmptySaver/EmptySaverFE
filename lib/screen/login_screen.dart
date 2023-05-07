@@ -60,7 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print('login:${widget.firebaseToken}');
+    print('fcmToken:${widget.firebaseToken}');
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
