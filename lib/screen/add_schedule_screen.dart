@@ -4,6 +4,7 @@ import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:interval_time_picker/interval_time_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -355,9 +356,11 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                         if (response.statusCode == 200) {
                           print('success!');
                           print(response.body);
+                          Fluttertoast.showToast(msg: '추가되었습니다');
                         } else {
                           print('fail..');
                           print(response.body);
+                          Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
                         }
                       },
                       style: OutlinedButton.styleFrom(
