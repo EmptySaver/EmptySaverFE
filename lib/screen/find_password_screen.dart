@@ -20,13 +20,13 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
 
   void findMyPwd() async {
     var url = Uri.parse('http://43.201.208.100:8080/auth/findPassword');
-    var response = await http.post(
+    var response = await http.put(
       url,
       body: jsonEncode(<String, String>{
         'email': addrTecFind.text,
         'name': nameTecFind.text
       }),
-      headers: <String, String>{'Content-Type': 'text/plain; charset=UTF-8'},
+      headers: <String, String>{'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {
       print(response.body);
@@ -90,7 +90,6 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     ),
-                    keyboardType: TextInputType.number,
                   ),
                   const SizedBox(
                     height: 10,

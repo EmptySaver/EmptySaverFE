@@ -1,5 +1,7 @@
 import 'package:emptysaver_fe/fcm_setting.dart';
+import 'package:emptysaver_fe/screen/bar_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen.dart';
+import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,9 +53,10 @@ class MyApp extends ConsumerWidget {
       home: LoginScreen(
         firebaseToken: firebaseToken,
       ),
-      // routes: {
-      //   '/bar': (context) => BarScreen(),
-      // },
+      routes: {
+        '/bar': (context) => const BarScreen(),
+        '/timetable': (context) => const TimeTableScreen(),
+      },
       theme: ThemeData(
           appBarTheme: const AppBarTheme(
             toolbarHeight: 50,
@@ -62,11 +65,14 @@ class MyApp extends ConsumerWidget {
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.black,
               side: const BorderSide(
                 color: Colors.grey,
               ),
             ),
-          )),
+          ),
+          textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.black))),
     );
   }
 }

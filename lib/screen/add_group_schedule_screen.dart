@@ -9,17 +9,18 @@ import 'package:interval_time_picker/interval_time_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
-class AddScheduleScreen extends ConsumerStatefulWidget {
-  const AddScheduleScreen({
-    super.key,
-  });
+class AddGroupScheduleScreen extends ConsumerStatefulWidget {
+  String? category;
+
+  AddGroupScheduleScreen({super.key, this.category});
 
   @override
-  ConsumerState<AddScheduleScreen> createState() => _AddScheduleScreenState();
+  ConsumerState<AddGroupScheduleScreen> createState() =>
+      _AddGroupScheduleScreenState();
 }
 
-class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
-  var baseUri = '43.201.208.100:8080';
+class _AddGroupScheduleScreenState
+    extends ConsumerState<AddGroupScheduleScreen> {
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
   var dateTec = TextEditingController(text: '');
@@ -47,21 +48,31 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     var jwtToken = ref.read(tokensProvider.notifier).state[0];
+    var baseUri = '43.201.208.100:8080';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일정 추가'),
+        title: const Text('그룹 생성'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Center(
           child: GestureDetector(
+            // behavior: HitTestBehavior.opaque,
             onTap: () => FocusScope.of(context).unfocus(),
             child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(
-                    height: 50,
+                    height: 30,
+                  ),
+                  Text(
+                    '${widget.category}',
+                    style: const TextStyle(fontSize: 25),
+                  ),
+                  const SizedBox(
+                    height: 30,
                   ),
                   ToggleButtons(
                     isSelected: _selections,
@@ -82,6 +93,9 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       }
                       setState(() {});
                     },
+                  ),
+                  const SizedBox(
+                    height: 30,
                   ),
                   Visibility(
                     visible: !isPeriodic,
@@ -141,39 +155,39 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                         Expanded(
                           child: TextField(
                             textAlign: TextAlign.center,
-                            onTap: () async {
-                              TimeOfDay? pickedTime =
-                                  await showIntervalTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                      interval: 30,
-                                      visibleStep: VisibleStep.thirtieths);
-                              if (pickedTime != null) {
-                                setState(() {
-                                  var df = DateFormat("a h:mm", "ko");
-                                  var dt = df.parse(pickedTime.format(context));
-                                  var finaltime =
-                                      DateFormat("HH:mm").format(dt);
-                                  timeTec1.text = finaltime;
-                                });
-                              }
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) => AlertDialog(
-                              //     content: TimePickerSpinner(
-                              //       is24HourMode: true,
-                              //       minutesInterval: 30,
-                              //       isForce2Digits: true,
-                              //       isShowSeconds: false,
-                              //       onTimeChange: (time) {
-                              //         var pickedTime =
-                              //             DateFormat('HH:mm').format(time);
-                              //         timeTec1.text = pickedTime;
-                              //         setState(() {});
-                              //       },
-                              //     ),
-                              //   ),
-                              // );
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  content: TimePickerSpinner(
+                                    is24HourMode: true,
+                                    minutesInterval: 30,
+                                    isForce2Digits: true,
+                                    isShowSeconds: false,
+                                    onTimeChange: (time) {
+                                      var pickedTime =
+                                          DateFormat('HH:mm').format(time);
+                                      timeTec1.text = pickedTime;
+                                      setState(() {});
+                                    },
+                                  ),
+                                ),
+                              );
+                              // TimeOfDay? pickedTime =
+                              //     await showIntervalTimePicker(
+                              //         context: context,
+                              //         initialTime: TimeOfDay.now(),
+                              //         interval: 30,
+                              //         visibleStep: VisibleStep.thirtieths);
+                              // if (pickedTime != null) {
+                              //   setState(() {
+                              //     var df = DateFormat("a h:mm", "ko");
+                              //     var dt = df.parse(pickedTime.format(context));
+                              //     var finaltime =
+                              //         DateFormat("HH:mm").format(dt);
+                              //     timeTec1.text = finaltime;
+                              //   });
+                              // }
                             },
                             controller: timeTec1,
                           ),

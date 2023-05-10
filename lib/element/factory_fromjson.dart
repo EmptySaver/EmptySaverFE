@@ -23,3 +23,16 @@ class ScheduleList {
     );
   }
 }
+
+class Category {
+  List<dynamic>? data;
+
+  Category({this.data});
+
+  factory Category.fromJson(Map<String, dynamic> parsedJson) {
+    // var data = parsedJson['result'];
+    return Category(
+      data: parsedJson['result'],
+    );
+  }
+}

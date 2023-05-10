@@ -1,3 +1,4 @@
+import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class FriendGroupScreen extends StatelessWidget {
@@ -78,9 +79,18 @@ class FriendGroupScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: ListView.separated(
                     itemBuilder: (context, index) {
-                      return Container(
-                        height: 40,
-                        color: Colors.green,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const GroupDetailScreen(),
+                              ));
+                        },
+                        child: Container(
+                          height: 40,
+                          color: Colors.green,
+                        ),
                       );
                     },
                     separatorBuilder: (context, index) => const SizedBox(

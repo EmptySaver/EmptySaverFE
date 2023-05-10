@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
-import 'package:emptysaver_fe/element/get_timetable_factory.dart';
+import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen.dart';
+import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +33,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   late var nameListsTotal;
   late var bodyListsTotal;
   late var idListsTotal;
-  late int pageIndex;
+  int pageIndex = 0;
   final random = Random();
 
   Future<ScheduleList> getSchedule(
@@ -270,11 +271,15 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                   onTap: () {},
                 ),
                 SpeedDialChild(
-                    child: const Icon(Icons.get_app),
-                    label: '불러오기',
+                    child: const Icon(Icons.group_add),
+                    label: '그룹 생성',
                     backgroundColor: Colors.green,
                     onTap: () {
-                      getSchedule(jwtToken, ScheduleList());
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CategorySelectScreen(),
+                          ));
                     }),
               ],
             ),
