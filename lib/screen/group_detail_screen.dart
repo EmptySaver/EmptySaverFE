@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class GroupDetailScreen extends StatefulWidget {
-  const GroupDetailScreen({super.key});
+  Map<String, dynamic>? groupData;
+
+  GroupDetailScreen({super.key, this.groupData});
 
   @override
   State<GroupDetailScreen> createState() => _GroupDetailScreenState();
@@ -24,9 +26,9 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Text(
-                  '그룹 타이틀',
-                  style: TextStyle(
+                Text(
+                  widget.groupData!['groupName'],
+                  style: const TextStyle(
                     fontSize: 25,
                   ),
                 ),

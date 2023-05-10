@@ -23,6 +23,7 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
   bool isPublic = false;
   bool isAnonymous = false;
   String? selectedTag;
+  late var jwtToken;
 
   Future<dynamic> getTag(String? jwtToken) async {
     var url = Uri.http(baseUri, '/category/getLabels/${widget.type}');
@@ -36,13 +37,13 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
   @override
   void initState() {
     super.initState();
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
+    jwtToken = ref.read(tokensProvider.notifier).state[0];
     tagList = getTag(jwtToken);
   }
 
   @override
   Widget build(BuildContext context) {
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
+    // var jwtToken = ref.read(tokensProvider.notifier).state[0];
     List<bool> selections = [];
     return Scaffold(
       appBar: AppBar(
@@ -232,6 +233,8 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                         print('groupaddsuccess');
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/bar', (route) => false);
+                      } else {
+                        print('fail ${response.statusCode}');
                       }
                     },
                     child: const Text('생성')),

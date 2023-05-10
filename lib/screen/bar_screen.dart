@@ -26,10 +26,17 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     const GroupFinderScreen(),
     const Text('정보'),
   ];
+  String? jwtToken;
+  @override
+  void initState() {
+    super.initState();
+    print('barinit');
+    jwtToken = ref.read(tokensProvider.notifier).state[0];
+  }
+
   @override
   Widget build(BuildContext context) {
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
-    print('barproviderjwt : $jwtToken');
+    //알림 테스트
     // http.post(
     //   Uri.parse('http://43.201.208.100:8080/notification/send'),
     //   body: jsonEncode(<String, dynamic>{

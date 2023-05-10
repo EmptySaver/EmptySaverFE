@@ -36,3 +36,46 @@ class Category {
     );
   }
 }
+
+class Unwrap {
+  List<dynamic>? data;
+
+  Unwrap({this.data});
+
+  factory Unwrap.fromJson(Map<String, dynamic> parsedJson) {
+    return Unwrap(
+      data: parsedJson['data'],
+    );
+  }
+}
+
+class Group {
+  int? groupId;
+  String? groupName;
+  String? oneLineInfo;
+  int? nowMember;
+  int? maxMember;
+  bool? isPublic;
+  bool? isAnonymous;
+  String? categoryLabel;
+
+  Group(
+      {this.groupId,
+      this.groupName,
+      this.oneLineInfo,
+      this.nowMember,
+      this.maxMember,
+      this.isPublic,
+      this.isAnonymous,
+      this.categoryLabel});
+
+  Group.fromJson(Map<String, dynamic> parsedJson)
+      : groupId = parsedJson['groupId'],
+        groupName = parsedJson['groupName'],
+        oneLineInfo = parsedJson['oneLineInfo'],
+        nowMember = parsedJson['nowMember'],
+        maxMember = parsedJson['maxMember'],
+        isPublic = parsedJson['isPublic'],
+        isAnonymous = parsedJson['isAnonymous'],
+        categoryLabel = parsedJson['categoryLabel'];
+}
