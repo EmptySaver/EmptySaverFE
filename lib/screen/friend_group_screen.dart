@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class FriendGroupScreen extends ConsumerStatefulWidget {
@@ -16,6 +17,7 @@ class FriendGroupScreen extends ConsumerStatefulWidget {
 
 class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   var baseUri = '43.201.208.100:8080';
+  late var jwtToken;
   late Future<Unwrap> UnwrapData;
 
   Future<Unwrap> getMyGroup(String? jwtToken) async {
@@ -37,12 +39,13 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
+    jwtToken = ref.read(tokensProvider.notifier).state[0];
     UnwrapData = getMyGroup(jwtToken);
   }
 
   @override
   Widget build(BuildContext context) {
+    print('reb');
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -121,6 +124,21 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       return ListView.separated(
                           itemBuilder: (context, index) {
                             return GestureDetector(
+                              onLongPress: () async {
+                                var url = Uri.http(baseUri,
+                                    '/group/delete/${groupList[index]['groupId']}');
+                                var response = await http.delete(url, headers: {
+                                  'authorization': 'Bearer $jwtToken'
+                                });
+                                if (response.statusCode == 200) {
+                                  Fluttertoast.showToast(msg: '삭제되었습니다');
+                                  setState(() {
+                                    UnwrapData = getMyGroup(jwtToken);
+                                  });
+                                } else {
+                                  Fluttertoast.showToast(msg: 'error!');
+                                }
+                              },
                               onTap: () {
                                 Navigator.push(
                                     context,

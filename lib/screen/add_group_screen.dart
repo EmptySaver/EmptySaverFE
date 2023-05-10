@@ -144,6 +144,7 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                                     }
                                   });
                                   print(selections);
+                                  print(selectedTag);
                                 },
                                 isSelected: selections,
                                 children: List<Widget>.generate(
@@ -231,10 +232,11 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                       );
                       if (response.statusCode == 200) {
                         print('groupaddsuccess');
+                        print(response.body);
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/bar', (route) => false);
                       } else {
-                        print('fail ${response.statusCode}');
+                        print('fail ${utf8.decode(response.bodyBytes)}');
                       }
                     },
                     child: const Text('생성')),
