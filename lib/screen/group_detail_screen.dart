@@ -1,3 +1,4 @@
+import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
 
 class GroupDetailScreen extends StatefulWidget {
@@ -57,7 +58,14 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                   children: [
                     const Text('일정 목록'),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddGroupScheduleScreen(
+                                  groupData: widget.groupData),
+                            ));
+                      },
                       child: const Text('추가'),
                     )
                   ],

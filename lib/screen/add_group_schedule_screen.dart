@@ -10,9 +10,9 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class AddGroupScheduleScreen extends ConsumerStatefulWidget {
-  String? category;
+  Map<String, dynamic>? groupData;
 
-  AddGroupScheduleScreen({super.key, this.category});
+  AddGroupScheduleScreen({super.key, this.groupData});
 
   @override
   ConsumerState<AddGroupScheduleScreen> createState() =>
@@ -21,6 +21,8 @@ class AddGroupScheduleScreen extends ConsumerStatefulWidget {
 
 class _AddGroupScheduleScreenState
     extends ConsumerState<AddGroupScheduleScreen> {
+  var baseUri = '43.201.208.100:8080';
+
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
   var dateTec = TextEditingController(text: '');
@@ -48,11 +50,10 @@ class _AddGroupScheduleScreenState
   @override
   Widget build(BuildContext context) {
     var jwtToken = ref.read(tokensProvider.notifier).state[0];
-    var baseUri = '43.201.208.100:8080';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('그룹 생성'),
+        title: const Text('그룹 일정 추가'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -64,13 +65,6 @@ class _AddGroupScheduleScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    '${widget.category}',
-                    style: const TextStyle(fontSize: 25),
-                  ),
                   const SizedBox(
                     height: 30,
                   ),
@@ -384,7 +378,11 @@ class _AddGroupScheduleScreenState
                                 'startTime': startTime,
                                 'endTime': endTime,
                               };
-                        var url = Uri.http(baseUri, '/timetable/saveSchedule');
+                        var url = Uri.http(
+                            baseUri, '/timetable/team/saveSchedule', {
+                          'groupId': '${widget.groupData!['groupId']}',
+                          'isPublicTypeSchedule': 'true'
+                        });
                         print(url);
                         var response = await http.post(url,
                             headers: <String, String>{
