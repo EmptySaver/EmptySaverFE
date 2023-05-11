@@ -73,22 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  datetime_picker_field_platform:
-    dependency: "direct main"
-    description:
-      name: datetime_picker_field_platform
-      sha256: "1638532dfb5ab90ac68c006284fc17a91a3a43f60fe134d38143fb630084dcb1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
-  day_picker:
-    dependency: "direct main"
-    description:
-      name: day_picker
-      sha256: e2b177625c3866964ae2314cd800b1260df684eb18741be64cb73e1c07b2c7b8
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   dbus:
     dependency: transitive
     description:
@@ -345,18 +329,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      sha256: a3715e3bc90294e971cb7dc063fbf3cd9ee0ebf8604ffeafabd9e6f16abbdbe6
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.1"
-  jiffy:
-    dependency: transitive
-    description:
-      name: jiffy
-      sha256: c3c1da3fe0c08bba3c2c455e8a3e724dfe7ea34dbe8069b992cab90ea1fe40b6
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.1"
+    version: "0.18.0"
   js:
     dependency: transitive
     description:
@@ -377,18 +353,18 @@ packages:
     dependency: transitive
     description:
       name: matcher
-      sha256: "6501fbd55da300384b768785b83e5ce66991266cec21af89ab9ae7f5ce1c4cbb"
+      sha256: c94db23593b89766cda57aab9ac311e3616cf87c6fa4e9749df032f66f30dcb8
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.15"
+    version: "0.12.14"
   material_color_utilities:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "586678f20e112219ed0f73215f01bcdf1d769824ba2ebae45ad918a9bfde9bdb"
+      sha256: d92141dc6fe1dad30722f9aa826c7fbc896d021d792f80678280601aff8cf724
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.0"
   meta:
     dependency: transitive
     description:
@@ -397,14 +373,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  omni_datetime_picker:
-    dependency: "direct main"
-    description:
-      name: omni_datetime_picker
-      sha256: c70ca19eba89b7ed3663ae8eab2e7922c12b443826cf06c841a7f0a19e22870d
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.7"
   path:
     dependency: transitive
     description:
@@ -542,10 +510,10 @@ packages:
     dependency: transitive
     description:
       name: source_span
-      sha256: "53e943d4206a5e30df338fd4c6e7a077e02254531b138a15aec3bd143c1a8b3c"
+      sha256: dd904f795d4b4f3b870833847c461801f6750a9fa8e61ea5ac53f9422b31f250
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.9.1"
   stack_trace:
     dependency: transitive
     description:
@@ -598,18 +566,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: daadc9baabec998b062c9091525aa95786508b1c48e9c30f1f891b8bf6ff2e64
+      sha256: "6182294da5abf431177fccc1ee02401f6df30f766bc6130a0852c6b6d7ee6b2d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.2"
-  time_planner:
-    dependency: "direct main"
-    description:
-      name: time_planner
-      sha256: "48b21412ed4af53d0b304424290028cbac2f1900a7568c7db091c692eabb6cb5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
+    version: "0.4.18"
   timezone:
     dependency: transitive
     description:

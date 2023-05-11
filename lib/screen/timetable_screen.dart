@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen.dart';
@@ -34,8 +33,6 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   late var bodyListsTotal;
   late var idListsTotal;
   int pageIndex = 0;
-  final random = Random();
-
   Future<ScheduleList> getSchedule(
       String? jwtToken, ScheduleList? scheduleList) async {
     {
@@ -214,9 +211,9 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                               width: defaultBoxWidth,
                                               decoration: BoxDecoration(
                                                 border: Border.all(width: 1),
-                                                color: Colors.primaries[
-                                                    random.nextInt(Colors
-                                                        .primaries.length)],
+                                                color: (i > 17)
+                                                    ? Colors.primaries[i % 17]
+                                                    : Colors.primaries[i],
                                               ),
                                               child: Column(
                                                 mainAxisAlignment:
