@@ -53,6 +53,7 @@ dependencies:
   datetime_picker_field_platform: ^0.0.1
   flutter_time_picker_spinner: ^2.0.0
   interval_time_picker: ^2.0.0+5
+  get: ^4.6.5
   
 dev_dependencies:
   flutter_test:
