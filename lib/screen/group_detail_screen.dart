@@ -48,7 +48,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 Container(
                   height: 150,
                   width: 350,
-                  decoration: const BoxDecoration(color: Colors.amber),
+                  decoration: BoxDecoration(border: Border.all()),
                 ),
                 const SizedBox(
                   height: 30,
@@ -76,7 +76,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 Container(
                   height: 150,
                   width: 350,
-                  decoration: const BoxDecoration(color: Colors.green),
+                  decoration: BoxDecoration(border: Border.all()),
                 ),
                 const SizedBox(
                   height: 30,
@@ -95,7 +95,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 Container(
                   height: 150,
                   width: 350,
-                  decoration: const BoxDecoration(color: Colors.blue),
+                  decoration: BoxDecoration(border: Border.all()),
                 ),
               ],
             ),

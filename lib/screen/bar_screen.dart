@@ -1,5 +1,6 @@
 import 'package:emptysaver_fe/screen/friend_group_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_screen.dart';
+import 'package:emptysaver_fe/screen/info_screen.dart';
 import 'package:emptysaver_fe/screen/mypage_screen.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
@@ -24,7 +25,7 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     const TimeTableScreen(),
     const FriendGroupScreen(),
     const GroupFinderScreen(),
-    const Text('정보'),
+    const InfoScreen(),
   ];
   String? jwtToken;
   @override

@@ -382,6 +382,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           print('success!');
                           print(response.body);
                           Fluttertoast.showToast(msg: '추가되었습니다');
+                          Navigator.popAndPushNamed(context, '/bar');
                         } else {
                           print('fail..');
                           print(response.body);

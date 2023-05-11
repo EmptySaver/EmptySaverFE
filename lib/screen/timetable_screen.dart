@@ -33,6 +33,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   late var bodyListsTotal;
   late var idListsTotal;
   int pageIndex = 0;
+
   Future<ScheduleList> getSchedule(
       String? jwtToken, ScheduleList? scheduleList) async {
     {
@@ -106,6 +107,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
     bodyListsTotal = [];
     idListsTotal = [];
     scheduleList = getSchedule(jwtToken, scheduleListFrame);
+    var colorIndex = -1;
+
     return Stack(
       children: [
         Padding(
@@ -210,10 +213,13 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                       .length),
                                               width: defaultBoxWidth,
                                               decoration: BoxDecoration(
-                                                border: Border.all(width: 1),
-                                                color: (i > 17)
-                                                    ? Colors.primaries[i % 17]
-                                                    : Colors.primaries[i],
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.black),
+                                                color: ((h + i) > 17)
+                                                    ? Colors
+                                                        .primaries[(h + i) % 17]
+                                                    : Colors.primaries[(h + i)],
                                               ),
                                               child: Column(
                                                 mainAxisAlignment:

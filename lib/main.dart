@@ -1,5 +1,6 @@
 // import 'package:emptysaver_fe/fcm_setting.dart';
 import 'package:emptysaver_fe/screen/bar_screen.dart';
+import 'package:emptysaver_fe/screen/friend_group_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
@@ -168,6 +169,7 @@ class MyApp extends ConsumerWidget {
       routes: {
         '/bar': (context) => const BarScreen(),
         '/timetable': (context) => const TimeTableScreen(),
+        '/fg': (context) => FriendGroupScreen(),
       },
       theme: ThemeData(
           appBarTheme: const AppBarTheme(

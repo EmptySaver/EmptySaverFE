@@ -69,13 +69,53 @@ class Group {
       this.isAnonymous,
       this.categoryLabel});
 
-  Group.fromJson(Map<String, dynamic> parsedJson)
-      : groupId = parsedJson['groupId'],
-        groupName = parsedJson['groupName'],
-        oneLineInfo = parsedJson['oneLineInfo'],
-        nowMember = parsedJson['nowMember'],
-        maxMember = parsedJson['maxMember'],
-        isPublic = parsedJson['isPublic'],
-        isAnonymous = parsedJson['isAnonymous'],
-        categoryLabel = parsedJson['categoryLabel'];
+  // Group.fromJson(Map<String, dynamic> parsedJson)
+  //     : groupId = parsedJson['groupId'],
+  //       groupName = parsedJson['groupName'],
+  //       oneLineInfo = parsedJson['oneLineInfo'],
+  //       nowMember = parsedJson['nowMember'],
+  //       maxMember = parsedJson['maxMember'],
+  //       isPublic = parsedJson['isPublic'],
+  //       isAnonymous = parsedJson['isAnonymous'],
+  //       categoryLabel = parsedJson['categoryLabel'];
+
+  factory Group.fromJson(Map<String, dynamic> parsedJson) {
+    return Group(
+      groupId: parsedJson['groupId'],
+      groupName: parsedJson['groupName'],
+      oneLineInfo: parsedJson['oneLineInfo'],
+      nowMember: parsedJson['nowMember'],
+      maxMember: parsedJson['maxMember'],
+      isPublic: parsedJson['isPublic'],
+      isAnonymous: parsedJson['isAnonymous'],
+      categoryLabel: parsedJson['categoryLabel'],
+    );
+  }
+}
+
+class Info {
+  String? courseName;
+  String? applyDate;
+  String? runDate;
+  String? targetDepartment;
+  String? targetGrade;
+  String? url;
+
+  Info(
+      {this.courseName,
+      this.applyDate,
+      this.runDate,
+      this.targetDepartment,
+      this.targetGrade,
+      this.url});
+  factory Info.fromJson(Map<String, dynamic> parsedJson) {
+    return Info(
+      courseName: parsedJson['courseName'],
+      applyDate: parsedJson['applyDate'],
+      runDate: parsedJson['runDate'],
+      targetDepartment: parsedJson['targetDepartment'],
+      targetGrade: parsedJson['targetGrade'],
+      url: parsedJson['url'],
+    );
+  }
 }

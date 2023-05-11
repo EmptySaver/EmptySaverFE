@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,7 +81,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                     itemBuilder: (context, index) {
                       return Container(
                         height: 40,
-                        color: Colors.amber,
+                        decoration: BoxDecoration(border: Border.all()),
                       );
                     },
                     separatorBuilder: (context, index) => const SizedBox(
@@ -97,7 +98,13 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               children: [
                 const Text('모임'),
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CategorySelectScreen(),
+                        ));
+                  },
                   child: const Text('생성'),
                 )
               ],
@@ -148,9 +155,15 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                       ),
                                     ));
                               },
-                              child: SizedBox(
+                              child: Container(
                                 height: 40,
-                                child: Text(groupList![index]['groupName']),
+                                width: double.infinity,
+                                decoration: BoxDecoration(border: Border.all()),
+                                child: Center(
+                                    child: Text(
+                                  groupList![index]['groupName'],
+                                  style: const TextStyle(fontSize: 25),
+                                )),
                               ),
                             );
                           },
@@ -159,7 +172,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                               ),
                           itemCount: snapshot.data!.data!.length);
                     } else {
-                      return const Text('??');
+                      return const Center(child: Text('불러오는 중...'));
                     }
                   },
                 ),

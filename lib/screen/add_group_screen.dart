@@ -233,8 +233,8 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                       if (response.statusCode == 200) {
                         print('groupaddsuccess');
                         print(response.body);
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/bar', (route) => false);
+                        Navigator.pushNamed(
+                            context, '/bar'); //group 디테일 페이지로 라우팅바꿀것
                       } else {
                         print('fail ${utf8.decode(response.bodyBytes)}');
                       }
