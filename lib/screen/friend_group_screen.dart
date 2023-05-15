@@ -17,9 +17,11 @@ class FriendGroupScreen extends ConsumerStatefulWidget {
 }
 
 class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
+  var addFriendTec = TextEditingController();
   var baseUri = '43.201.208.100:8080';
   late var jwtToken;
   late Future<Unwrap> UnwrapData;
+  late Future<List<Friend>> friendListFuture;
 
   Future<Unwrap> getMyGroup(String? jwtToken) async {
     var url = Uri.http(baseUri, '/group/getMyGroup');
@@ -36,17 +38,44 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
     return data;
   }
 
+  void addFriend() async {
+    var url = Uri.http(baseUri, '/friend/request/${addFriendTec.text}');
+    var response =
+        await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      print('친추 성공');
+      Fluttertoast.showToast(msg: '친구 추가 요청을 보냈습니다');
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      Fluttertoast.showToast(msg: '요청 실패! 이메일을 확인하세요');
+    }
+  }
+
+  Future<List<Friend>> getFriendList() async {
+    var url = Uri.http(baseUri, '/friend/getList');
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var data = rawData.map((e) => Friend.fromJson(e)).toList();
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('친구목록 get 실패');
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     UnwrapData = getMyGroup(jwtToken);
+    friendListFuture = getFriendList();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('reb');
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -59,7 +88,34 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   const Text(
                     '친구',
                   ),
-                  OutlinedButton(onPressed: () {}, child: const Text('추가'))
+                  OutlinedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SimpleDialog(
+                              contentPadding: const EdgeInsets.all(10),
+                              title: const Text('친구 추가'),
+                              children: [
+                                TextFormField(
+                                  decoration: const InputDecoration(
+                                      icon: Icon(Icons.person),
+                                      hintText: '이메일 입력',
+                                      labelText: 'e-mail'),
+                                  controller: addFriendTec,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                OutlinedButton(
+                                    onPressed: addFriend,
+                                    child: const Text('추가하기'))
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: const Text('추가'))
                 ],
               ),
             ),
@@ -77,17 +133,30 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               width: double.maxFinite,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 40,
-                        decoration: BoxDecoration(border: Border.all()),
+                child: FutureBuilder(
+                  future: friendListFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var friendList = snapshot.data;
+                      return ListView.separated(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: 40,
+                              decoration: BoxDecoration(border: Border.all()),
+                              child: Text('${friendList![index].friendName}'),
+                            );
+                          },
+                          separatorBuilder: (context, index) => const SizedBox(
+                                height: 5,
+                              ),
+                          itemCount: 10);
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
-                    },
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 5,
-                        ),
-                    itemCount: 10),
+                    }
+                  },
+                ),
               ),
             ),
             const SizedBox(

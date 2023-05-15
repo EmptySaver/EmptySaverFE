@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -54,33 +55,42 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 10,
                 ),
-                itemBuilder: (context, index) => Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.5),
-                  ),
-                  height: 100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.group,
-                          size: 50,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(snapshot.data![index].groupName!),
-                            Text(snapshot.data![index].oneLineInfo!),
-                            Text(snapshot.data![index].categoryLabel!),
-                            Text(
-                                '${snapshot.data![index].nowMember!} / ${snapshot.data![index].maxMember!}'),
-                          ],
-                        )
-                      ],
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const GroupFinderDetailScreen(),
+                        ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0.5),
+                    ),
+                    height: 100,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.group,
+                            size: 50,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(snapshot.data![index].groupName!),
+                              Text(snapshot.data![index].oneLineInfo!),
+                              Text(snapshot.data![index].categoryLabel!),
+                              Text(
+                                  '${snapshot.data![index].nowMember!} / ${snapshot.data![index].maxMember!}'),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

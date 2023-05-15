@@ -108,6 +108,7 @@ class Info {
       this.targetDepartment,
       this.targetGrade,
       this.url});
+
   factory Info.fromJson(Map<String, dynamic> parsedJson) {
     return Info(
       courseName: parsedJson['courseName'],
@@ -118,4 +119,15 @@ class Info {
       url: parsedJson['url'],
     );
   }
+}
+
+class Friend {
+  String? friendName;
+  int? friendId;
+  int? friendMemberId;
+
+  Friend.fromJson(Map<String, dynamic> parsedJson)
+      : friendName = parsedJson['friendName'],
+        friendId = parsedJson['friendId'],
+        friendMemberId = parsedJson['friendMemberId'];
 }
