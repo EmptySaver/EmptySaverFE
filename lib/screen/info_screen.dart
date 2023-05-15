@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class InfoScreen extends ConsumerStatefulWidget {
   const InfoScreen({super.key});
@@ -76,17 +77,42 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                       shrinkWrap: true,
                       // physics: const NeverScrollableScrollPhysics(),
                       itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => Container(
-                        height: 200,
-                        decoration: BoxDecoration(border: Border.all()),
+                      itemBuilder: (context, index) => SizedBox(
+                        // Container(
+                        //constraints: BoxConstraints.expand(),
+                        //height: 250,
+                        //decoration: BoxDecoration(border: Border.all()),
                         child: Column(
                           children: [
-                            Text('${snapshot.data![index].courseName}'),
-                            Text('${snapshot.data![index].applyDate}'),
-                            Text('${snapshot.data![index].runDate}'),
+                            Text(
+                              '${snapshot.data![index].courseName} \n',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            Text('신청 기간: ${snapshot.data![index].applyDate}'),
+                            Text('활동 기간: ${snapshot.data![index].runDate}'),
                             Text(
                                 '대상학과 : ${snapshot.data![index].targetDepartment}, 대상학년 : ${snapshot.data![index].targetGrade}'),
-                            Text('${snapshot.data![index].url}'),
+                            //Text('${snapshot.data![index].url}'),
+                            ElevatedButton(
+                              onPressed: () async {
+                                final url = Uri.parse(
+                                  '${snapshot.data![index].url}',
+                                );
+                                if (await canLaunchUrl(url)) {
+                                  launchUrl(
+                                    Uri.parse('https://www.google.com'),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                } else {
+                                  // ignore: avoid_print
+                                  print("Can't launch $url");
+                                }
+                              },
+                              child: const Text('신청 바로가기'),
+                            ),
+                            const Divider(color: Colors.black, thickness: 2.0)
                           ],
                         ),
                       ),
