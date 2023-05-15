@@ -5,7 +5,6 @@ import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoScreen extends ConsumerStatefulWidget {
@@ -78,13 +77,19 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                       shrinkWrap: true,
                       // physics: const NeverScrollableScrollPhysics(),
                       itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) => SizedBox(// Container(
+                      itemBuilder: (context, index) => SizedBox(
+                        // Container(
                         //constraints: BoxConstraints.expand(),
                         //height: 250,
                         //decoration: BoxDecoration(border: Border.all()),
                         child: Column(
                           children: [
-                            Text('${snapshot.data![index].courseName} \n', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                            Text(
+                              '${snapshot.data![index].courseName} \n',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
                             Text('신청 기간: ${snapshot.data![index].applyDate}'),
                             Text('활동 기간: ${snapshot.data![index].runDate}'),
                             Text(
@@ -96,7 +101,10 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                                   '${snapshot.data![index].url}',
                                 );
                                 if (await canLaunchUrl(url)) {
-                                  launchUrl(url);
+                                  launchUrl(
+                                    Uri.parse('https://www.google.com'),
+                                    mode: LaunchMode.externalApplication,
+                                  );
                                 } else {
                                   // ignore: avoid_print
                                   print("Can't launch $url");
@@ -104,7 +112,7 @@ class _InfoScreenState extends ConsumerState<InfoScreen> {
                               },
                               child: const Text('신청 바로가기'),
                             ),
-                            Divider(color: Colors.black, thickness: 2.0)
+                            const Divider(color: Colors.black, thickness: 2.0)
                           ],
                         ),
                       ),
