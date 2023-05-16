@@ -2,7 +2,6 @@
 import 'package:emptysaver_fe/screen/bar_screen.dart';
 import 'package:emptysaver_fe/screen/friend_group_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen_new.dart';
-import 'package:emptysaver_fe/screen/login_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

@@ -53,21 +53,25 @@ class Group {
   int? groupId;
   String? groupName;
   String? oneLineInfo;
+  String? groupDescription;
   int? nowMember;
   int? maxMember;
   bool? isPublic;
   bool? isAnonymous;
   String? categoryLabel;
+  List<dynamic>? commentList;
 
   Group(
       {this.groupId,
       this.groupName,
       this.oneLineInfo,
+      this.groupDescription,
       this.nowMember,
       this.maxMember,
       this.isPublic,
       this.isAnonymous,
-      this.categoryLabel});
+      this.categoryLabel,
+      this.commentList});
 
   // Group.fromJson(Map<String, dynamic> parsedJson)
   //     : groupId = parsedJson['groupId'],
@@ -84,11 +88,13 @@ class Group {
       groupId: parsedJson['groupId'],
       groupName: parsedJson['groupName'],
       oneLineInfo: parsedJson['oneLineInfo'],
+      groupDescription: parsedJson['groupDescription'],
       nowMember: parsedJson['nowMember'],
       maxMember: parsedJson['maxMember'],
       isPublic: parsedJson['isPublic'],
       isAnonymous: parsedJson['isAnonymous'],
       categoryLabel: parsedJson['categoryLabel'],
+      commentList: parsedJson['commentList'],
     );
   }
 }
@@ -130,4 +136,32 @@ class Friend {
       : friendName = parsedJson['friendName'],
         friendId = parsedJson['friendId'],
         friendMemberId = parsedJson['friendMemberId'];
+}
+
+class Ticket {
+  int? memberTeamId;
+  int? memberId;
+  int? groupId;
+  String? groupName;
+  String? memberName;
+  String? inviteDate;
+
+  Ticket(
+      {this.memberTeamId,
+      this.memberId,
+      this.groupId,
+      this.groupName,
+      this.memberName,
+      this.inviteDate});
+
+  factory Ticket.fromJson(Map<String, dynamic> parsedJson) {
+    return Ticket(
+      memberTeamId: parsedJson['memberTeamId'],
+      memberId: parsedJson['memberId'],
+      groupId: parsedJson['groupId'],
+      groupName: parsedJson['groupName'],
+      memberName: parsedJson['memberName'],
+      inviteDate: parsedJson['inviteDate'],
+    );
+  }
 }

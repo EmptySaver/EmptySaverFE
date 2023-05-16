@@ -36,15 +36,15 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           Navigator.pop(context);
         });
 
         return AlertDialog(
-          title: new Text("공강구조대"),
+          title: const Text("공강구조대"),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          content: new Text(text),
+          content: Text(text),
         );
       },
     );
@@ -53,13 +53,13 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
   void postLogin() async {
     var url = Uri.parse('http://43.201.208.100:8080/auth/login');
     List<String> emailList = addrTecLogin.text.split("@");
-    if (emailList.length != 2) {
-      this._showDialog("이메일을 확인 해주세요");
-      return;
-    } else if (emailList[1] != "uos.ac.kr") {
-      this._showDialog("학교 이메일 형식이어야 합니다!");
-      return;
-    }
+    // if (emailList.length != 2) {
+    //   this._showDialog("이메일을 확인 해주세요");
+    //   return;
+    // } else if (emailList[1] != "uos.ac.kr") {
+    //   this._showDialog("학교 이메일 형식이어야 합니다!");
+    //   return;
+    // }
     var response = await http.post(
       url,
       body: jsonEncode(<String, String>{
@@ -88,7 +88,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
       print(result['message']);
-      this._showDialog(result['message']);
+      _showDialog(result['message']);
     }
   }
 
@@ -118,7 +118,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              const SignupOnePage()));
+                              const SignupScreen()));
                 },
                 child: const Text("Sign Up",
                     style: TextStyle(color: Colors.blue, fontSize: 18.0)),

@@ -100,6 +100,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                   builder: (context) =>
                                       const FriendCheckScreen(),
                                 ));
+                            print(isBack);
                             if (isBack!) {
                               setState(() {
                                 friendListFuture = getFriendList();
@@ -180,7 +181,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                     ),
                                     Center(
                                         child: Text(
-                                            '${friendList[index].friendName}')),
+                                            'id:${friendList[index].friendMemberId} ${friendList[index].friendName}')),
                                     Row(
                                       children: [
                                         IconButton(
