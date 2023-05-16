@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
+import 'package:emptysaver_fe/screen/friend_check_screen.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,34 +89,57 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   const Text(
                     '친구',
                   ),
-                  OutlinedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return SimpleDialog(
-                              contentPadding: const EdgeInsets.all(10),
-                              title: const Text('친구 추가'),
-                              children: [
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                      icon: Icon(Icons.person),
-                                      hintText: '이메일 입력',
-                                      labelText: 'e-mail'),
-                                  controller: addFriendTec,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                OutlinedButton(
-                                    onPressed: addFriend,
-                                    child: const Text('추가하기'))
-                              ],
+                  Row(
+                    children: [
+                      OutlinedButton(
+                          onPressed: () async {
+                            bool? isBack = false;
+                            isBack = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const FriendCheckScreen(),
+                                ));
+                            if (isBack!) {
+                              setState(() {
+                                friendListFuture = getFriendList();
+                              });
+                            }
+                          },
+                          child: const Text('조회')),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      OutlinedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return SimpleDialog(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  title: const Text('친구 추가'),
+                                  children: [
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                          icon: Icon(Icons.person),
+                                          hintText: '이메일 입력',
+                                          labelText: 'e-mail'),
+                                      controller: addFriendTec,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    OutlinedButton(
+                                        onPressed: addFriend,
+                                        child: const Text('추가하기'))
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      child: const Text('추가'))
+                          child: const Text('추가')),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -138,18 +162,63 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       var friendList = snapshot.data;
-                      return ListView.separated(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: 40,
-                              decoration: BoxDecoration(border: Border.all()),
-                              child: Text('${friendList![index].friendName}'),
-                            );
-                          },
-                          separatorBuilder: (context, index) => const SizedBox(
-                                height: 5,
-                              ),
-                          itemCount: 10);
+                      print(friendList);
+                      if (friendList!.isEmpty) {
+                        return const Center(child: Text('등록된 친구가 없습니다'));
+                      } else {
+                        return ListView.separated(
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 40,
+                                decoration: BoxDecoration(border: Border.all()),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Center(
+                                        child: Text(
+                                            '${friendList[index].friendName}')),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                                Icons.remove_red_eye)),
+                                        IconButton(
+                                            onPressed: () async {
+                                              var url = Uri.http(baseUri,
+                                                  '/friend/delete/${friendList[index].friendId}');
+                                              var response = await http
+                                                  .delete(url, headers: {
+                                                'authorization':
+                                                    'Bearer $jwtToken'
+                                              });
+                                              if (response.statusCode == 200) {
+                                                Fluttertoast.showToast(
+                                                    msg: '삭제되었습니다');
+                                                setState(() {
+                                                  friendListFuture =
+                                                      getFriendList();
+                                                });
+                                              }
+                                            },
+                                            icon: const Icon(
+                                                Icons.remove_circle_outline)),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                            itemCount: friendList.length);
+                      }
                     } else {
                       return const Center(
                         child: CircularProgressIndicator(),
