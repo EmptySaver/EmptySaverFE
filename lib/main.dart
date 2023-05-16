@@ -1,6 +1,7 @@
 // import 'package:emptysaver_fe/fcm_setting.dart';
 import 'package:emptysaver_fe/screen/bar_screen.dart';
 import 'package:emptysaver_fe/screen/friend_group_screen.dart';
+import 'package:emptysaver_fe/screen/login_screen_new.dart';
 import 'package:emptysaver_fe/screen/login_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +164,7 @@ class MyApp extends ConsumerWidget {
       ],
       locale: const Locale('ko'),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(
+      home: NewLoginScreen(
         firebaseToken: firebaseToken,
       ),
       routes: {
