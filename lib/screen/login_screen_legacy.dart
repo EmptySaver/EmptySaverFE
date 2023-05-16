@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/screen/login_screen_new.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
@@ -8,18 +9,18 @@ import 'package:flutter/material.dart';
 import 'bar_screen.dart';
 import 'package:http/http.dart' as http;
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreenLegacy extends ConsumerStatefulWidget {
   String? firebaseToken;
-  LoginScreen({
+  LoginScreenLegacy({
     super.key,
     required this.firebaseToken,
   });
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreenLegacy> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreenLegacy> {
   final storage = const FlutterSecureStorage();
   bool? isAutoLogin = false;
   bool? isIdSave = false;
@@ -175,6 +176,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ));
                             },
                             child: const Text('회원가입'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NewLoginScreen(
+                                        firebaseToken: widget.firebaseToken),
+                                  ));
+                            },
+                            child: const Text('테스트로그인페이지'),
                           ),
                         ],
                       ),
