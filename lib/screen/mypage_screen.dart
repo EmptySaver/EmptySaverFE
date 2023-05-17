@@ -20,7 +20,8 @@ class _MypageScreenState extends ConsumerState<MypageScreen> {
   late Future<MemberInfo> memberInfoFuture;
 
   var nicknameTec = TextEditingController();
-  var pwdTec = TextEditingController();
+  var oldPwdTec = TextEditingController();
+  var newPwdTec = TextEditingController();
 
   Future<MemberInfo> getMemberInfo() async {
     var url = Uri.http(baseUri, '/afterAuth/getMemberInfo');
@@ -160,9 +161,16 @@ class _MypageScreenState extends ConsumerState<MypageScreen> {
                             TextFormField(
                               decoration: const InputDecoration(
                                   icon: Icon(Icons.person),
+                                  hintText: '기존 비밀번호를 입력하세요',
+                                  labelText: '기존 비밀번호'),
+                              controller: oldPwdTec,
+                            ),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  icon: Icon(Icons.person),
                                   hintText: '변경할 비밀번호를 입력하세요',
-                                  labelText: '비밀번호'),
-                              controller: pwdTec,
+                                  labelText: '새 비밀번호'),
+                              controller: newPwdTec,
                             ),
                             const SizedBox(
                               height: 10,
@@ -171,9 +179,16 @@ class _MypageScreenState extends ConsumerState<MypageScreen> {
                                 onPressed: () async {
                                   var url = Uri.http(
                                       baseUri, '/afterAuth/changePassword');
-                                  var response = await http.put(url, headers: {
-                                    'authorization': 'Bearer $jwtToken'
-                                  });
+                                  var response = await http.put(url,
+                                      headers: {
+                                        'authorization': 'Bearer $jwtToken',
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8'
+                                      },
+                                      body: jsonEncode({
+                                        'oldPassword': oldPwdTec.text,
+                                        'newPassword': newPwdTec.text,
+                                      }));
                                   if (response.statusCode == 200) {
                                     Fluttertoast.showToast(msg: '변경되었습니다');
                                     Navigator.pop(context);

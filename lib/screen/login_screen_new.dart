@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
 import 'package:emptysaver_fe/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'bar_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -85,7 +86,8 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
       print(result['message']);
-      _showDialog(result['message']);
+      // _showDialog(result['message']);
+      Fluttertoast.showToast(msg: '${result['message']}');
     }
   }
 
