@@ -212,10 +212,12 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                             } else {
                               return ListView.separated(
                                   itemBuilder: (context, index) => Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Container(
                                             height: 40,
-                                            width: 200,
+                                            width: 250,
                                             decoration: BoxDecoration(
                                                 border: Border.all()),
                                             child: Center(
@@ -227,11 +229,36 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                                             width: 20,
                                           ),
                                           OutlinedButton(
-                                              onPressed: () {},
-                                              child: const Text('aa')),
-                                          OutlinedButton(
-                                              onPressed: () {},
-                                              child: const Text('bb')),
+                                              onPressed: () async {
+                                                var url = Uri.http(baseUri,
+                                                    '/group/deleteMember');
+                                                var response =
+                                                    await http.delete(url,
+                                                        headers: {
+                                                          'authorization':
+                                                              'Bearer $jwtToken',
+                                                          'Content-Type':
+                                                              'application/json; charset=UTF-8'
+                                                        },
+                                                        body: jsonEncode({
+                                                          'memberId': snapshot
+                                                              .data![index]
+                                                              .memberId,
+                                                          'groupId': snapshot
+                                                              .data![index]
+                                                              .groupId
+                                                        }));
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  Fluttertoast.showToast(
+                                                      msg: '삭제되었습니다');
+                                                  setState(() {
+                                                    inviteListFuture =
+                                                        getInviteList();
+                                                  });
+                                                }
+                                              },
+                                              child: const Text('취소')),
                                         ],
                                       ),
                                   separatorBuilder: (context, index) =>

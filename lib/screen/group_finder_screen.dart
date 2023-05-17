@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
-import 'package:emptysaver_fe/screen/receive_invitation_screen.dart';
+import 'package:emptysaver_fe/screen/invitation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -52,16 +52,16 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
               const Text('그룹 찾기'),
               Row(
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ReceiveInvitationScreen(),
-                            ));
-                      },
-                      icon: const Icon(Icons.insert_invitation)),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const InvitationScreen(),
+                          ));
+                    },
+                    child: const Text('조회'),
+                  ),
                   IconButton(onPressed: () {}, icon: const Icon(Icons.search))
                 ],
               )

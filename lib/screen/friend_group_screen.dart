@@ -292,7 +292,11 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                       builder: (context) => GroupDetailScreen(
                                         groupData: groupList[index],
                                       ),
-                                    ));
+                                    )).then((value) {
+                                  setState(() {
+                                    UnwrapData = getMyGroup(jwtToken);
+                                  });
+                                });
                               },
                               child: Container(
                                 height: 40,

@@ -53,6 +53,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         }));
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '초대를 보냈습니다');
+      Navigator.pop(context);
     } else {
       print(utf8.decode(response.bodyBytes));
     }
@@ -70,6 +71,37 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('그룹 상세'),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                var url = Uri.http(
+                    baseUri, '/group/deleteMe/${widget.groupData!['groupId']}');
+                var response = await http.delete(url, headers: {
+                  'authorization': 'Bearer $jwtToken',
+                });
+                if (response.statusCode == 200) {
+                  Fluttertoast.showToast(msg: '탈퇴되었습니다');
+                } else {
+                  print(utf8.decode(response.bodyBytes));
+                }
+              },
+              icon: const Icon(Icons.outbond_outlined)),
+          IconButton(
+              onPressed: () async {
+                var url = Uri.http(
+                    baseUri, '/group/delete/${widget.groupData!['groupId']}');
+                var response = await http.delete(url, headers: {
+                  'authorization': 'Bearer $jwtToken',
+                });
+                if (response.statusCode == 200) {
+                  Fluttertoast.showToast(msg: '그룹이 삭제되었습니다');
+                  Navigator.pop(context, '');
+                } else {
+                  print(utf8.decode(response.bodyBytes));
+                }
+              },
+              icon: const Icon(Icons.delete_forever_outlined))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -155,6 +187,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('구성원 목록'),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     OutlinedButton(
                       onPressed: () {
                         showDialog(
