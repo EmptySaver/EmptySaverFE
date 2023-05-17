@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/main.dart';
-import 'package:emptysaver_fe/screen/tmp_login_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
@@ -8,10 +7,8 @@ import 'package:emptysaver_fe/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'bar_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:emptysaver_fe/core/assets.dart';
-import 'package:emptysaver_fe/screen/signup1.dart';
 import 'package:emptysaver_fe/widgets/network_image.dart';
 
 class NewLoginScreen extends ConsumerStatefulWidget {
