@@ -38,13 +38,13 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _setTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_time == 1) {
           print("timeout");
           isClicked = false;
           setState(() {});
-          this.dispose();
+          dispose();
         }
         _time--;
       });
@@ -55,15 +55,15 @@ class _SignupScreenState extends State<SignupScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           Navigator.pop(context);
         });
 
         return AlertDialog(
-          title: new Text("공강구조대"),
+          title: const Text("공강구조대"),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          content: new Text(text),
+          content: Text(text),
         );
       },
     );
@@ -87,14 +87,19 @@ class _SignupScreenState extends State<SignupScreen> {
     // }
     String addr = addrTec.text;
     if (!_checkSpace(addr)) {
-      this._showDialog("공백은 허용되지 않습니다");
+      _showDialog("공백은 허용되지 않습니다");
       return;
     }
+    if (addr.isEmpty) {
+      Fluttertoast.showToast(msg: '이메일을 입력해주세요');
+      return;
+    }
+
     isClicked = true;
     var url =
         Uri.parse('http://43.201.208.100:8080/auth/sendEmail/${addrTec.text}');
     _time = 100;
-    this._setTimer();
+    _setTimer();
     var response = await http.post(
       url,
       // body: jsonEncode(<String, String>{
@@ -107,13 +112,13 @@ class _SignupScreenState extends State<SignupScreen> {
       authResponse = response.body;
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
-      this._showDialog(result['message']);
+      _showDialog(result['message']);
     }
   }
 
   void postSignUp() async {
     if (!isauthed) {
-      this._showDialog("이메일 인증 후 진행해주세요");
+      _showDialog("이메일 인증 후 진행해주세요");
       return;
     }
     if (!_checkSpace(addrTec.text) ||
@@ -121,7 +126,7 @@ class _SignupScreenState extends State<SignupScreen> {
         !_checkSpace(classnumTec.text) ||
         !_checkSpace(nameTec.text) ||
         !_checkSpace(nicknameTec.text)) {
-      this._showDialog("공백은 허용되지 않습니다");
+      _showDialog("공백은 허용되지 않습니다");
       return;
     }
 
@@ -133,12 +138,12 @@ class _SignupScreenState extends State<SignupScreen> {
     //   return;
     // }
     if (pwdTec.text != pwdTec2.text) {
-      this._showDialog("비밀번호를 확인해주세요");
+      _showDialog("비밀번호를 확인해주세요");
       return;
     }
     var num = int.parse(classnumTec.text);
     if (num < 2000000000 || num > 2100000000) {
-      this._showDialog("학번을 확인해주세요");
+      _showDialog("학번을 확인해주세요");
       return;
     }
 
@@ -161,7 +166,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Navigator.pop(context);
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
-      this._showDialog(result['message']);
+      _showDialog(result['message']);
       isClicked = false;
     }
   }
@@ -227,7 +232,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           AbsorbPointer(
                               absorbing: isauthed,
-                              child: Container(
+                              child: SizedBox(
                                 width: 240,
                                 child: TextField(
                                   controller: addrTec,
@@ -303,7 +308,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         Text(
-                          "남은시간 : ${_time}",
+                          "남은시간 : $_time",
                           style: const TextStyle(color: Colors.red),
                         )
                       ],
