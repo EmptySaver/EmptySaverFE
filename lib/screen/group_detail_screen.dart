@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
@@ -21,6 +22,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   late var jwtToken;
   var baseUri = '43.201.208.100:8080';
   late Future<List<Map<String, dynamic>>> groupMemberFuture;
+  late Future<List<ScheduleText>> groupScheduleTextListFuture;
   var memberIdTec = TextEditingController();
 
   Future<List<Map<String, dynamic>>> getGroupMember() async {
@@ -37,6 +39,21 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     } else {
       print(utf8.decode(response.bodyBytes));
       throw Exception('그룹멤버 가져오기 실패');
+    }
+  }
+
+  Future<List<ScheduleText>> getGroupScheduleTextList() async {
+    var url = Uri.http(baseUri, '/timetable/team/getScheduleList',
+        {'groupId': '${widget.groupData!['groupId']}'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+      var data = parsedJson.map((e) => ScheduleText.fromJson(e)).toList();
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('일정목록 가져오기 실패');
     }
   }
 
@@ -64,6 +81,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     super.initState();
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     groupMemberFuture = getGroupMember();
+    groupScheduleTextListFuture = getGroupScheduleTextList();
   }
 
   @override
@@ -168,7 +186,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                   groupData: widget.groupData),
                             ));
                       },
-                      child: const Text('추가'),
+                      child: const Text('추가'), // 그룹장이 아니면 안보이게
                     )
                   ],
                 ),
@@ -179,6 +197,37 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   height: 150,
                   width: 350,
                   decoration: BoxDecoration(border: Border.all()),
+                  child: FutureBuilder(
+                    future: groupScheduleTextListFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isEmpty) {
+                          return const Center(child: Text('등록된 일정이 없습니다'));
+                        } else {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 60,
+                                decoration: BoxDecoration(border: Border.all()),
+                                child: Column(
+                                  children: [
+                                    Text('${snapshot.data![index].name}'),
+                                    Text('${snapshot.data![index].body}'),
+                                    Text('${snapshot.data![index].timeData}'),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 20,

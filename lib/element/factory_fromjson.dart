@@ -24,6 +24,27 @@ class ScheduleList {
   }
 }
 
+class ScheduleText {
+  int? id;
+  String? name;
+  String? body;
+  bool? periodicType;
+  String? timeData;
+
+  ScheduleText(
+      {this.id, this.name, this.body, this.periodicType, this.timeData});
+
+  factory ScheduleText.fromJson(Map<String, dynamic> parsedJson) {
+    return ScheduleText(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      body: parsedJson['body'],
+      periodicType: parsedJson['periodicType'],
+      timeData: parsedJson['timeData'],
+    );
+  }
+}
+
 class GroupScheduleList {
   int? groupId;
   ScheduleList? timeTableInfo;
