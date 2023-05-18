@@ -30,32 +30,32 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
   TextEditingController addrTecLogin = TextEditingController();
   TextEditingController pwdTecLogin = TextEditingController();
 
-  void _showDialog(String text) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pop(context);
-        });
+  // void _showDialog(String text) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       Future.delayed(const Duration(seconds: 1), () {
+  //         Navigator.pop(context);
+  //       });
 
-        return AlertDialog(
-          title: const Text("공강구조대"),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          content: Text(text),
-        );
-      },
-    );
-  }
+  //       return AlertDialog(
+  //         title: const Text("공강구조대"),
+  //         shape:
+  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+  //         content: Text(text),
+  //       );
+  //     },
+  //   );
+  // }
 
   void postLogin() async {
     var url = Uri.parse('http://43.201.208.100:8080/auth/login');
     List<String> emailList = addrTecLogin.text.split("@");
     // if (emailList.length != 2) {
-    //   this._showDialog("이메일을 확인 해주세요");
+    //   Fluttertoast.showToast(msg: '이메일을 확인 해주세요');
     //   return;
     // } else if (emailList[1] != "uos.ac.kr") {
-    //   this._showDialog("학교 이메일 형식이어야 합니다!");
+    //   Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
     //   return;
     // }
     var response = await http.post(
@@ -86,7 +86,6 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
       print(result['message']);
-      // _showDialog(result['message']);
       Fluttertoast.showToast(msg: '${result['message']}');
     }
   }
