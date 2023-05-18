@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
-import 'package:emptysaver_fe/screen/add_schedule_screen.dart';
+import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';

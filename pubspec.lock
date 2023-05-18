@@ -137,6 +137,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.8"
+  dropdown_button2:
+    dependency: "direct main"
+    description:
+      name: dropdown_button2
+      sha256: "13bf78b6e5b6ca7256701988b22e078cd94b41bfab8d68a128651734702e0d1b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   fake_async:
     dependency: transitive
     description:
@@ -493,6 +501,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  ntp:
+    dependency: "direct main"
+    description:
+      name: ntp
+      sha256: "198db73e5059b334b50dbe8c626011c26576778ee9fc53f4c55c1d89d08ed2d2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   octo_image:
     dependency: transitive
     description:
@@ -501,6 +517,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  omni_datetime_picker:
+    dependency: "direct main"
+    description:
+      name: omni_datetime_picker
+      sha256: c70ca19eba89b7ed3663ae8eab2e7922c12b443826cf06c841a7f0a19e22870d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   path:
     dependency: transitive
     description:
@@ -770,6 +794,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  time_range_picker:
+    dependency: "direct main"
+    description:
+      name: time_range_picker
+      sha256: "63c3e0beba3c261f7d95e9a2ecef3a3e0bc88d4874edbbef4471c1a60c228526"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   timezone:
     dependency: transitive
     description:
