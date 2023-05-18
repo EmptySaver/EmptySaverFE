@@ -24,7 +24,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   Future<List<Map<String, dynamic>>>? allCategoryFuture;
   Future<List<dynamic>>? allTagFuture;
   String initialCategory = '게임';
-  late String initialTag;
+  String? initialTag;
   // String initialTag = '';
 
   Future<List<Group>> getAllGroup() async {
@@ -67,6 +67,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('나, 빌드');
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -93,6 +94,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                           isSearch = !isSearch;
                           setState(() {
                             groupData = getAllGroup();
+                            isCategorySelected = false;
                           });
                         },
                         icon: const Icon(Icons.search))
@@ -155,20 +157,25 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                     print(utf8.decode(response.bodyBytes));
                                     throw Exception('failed to get groupData');
                                   }
+                                  var tags = [];
+                                  tags.isEmpty
+                                      ? initialTag = null
+                                      : initialTag =
+                                          tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
                                   url = Uri.http(baseUri,
                                       '/category/getLabels/${types[query]}');
                                   response = await http.get(url, headers: {
                                     'authorization': 'Bearer $jwtToken'
                                   });
                                   if (response.statusCode == 200) {
-                                    var tags = jsonDecode(utf8.decode(
+                                    tags = jsonDecode(utf8.decode(
                                         response.bodyBytes))['result'] as List;
-                                    initialTag = tags[0];
                                     allTagFuture = Future(() => tags);
                                     // print(allTagFuture);
                                     setState(() {
                                       initialCategory = value!;
-                                      isCategorySelected = !isCategorySelected;
+                                      // initialTag = tags[0];
+                                      isCategorySelected = true;
                                     });
                                   }
                                 },
@@ -204,7 +211,6 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                             'authorization': 'Bearer $jwtToken'
                                           });
                                       if (response.statusCode == 200) {
-                                        print(response.body);
                                         var rawData = jsonDecode(utf8.decode(
                                                 response.bodyBytes))['data']
                                             as List;
