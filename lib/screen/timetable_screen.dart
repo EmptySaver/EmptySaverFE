@@ -26,20 +26,27 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   final ScrollController controller = ScrollController();
   final ScrollController controller2 = ScrollController();
   late var jwtToken;
-  late Future<ScheduleList> scheduleListFuture;
-  ScheduleList? scheduleListFrame = ScheduleList();
-  late var trueIndexListsTotal;
-  late var nameListsTotal;
-  late var bodyListsTotal;
-  late var idListsTotal;
+  late Future<ScheduleList> memberScheduleFuture;
+  late Future<GroupScheduleList> groupScheduleFuture;
+  // ScheduleList? memberSchedule = ScheduleList();
+  // ScheduleList? groupSchedule = ScheduleList();
+  late var memberTrueIndexListsTotal;
+  late var memberNameListsTotal;
+  late var memberBodyListsTotal;
+  late var memberIdListsTotal;
+  late var groupTrueIndexListsTotal;
+  late var groupNameListsTotal;
+  late var groupBodyListsTotal;
+  late var groupIdListsTotal;
   int pageIndex = 0;
 
-  Future<ScheduleList> getSchedule(ScheduleList? scheduleList) async {
+  Future<ScheduleList> getMemberSchedule() async {
     {
-      trueIndexListsTotal = [];
-      nameListsTotal = [];
-      bodyListsTotal = [];
-      idListsTotal = [];
+      memberTrueIndexListsTotal = [];
+      memberNameListsTotal = [];
+      memberBodyListsTotal = [];
+      memberIdListsTotal = [];
+      late ScheduleList memberSchedule;
       var startDate = DateFormat('yyyy-MM-dd')
           .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
       var endDate = DateFormat('yyyy-MM-dd').format(
@@ -57,13 +64,14 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         print('getsuccess');
         print('$startDate  $endDate');
         var parsedJson = jsonDecode(utf8.decode(response.bodyBytes));
-        scheduleList = ScheduleList.fromJson(parsedJson);
-        for (int h = 0; h < scheduleList.scheduleListPerDays!.length; h++) {
+        // memberSchedule = ScheduleList.fromJson(parsedJson["memberTimeTable"]);
+        memberSchedule = ScheduleList.fromJson(parsedJson);
+        for (int h = 0; h < memberSchedule.scheduleListPerDays!.length; h++) {
           var trueIndexLists = [];
           var nameLists = [];
           var bodyLists = [];
           var idLists = [];
-          var dayMap = scheduleList.scheduleListPerDays![h];
+          var dayMap = memberSchedule.scheduleListPerDays![h];
           for (int i = 0; i < dayMap.length; i++) {
             List<int> trueIndexList = [];
             for (int j = 16; j < 48; j++) {
@@ -78,17 +86,79 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
             idLists.add(dayMap[i]['id']);
           }
           // print('요일 하나 : $trueIndexLists');
-          trueIndexListsTotal.add(trueIndexLists);
-          nameListsTotal.add(nameLists);
-          bodyListsTotal.add(bodyLists);
-          idListsTotal.add(idLists);
+          memberTrueIndexListsTotal.add(trueIndexLists);
+          memberNameListsTotal.add(nameLists);
+          memberBodyListsTotal.add(bodyLists);
+          memberIdListsTotal.add(idLists);
         }
         // print('요일 전체 : $trueIndexListsTotal');
       } else {
-        print('getfail');
+        print('getfailmemberschedule');
         print(utf8.decode(response.bodyBytes));
       }
-      return scheduleList!;
+      return memberSchedule;
+    }
+  }
+
+  Future<GroupScheduleList> getGroupSchedule() async {
+    {
+      groupTrueIndexListsTotal = [];
+      groupNameListsTotal = [];
+      groupBodyListsTotal = [];
+      groupIdListsTotal = [];
+      late GroupScheduleList groupSchedule;
+      ScheduleList? timeTableInfo;
+      var startDate = DateFormat('yyyy-MM-dd')
+          .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
+      var endDate = DateFormat('yyyy-MM-dd').format(
+          DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
+      var url = Uri.http(baseUri, '/timetable/getMemberAndGroupTimeTable');
+      var response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer $jwtToken'
+        },
+        body: jsonEncode({"startDate": startDate, "endDate": endDate}),
+      );
+      if (response.statusCode == 200) {
+        print('getsuccess');
+        print('$startDate  $endDate');
+        var parsedJson = jsonDecode(utf8.decode(response.bodyBytes));
+        groupSchedule =
+            GroupScheduleList.fromJson(parsedJson["groupTimeTableList"]);
+        timeTableInfo = groupSchedule.timeTableInfo;
+        for (int h = 0; h < timeTableInfo!.scheduleListPerDays!.length; h++) {
+          var trueIndexLists = [];
+          var nameLists = [];
+          var bodyLists = [];
+          var idLists = [];
+          var dayMap = timeTableInfo.scheduleListPerDays![h];
+          for (int i = 0; i < dayMap.length; i++) {
+            List<int> trueIndexList = [];
+            for (int j = 16; j < 48; j++) {
+              // print(dayMap[i]['timeData']);
+              if (dayMap[i]['timeData'][j] == true) {
+                trueIndexList.add(j - 16);
+              }
+            }
+            trueIndexLists.add(trueIndexList);
+            nameLists.add(dayMap[i]['name']);
+            bodyLists.add(dayMap[i]['body']);
+            idLists.add(dayMap[i]['id']);
+          }
+          // print('요일 하나 : $trueIndexLists');
+          groupTrueIndexListsTotal.add(trueIndexLists);
+          groupNameListsTotal.add(nameLists);
+          groupBodyListsTotal.add(bodyLists);
+          groupIdListsTotal.add(idLists);
+        }
+        // print('요일 전체 : $trueIndexListsTotal');
+      } else {
+        print('getfailmemberschedule');
+        print(utf8.decode(response.bodyBytes));
+      }
+      return groupSchedule;
     }
   }
 
@@ -100,7 +170,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    scheduleListFuture = getSchedule(scheduleListFrame);
+    memberScheduleFuture = getMemberSchedule();
+    // groupScheduleFuture = getGroupSchedule();
     var colorIndex = -1;
 
     return Stack(
@@ -130,7 +201,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               print('rebuildtimetable : $index, $big, $realIndex');
               return RefreshIndicator(
                 onRefresh: () async {
-                  scheduleListFuture = getSchedule(scheduleListFrame);
+                  // memberScheduleFuture = getMemberSchedule();
                   setState(() {});
                 },
                 child: SingleChildScrollView(
@@ -163,11 +234,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                             ],
                           ),
                           FutureBuilder(
-                            future: scheduleListFuture,
+                            future: memberScheduleFuture,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 // print(snapshot.data!.scheduleListPerDays!);
-                                print(trueIndexListsTotal);
+                                print(memberTrueIndexListsTotal);
                                 if (snapshot
                                     .data!.scheduleListPerDays!.isEmpty) {
                                   return const defaultTimeTableFrame();
@@ -176,24 +247,27 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                     children: [
                                       const defaultTimeTableFrame(),
                                       for (int h = 0;
-                                          h < trueIndexListsTotal.length;
+                                          h < memberTrueIndexListsTotal.length;
                                           h++)
                                         for (int i = 0;
-                                            i < trueIndexListsTotal[h].length;
+                                            i <
+                                                memberTrueIndexListsTotal[h]
+                                                    .length;
                                             i++)
                                           Positioned(
                                             top: defaultBoxHeight *
-                                                trueIndexListsTotal[h][i][0],
+                                                memberTrueIndexListsTotal[h][i]
+                                                    [0],
                                             left: defaultBoxWidth * h,
                                             child: GestureDetector(
                                               onLongPress: () async {
-                                                print(idListsTotal[h][i]);
+                                                print(memberIdListsTotal[h][i]);
                                                 var url = Uri.http(
                                                     baseUri,
                                                     '/timetable/deleteSchedule',
                                                     {
                                                       'scheduleId':
-                                                          '${idListsTotal[h][i]}'
+                                                          '${memberIdListsTotal[h][i]}'
                                                     });
                                                 var response = await http
                                                     .delete(url, headers: {
@@ -214,7 +288,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                               },
                                               child: Container(
                                                 height: defaultBoxHeight *
-                                                    (trueIndexListsTotal[h][i]
+                                                    (memberTrueIndexListsTotal[
+                                                            h][i]
                                                         .length),
                                                 width: defaultBoxWidth,
                                                 decoration: BoxDecoration(
@@ -231,7 +306,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    Text(nameListsTotal[h][i]),
+                                                    Text(memberNameListsTotal[h]
+                                                        [i]),
                                                     // Text(bodyListsTotal[h][i])
                                                   ],
                                                 ),
@@ -248,6 +324,98 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                               }
                             },
                           ),
+                          // FutureBuilder(
+                          //   future: groupScheduleFuture,
+                          //   builder: (context, snapshot) {
+                          //     if (snapshot.hasData) {
+                          //       print(snapshot
+                          //           .data!.timeTableInfo!.scheduleListPerDays!);
+                          //       print('그룹:$groupTrueIndexListsTotal');
+                          //       if (snapshot.data!.timeTableInfo!
+                          //           .scheduleListPerDays!.isEmpty) {
+                          //         return const defaultTimeTableFrame();
+                          //       } else {
+                          //         return Stack(
+                          //           children: [
+                          //             const defaultTimeTableFrame(),
+                          //             for (int h = 0;
+                          //                 h < groupTrueIndexListsTotal.length;
+                          //                 h++)
+                          //               for (int i = 0;
+                          //                   i <
+                          //                       groupTrueIndexListsTotal[h]
+                          //                           .length;
+                          //                   i++)
+                          //                 Positioned(
+                          //                   top: defaultBoxHeight *
+                          //                       groupTrueIndexListsTotal[h][i]
+                          //                           [0],
+                          //                   left: defaultBoxWidth * h,
+                          //                   child: GestureDetector(
+                          //                     onLongPress: () async {
+                          //                       print(groupIdListsTotal[h][i]);
+                          //                       var url = Uri.http(
+                          //                           baseUri,
+                          //                           '/timetable/deleteSchedule',
+                          //                           {
+                          //                             'scheduleId':
+                          //                                 '${groupIdListsTotal[h][i]}'
+                          //                           });
+                          //                       var response = await http
+                          //                           .delete(url, headers: {
+                          //                         'authorization':
+                          //                             'Bearer $jwtToken'
+                          //                       });
+                          //                       if (response.statusCode ==
+                          //                           200) {
+                          //                         Fluttertoast.showToast(
+                          //                             msg: '삭제되었습니다');
+                          //                         setState(() {});
+                          //                       } else {
+                          //                         Fluttertoast.showToast(
+                          //                             msg: 'error!');
+                          //                         print(utf8.decode(
+                          //                             response.bodyBytes));
+                          //                       }
+                          //                     },
+                          //                     child: Container(
+                          //                       height: defaultBoxHeight *
+                          //                           (groupTrueIndexListsTotal[h]
+                          //                                   [i]
+                          //                               .length),
+                          //                       width: defaultBoxWidth,
+                          //                       decoration: BoxDecoration(
+                          //                         border: Border.all(
+                          //                             width: 1,
+                          //                             color: Colors.black),
+                          //                         color: ((h + i) > 17)
+                          //                             ? Colors.primaries[
+                          //                                 (h + i) % 17]
+                          //                             : Colors
+                          //                                 .primaries[(h + i)],
+                          //                       ),
+                          //                       child: Column(
+                          //                         mainAxisAlignment:
+                          //                             MainAxisAlignment.center,
+                          //                         children: [
+                          //                           Text(groupNameListsTotal[h]
+                          //                               [i]),
+                          //                           // Text(bodyListsTotal[h][i])
+                          //                         ],
+                          //                       ),
+                          //                     ),
+                          //                   ),
+                          //                 )
+                          //           ],
+                          //         );
+                          //       }
+                          //     } else {
+                          //       return const Center(
+                          //         child: CircularProgressIndicator(),
+                          //       );
+                          //     }
+                          //   },
+                          // ),
                         ],
                       )
                     ]),

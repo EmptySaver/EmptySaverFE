@@ -24,6 +24,20 @@ class ScheduleList {
   }
 }
 
+class GroupScheduleList {
+  int? groupId;
+  ScheduleList? timeTableInfo;
+
+  GroupScheduleList({this.groupId, this.timeTableInfo});
+
+  factory GroupScheduleList.fromJson(Map<String, dynamic> parsedJson) {
+    return GroupScheduleList(
+      groupId: parsedJson['groupId'],
+      timeTableInfo: parsedJson['timeTableInfo'],
+    );
+  }
+}
+
 class Category {
   List<dynamic>? data;
 
