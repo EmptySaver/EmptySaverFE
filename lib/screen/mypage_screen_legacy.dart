@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-class MypageScreen extends ConsumerStatefulWidget {
-  const MypageScreen({super.key});
+class MypageScreenOld extends ConsumerStatefulWidget {
+  const MypageScreenOld({super.key});
 
   @override
-  ConsumerState<MypageScreen> createState() => _MypageScreenState();
+  ConsumerState<MypageScreenOld> createState() => _MypageScreenStateOld();
 }
 
-class _MypageScreenState extends ConsumerState<MypageScreen> {
+class _MypageScreenStateOld extends ConsumerState<MypageScreenOld> {
   var baseUri = '43.201.208.100:8080';
   late var jwtToken;
   late Future<MemberInfo> memberInfoFuture;
