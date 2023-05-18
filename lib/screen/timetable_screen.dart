@@ -26,7 +26,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   final ScrollController controller = ScrollController();
   final ScrollController controller2 = ScrollController();
   late var jwtToken;
-  late Future<ScheduleList> scheduleList;
+  late Future<ScheduleList> scheduleListFuture;
   ScheduleList? scheduleListFrame = ScheduleList();
   late var trueIndexListsTotal;
   late var nameListsTotal;
@@ -34,9 +34,12 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   late var idListsTotal;
   int pageIndex = 0;
 
-  Future<ScheduleList> getSchedule(
-      String? jwtToken, ScheduleList? scheduleList) async {
+  Future<ScheduleList> getSchedule(ScheduleList? scheduleList) async {
     {
+      trueIndexListsTotal = [];
+      nameListsTotal = [];
+      bodyListsTotal = [];
+      idListsTotal = [];
       var startDate = DateFormat('yyyy-MM-dd')
           .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
       var endDate = DateFormat('yyyy-MM-dd').format(
@@ -53,7 +56,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
       if (response.statusCode == 200) {
         print('getsuccess');
         print('$startDate  $endDate');
-        var parsedJson = jsonDecode(response.body);
+        var parsedJson = jsonDecode(utf8.decode(response.bodyBytes));
         scheduleList = ScheduleList.fromJson(parsedJson);
         for (int h = 0; h < scheduleList.scheduleListPerDays!.length; h++) {
           var trueIndexLists = [];
@@ -83,7 +86,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         // print('요일 전체 : $trueIndexListsTotal');
       } else {
         print('getfail');
-        print(response.statusCode);
+        print(utf8.decode(response.bodyBytes));
       }
       return scheduleList!;
     }
@@ -92,21 +95,12 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   @override
   void initState() {
     super.initState();
-    trueIndexListsTotal = [];
-    nameListsTotal = [];
-    bodyListsTotal = [];
-    idListsTotal = [];
     jwtToken = ref.read(tokensProvider.notifier).state[0];
-    scheduleList = getSchedule(jwtToken, scheduleListFrame);
   }
 
   @override
   Widget build(BuildContext context) {
-    trueIndexListsTotal = [];
-    nameListsTotal = [];
-    bodyListsTotal = [];
-    idListsTotal = [];
-    scheduleList = getSchedule(jwtToken, scheduleListFrame);
+    scheduleListFuture = getSchedule(scheduleListFrame);
     var colorIndex = -1;
 
     return Stack(
@@ -136,7 +130,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               print('rebuildtimetable : $index, $big, $realIndex');
               return RefreshIndicator(
                 onRefresh: () async {
-                  scheduleList = getSchedule(jwtToken, scheduleListFrame);
+                  scheduleListFuture = getSchedule(scheduleListFrame);
                   setState(() {});
                 },
                 child: SingleChildScrollView(
@@ -169,73 +163,89 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                             ],
                           ),
                           FutureBuilder(
-                            future: scheduleList,
+                            future: scheduleListFuture,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                return Stack(
-                                  children: [
-                                    const defaultTimeTableFrame(),
-                                    for (int h = 0;
-                                        h < trueIndexListsTotal.length;
-                                        h++)
-                                      for (int i = 0;
-                                          i < trueIndexListsTotal[h].length;
-                                          i++)
-                                        Positioned(
-                                          top: defaultBoxHeight *
-                                              trueIndexListsTotal[h][i][0],
-                                          left: defaultBoxWidth * h,
-                                          child: GestureDetector(
-                                            onLongPress: () async {
-                                              print(idListsTotal[h][i]);
-                                              var url = Uri.http(baseUri,
-                                                  '/timetable/deleteSchedule', {
-                                                'scheduleId':
-                                                    '${idListsTotal[h][i]}'
-                                              });
-                                              var response = await http
-                                                  .post(url, headers: {
-                                                'authorization':
-                                                    'Bearer $jwtToken'
-                                              });
-                                              if (response.statusCode == 200) {
-                                                Fluttertoast.showToast(
-                                                    msg: '삭제되었습니다');
-                                                setState(() {});
-                                              } else {
-                                                Fluttertoast.showToast(
-                                                    msg: 'error!');
-                                              }
-                                            },
-                                            child: Container(
-                                              height: defaultBoxHeight *
-                                                  (trueIndexListsTotal[h][i]
-                                                      .length),
-                                              width: defaultBoxWidth,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.black),
-                                                color: ((h + i) > 17)
-                                                    ? Colors
-                                                        .primaries[(h + i) % 17]
-                                                    : Colors.primaries[(h + i)],
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(nameListsTotal[h][i]),
-                                                  // Text(bodyListsTotal[h][i])
-                                                ],
+                                // print(snapshot.data!.scheduleListPerDays!);
+                                print(trueIndexListsTotal);
+                                if (snapshot
+                                    .data!.scheduleListPerDays!.isEmpty) {
+                                  return const defaultTimeTableFrame();
+                                } else {
+                                  return Stack(
+                                    children: [
+                                      const defaultTimeTableFrame(),
+                                      for (int h = 0;
+                                          h < trueIndexListsTotal.length;
+                                          h++)
+                                        for (int i = 0;
+                                            i < trueIndexListsTotal[h].length;
+                                            i++)
+                                          Positioned(
+                                            top: defaultBoxHeight *
+                                                trueIndexListsTotal[h][i][0],
+                                            left: defaultBoxWidth * h,
+                                            child: GestureDetector(
+                                              onLongPress: () async {
+                                                print(idListsTotal[h][i]);
+                                                var url = Uri.http(
+                                                    baseUri,
+                                                    '/timetable/deleteSchedule',
+                                                    {
+                                                      'scheduleId':
+                                                          '${idListsTotal[h][i]}'
+                                                    });
+                                                var response = await http
+                                                    .delete(url, headers: {
+                                                  'authorization':
+                                                      'Bearer $jwtToken'
+                                                });
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  Fluttertoast.showToast(
+                                                      msg: '삭제되었습니다');
+                                                  setState(() {});
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                      msg: 'error!');
+                                                  print(utf8.decode(
+                                                      response.bodyBytes));
+                                                }
+                                              },
+                                              child: Container(
+                                                height: defaultBoxHeight *
+                                                    (trueIndexListsTotal[h][i]
+                                                        .length),
+                                                width: defaultBoxWidth,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.black),
+                                                  color: ((h + i) > 17)
+                                                      ? Colors.primaries[
+                                                          (h + i) % 17]
+                                                      : Colors
+                                                          .primaries[(h + i)],
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(nameListsTotal[h][i]),
+                                                    // Text(bodyListsTotal[h][i])
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                  ],
+                                          )
+                                    ],
+                                  );
+                                }
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
                                 );
                               }
-                              return const defaultTimeTableFrame();
                             },
                           ),
                         ],
