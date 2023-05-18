@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/screen/test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -8,17 +9,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:interval_time_picker/interval_time_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:ntp/ntp.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-class AddScheduleScreen extends ConsumerStatefulWidget {
-  const AddScheduleScreen({
+class AddScheduleScreenOld extends ConsumerStatefulWidget {
+  const AddScheduleScreenOld({
     super.key,
   });
 
   @override
-  ConsumerState<AddScheduleScreen> createState() => _AddScheduleScreenState();
+  ConsumerState<AddScheduleScreenOld> createState() =>
+      _AddScheduleScreenState();
 }
 
-class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
+class _AddScheduleScreenState extends ConsumerState<AddScheduleScreenOld> {
+  List<DateTime>? timeList;
+
   var baseUri = '43.201.208.100:8080';
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
@@ -83,6 +89,16 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       setState(() {});
                     },
                   ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const UITestScreen()));
+                    },
+                    child: Text("goTestPage"),
+                  ),
                   Visibility(
                     visible: !isPeriodic,
                     child: TextField(
@@ -122,6 +138,21 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       labelText: '내용',
                     ),
                   ),
+                  TextButton(
+                      onPressed: () async {
+                        DateTime currentTime = await NTP.now();
+                        currentTime =
+                            currentTime.toUtc().add(Duration(hours: 9));
+                        timeList = await showOmniDateTimeRangePicker(
+                          context: context,
+                          startInitialDate: currentTime,
+                          endInitialDate: currentTime,
+                          minutesInterval: 30,
+                        );
+                        String? start = timeList?.elementAt(0).toString();
+                        print("start time : ${start}");
+                      },
+                      child: Text("날짜선택하깅")),
                   const SizedBox(
                     height: 30,
                   ),
