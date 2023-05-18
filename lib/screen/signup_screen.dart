@@ -38,63 +38,66 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _setTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_time == 1) {
           print("timeout");
           isClicked = false;
           setState(() {});
-          this.dispose();
+          dispose();
         }
         _time--;
       });
     });
   }
 
-  void _showDialog(String text) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 1), () {
-          Navigator.pop(context);
-        });
+  // void _showDialog(String text) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       Future.delayed(const Duration(seconds: 1), () {
+  //         Navigator.pop(context);
+  //       });
 
-        return AlertDialog(
-          title: new Text("공강구조대"),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          content: new Text(text),
-        );
-      },
-    );
-  }
+  //       return AlertDialog(
+  //         title: const Text("공강구조대"),
+  //         shape:
+  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+  //         content: Text(text),
+  //       );
+  //     },
+  //   );
+  // }
 
   bool _checkSpace(String target) {
     String result = target.replaceAll(RegExp('\\s'), "");
-    print("result leng: ${result.length} target leng: ${target.length}");
-    print("result: ${result.toString()} target: ${target.toString()}");
     return result.length == target.length;
   }
 
   void postMyEmail() async {
     List<String> emailList = addrTec.text.split("@");
     // if (emailList.length != 2) {
-    //   this._showDialog("이메일을 확인 해주세요");
+    //   Fluttertoast.showToast(msg: '이메일을 확인 해주세요');
     //   return;
     // } else if (emailList[1] != "uos.ac.kr") {
-    //   this._showDialog("학교 이메일 형식이어야 합니다!");
+    //   Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
     //   return;
     // }
     String addr = addrTec.text;
     if (!_checkSpace(addr)) {
-      this._showDialog("공백은 허용되지 않습니다");
+      Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
       return;
     }
+    if (addr.isEmpty) {
+      Fluttertoast.showToast(msg: '이메일을 입력해주세요');
+      return;
+    }
+
     isClicked = true;
     var url =
         Uri.parse('http://43.201.208.100:8080/auth/sendEmail/${addrTec.text}');
     _time = 100;
-    this._setTimer();
+    _setTimer();
     var response = await http.post(
       url,
       // body: jsonEncode(<String, String>{
@@ -107,13 +110,13 @@ class _SignupScreenState extends State<SignupScreen> {
       authResponse = response.body;
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
-      this._showDialog(result['message']);
+      Fluttertoast.showToast(msg: '${result['message']}');
     }
   }
 
   void postSignUp() async {
     if (!isauthed) {
-      this._showDialog("이메일 인증 후 진행해주세요");
+      Fluttertoast.showToast(msg: '이메일 인증 후 진행해주세요');
       return;
     }
     if (!_checkSpace(addrTec.text) ||
@@ -121,24 +124,25 @@ class _SignupScreenState extends State<SignupScreen> {
         !_checkSpace(classnumTec.text) ||
         !_checkSpace(nameTec.text) ||
         !_checkSpace(nicknameTec.text)) {
-      this._showDialog("공백은 허용되지 않습니다");
+      Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
       return;
     }
 
     // if (emailList.length != 2) {
-    //   this._showDialog("이메일을 확인 해주세요");
+    //   Fluttertoast.showToast(msg: '이메일을 확인 해주세요');
     //   return;
     // } else if (emailList[1] != "uos.ac.kr") {
-    //   this._showDialog("학교 이메일 형식이어야 합니다!");
+    //   Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
     //   return;
     // }
+    //요거 비밀번호 확인부분에 입력하자마자 일치하는지 여부 표시하면 좋을 듯
     if (pwdTec.text != pwdTec2.text) {
-      this._showDialog("비밀번호를 확인해주세요");
+      Fluttertoast.showToast(msg: '비밀번호를 확인해주세요');
       return;
     }
     var num = int.parse(classnumTec.text);
     if (num < 2000000000 || num > 2100000000) {
-      this._showDialog("학번을 확인해주세요");
+      Fluttertoast.showToast(msg: '학번을 확인해주세요');
       return;
     }
 
@@ -161,7 +165,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Navigator.pop(context);
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
-      this._showDialog(result['message']);
+      Fluttertoast.showToast(msg: '${result['message']}');
       isClicked = false;
     }
   }
@@ -182,7 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
           const SizedBox(
             height: 20.0,
           ),
-          _buildLoginForm(),
+          _buildSingUpForm(),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -201,7 +205,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Container _buildLoginForm() {
+  Container _buildSingUpForm() {
     return Container(
       padding: const EdgeInsets.all(20.0),
       child: Stack(
@@ -227,7 +231,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         children: [
                           AbsorbPointer(
                               absorbing: isauthed,
-                              child: Container(
+                              child: SizedBox(
                                 width: 240,
                                 child: TextField(
                                   controller: addrTec,
@@ -303,7 +307,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         Text(
-                          "남은시간 : ${_time}",
+                          "남은시간 : $_time",
                           style: const TextStyle(color: Colors.red),
                         )
                       ],

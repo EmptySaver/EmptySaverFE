@@ -165,3 +165,21 @@ class Ticket {
     );
   }
 }
+
+class MemberInfo {
+  String? email;
+  String? name;
+  String? nickname;
+  String? classOf;
+
+  MemberInfo({this.email, this.name, this.nickname, this.classOf});
+
+  factory MemberInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return MemberInfo(
+      email: parsedJson['email'],
+      name: parsedJson['name'],
+      nickname: parsedJson['nickname'],
+      classOf: parsedJson['classOf'],
+    );
+  }
+}

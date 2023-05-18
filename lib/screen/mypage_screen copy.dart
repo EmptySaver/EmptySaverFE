@@ -10,14 +10,14 @@ import 'package:flutter/services.dart';
 import 'package:emptysaver_fe/core/assets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class UITestScreen extends ConsumerStatefulWidget {
-  const UITestScreen({super.key});
+class MyPageScreen extends ConsumerStatefulWidget {
+  const MyPageScreen({super.key});
 
   @override
-  ConsumerState<UITestScreen> createState() => _MypageScreenState();
+  ConsumerState<MyPageScreen> createState() => _MypageScreenOneState();
 }
 
-class _MypageScreenState extends ConsumerState<UITestScreen> {
+class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
   late bool _dark;
   var baseUri = '43.201.208.100:8080';
   late var jwtToken;
@@ -45,6 +45,11 @@ class _MypageScreenState extends ConsumerState<UITestScreen> {
 
   Brightness _getBrightness() {
     return _dark ? Brightness.dark : Brightness.light;
+  }
+
+  bool _checkSpace(String target) {
+    String result = target.replaceAll(RegExp('\\s'), "");
+    return result.length == target.length;
   }
 
   @override
@@ -164,6 +169,11 @@ class _MypageScreenState extends ConsumerState<UITestScreen> {
                                     ),
                                     OutlinedButton(
                                         onPressed: () async {
+                                          if (!_checkSpace(newPwdTec.text)) {
+                                            Fluttertoast.showToast(
+                                                msg: '공백은 허용되지 않습니다');
+                                            return;
+                                          }
                                           var url = Uri.http(baseUri,
                                               '/afterAuth/changePassword');
                                           var response = await http.put(url,
@@ -182,10 +192,11 @@ class _MypageScreenState extends ConsumerState<UITestScreen> {
                                                 msg: '변경되었습니다');
                                             Navigator.pop(context);
                                           } else {
-                                            print(utf8
+                                            var result = jsonDecode(utf8
                                                 .decode(response.bodyBytes));
+                                            print(result['message']);
                                             Fluttertoast.showToast(
-                                                msg: '변경 에러');
+                                                msg: '${result['message']}');
                                           }
                                         },
                                         child: const Text('변경하기'))
@@ -236,6 +247,12 @@ class _MypageScreenState extends ConsumerState<UITestScreen> {
                                             ),
                                             OutlinedButton(
                                                 onPressed: () async {
+                                                  if (!_checkSpace(
+                                                      nicknameTec.text)) {
+                                                    Fluttertoast.showToast(
+                                                        msg: '공백은 허용되지 않습니다');
+                                                    return;
+                                                  }
                                                   var url = Uri.http(baseUri,
                                                       '/afterAuth/changeNickName/${nicknameTec.text}');
                                                   var response = await http

@@ -2,9 +2,12 @@ import 'package:emptysaver_fe/screen/friend_group_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_screen.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
 import 'package:emptysaver_fe/screen/info_screen.dart';
-import 'package:emptysaver_fe/screen/mypage_screen.dart';
+import 'package:emptysaver_fe/screen/mypage_screen%20copy.dart';
+import 'package:emptysaver_fe/screen/mypage_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
+import 'package:emptysaver_fe/screen/test_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
+import 'package:emptysaver_fe/screen/ui_origin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -72,7 +75,7 @@ class _BarScreenState extends ConsumerState<BarScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MypageScreen(),
+                    builder: (context) => const MyPageScreen(),
                   ));
             },
             icon: const Icon(Icons.person),
