@@ -17,6 +17,7 @@ class InfoScreenNew extends ConsumerStatefulWidget {
 class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   final TextStyle dropdownMenuItem =
   const TextStyle(color: Colors.black, fontSize: 18);
+  final ScrollController _scrollController = ScrollController();  //스크롤 감지용
 
   final primary = const Color(0xff696b9e);
   final secondary = const Color(0xfff29a94);
@@ -25,6 +26,9 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   var baseUri = '43.201.208.100:8080';
   int nonSubjectPageNum = 0;
   int recruitingPageNum = 0;
+  late List<Info> nonSubjectLoadedList =  [];
+  late List<Info> recruitingLoadedList =  [];
+  late Future<List<Info>> targetList;
   late Future<List<Info>> nonSubjectList;
   late Future<List<Info>> recruitingList;
 
@@ -35,7 +39,13 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Info.fromJson(e)).toList();
-      return data;
+
+      if(data.isNotEmpty){
+        nonSubjectPageNum++;
+      }
+
+      nonSubjectLoadedList.addAll(data);
+      return nonSubjectLoadedList;
     } else {
       print(utf8.decode(response.bodyBytes));
       throw Exception('failed to get nonsubjectdata');
@@ -49,19 +59,46 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Info.fromJson(e)).toList();
-      return data;
+
+      if(data.isNotEmpty){
+        recruitingPageNum++;
+      }
+
+      recruitingLoadedList.addAll(data);
+      return recruitingLoadedList;
     } else {
       print(utf8.decode(response.bodyBytes));
       throw Exception('failed to get recruitingdata');
     }
   }
 
+  scrollListener() async {
+    // print('offset = ${_scrollController.offset}');
+
+    if (_scrollController.offset == _scrollController.position.maxScrollExtent
+        && !_scrollController.position.outOfRange) {
+      print('스크롤이 맨 바닥에 위치해서, 다음을 로드함니다.');
+      setState(() {
+        nonSubjectList = getNonsubject();
+      });
+
+    } else if (_scrollController.offset == _scrollController.position.minScrollExtent
+        && !_scrollController.position.outOfRange) {
+      print('스크롤이 맨 위에 위치해 있습니다');
+    }
+  }
+
   @override
   void initState() {
+    _scrollController.addListener(() {
+      scrollListener();
+    });
     super.initState();
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     nonSubjectList = getNonsubject();
     recruitingList = getRecruiting();
+
+    targetList = nonSubjectList;
   }
 
   FutureBuilder getFutureBuilder(){
@@ -75,6 +112,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
             width: double.infinity,
             decoration: BoxDecoration(border: Border.all()),
             child: ListView.builder(
+              controller: _scrollController,
               shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
               itemCount: snapshot.data!.length,
@@ -164,6 +202,12 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                     ],
                   ),
                 ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+
+                },
+                child: const Text('변신~'),
               ),
               /*
               Column(
