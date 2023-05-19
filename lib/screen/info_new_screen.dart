@@ -29,6 +29,11 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   late List<Info> nonSubjectLoadedList =  [];
   late List<Info> recruitingLoadedList =  [];
   late Future<List<Info>> targetList;
+  late bool recruitType;
+  String infoTitle = " - ";
+  String recruitTitle = "리쿠르팅";
+  String nonSubjectTitle = "비교과";
+
   late Future<List<Info>> nonSubjectList;
   late Future<List<Info>> recruitingList;
 
@@ -53,7 +58,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   }
 
   Future<List<Info>> getRecruiting() async {
-    var url = Uri.http(baseUri, '/info/nonSubject/$recruitingPageNum');
+    var url = Uri.http(baseUri, '/info/recruiting/$recruitingPageNum');
     var response =
     await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
@@ -65,6 +70,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
       }
 
       recruitingLoadedList.addAll(data);
+      print(recruitingLoadedList.length);
       return recruitingLoadedList;
     } else {
       print(utf8.decode(response.bodyBytes));
@@ -79,7 +85,15 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
         && !_scrollController.position.outOfRange) {
       print('스크롤이 맨 바닥에 위치해서, 다음을 로드함니다.');
       setState(() {
-        nonSubjectList = getNonsubject();
+        if(recruitType){
+          print('취업재로딩');
+          recruitingList = getRecruiting();
+          targetList = recruitingList;
+        }else{
+          print('비교과재로딩');
+          nonSubjectList = getNonsubject();
+          targetList = nonSubjectList;
+        }
       });
 
     } else if (_scrollController.offset == _scrollController.position.minScrollExtent
@@ -90,6 +104,8 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
 
   @override
   void initState() {
+    recruitType = true;
+    infoTitle = recruitTitle;
     _scrollController.addListener(() {
       scrollListener();
     });
@@ -98,12 +114,12 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
     nonSubjectList = getNonsubject();
     recruitingList = getRecruiting();
 
-    targetList = nonSubjectList;
+    targetList = recruitingList;
   }
 
   FutureBuilder getFutureBuilder(){
     return FutureBuilder(
-      future: nonSubjectList,
+      future: targetList,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Container(
@@ -195,20 +211,39 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      const Text(
-                        "비교과",
+                      Text(
+                        infoTitle,
                         style: TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
                       ),
+
                     ],
                   ),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () async {
-
-                },
-                child: const Text('변신~'),
+              Align(
+                alignment: Alignment.topRight,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      if(recruitType){
+                        targetList = nonSubjectList;
+                        print("비교과로");
+                        infoTitle = nonSubjectTitle;
+                        recruitType = false;
+                      }else{
+                        targetList = recruitingList;
+                        print("취업으로");
+                        infoTitle = recruitTitle;
+                        recruitType = true;
+                      }
+                    });
+                  },
+                  child: const Text('다른거로'),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.lightBlueAccent, onPrimary: Colors.white),
+                ),
               ),
+              //원래 여기
               /*
               Column(
                 children: <Widget>[
