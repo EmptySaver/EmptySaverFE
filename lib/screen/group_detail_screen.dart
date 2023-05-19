@@ -4,6 +4,7 @@ import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
+import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:emptysaver_fe/screen/update_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -379,7 +380,25 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                         Row(
                                           children: [
                                             IconButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Scaffold(
+                                                          appBar: AppBar(
+                                                            title: Text(
+                                                                '${snapshot.data![index]['name']} 시간표 조회'),
+                                                          ),
+                                                          body: TimeTableScreen(
+                                                            groupMemberId:
+                                                                snapshot.data![
+                                                                        index][
+                                                                    'memberId'],
+                                                          ),
+                                                        ),
+                                                      ));
+                                                },
                                                 icon: const Icon(
                                                     Icons.remove_red_eye)),
                                             IconButton(

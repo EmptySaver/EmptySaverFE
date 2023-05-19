@@ -20,7 +20,7 @@ class TimeTableScreen extends ConsumerStatefulWidget {
   int? friendMemberId;
   int? groupMemberId;
 
-  TimeTableScreen({super.key, this.friendMemberId});
+  TimeTableScreen({super.key, this.friendMemberId, this.groupMemberId});
 
   @override
   ConsumerState<TimeTableScreen> createState() => _TimeTableScreenState();
@@ -60,7 +60,10 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
           DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
       Uri url;
       (widget.friendMemberId == null)
-          ? url = Uri.http(baseUri, '/timetable/getTimeTable')
+          ? (widget.groupMemberId == null)
+              ? url = Uri.http(baseUri, '/timetable/getTimeTable')
+              : url = Uri.http(baseUri, '/group/getMemberTimeTable',
+                  {'groupMemberId': '${widget.groupMemberId}'})
           : url = Uri.http(baseUri, '/friend/getFriendTimeTable', {
               'friendMemberId': '${widget.friendMemberId}',
             });

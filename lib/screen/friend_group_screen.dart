@@ -193,8 +193,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                                     builder: (context) =>
                                                         Scaffold(
                                                       appBar: AppBar(
-                                                        title: const Text(
-                                                            '친구 시간표'),
+                                                        title: Text(
+                                                            '${friendList[index].friendName} 시간표'),
                                                       ),
                                                       body: TimeTableScreen(
                                                           friendMemberId:
