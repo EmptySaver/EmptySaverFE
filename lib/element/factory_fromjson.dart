@@ -218,3 +218,46 @@ class MemberInfo {
     );
   }
 }
+
+class Lecture {
+  int? id;
+  String? dept;
+  String? subject_div;
+  String? subject_div2;
+  String? class_div;
+  String? subjectname;
+  String? shyr;
+  int? credit;
+  String? prof_nm;
+  String? class_type;
+  String? class_nm;
+
+  Lecture(
+      {this.id,
+      this.dept,
+      this.subject_div,
+      this.subject_div2,
+      this.class_div,
+      this.subjectname,
+      this.shyr,
+      this.credit,
+      this.prof_nm,
+      this.class_type,
+      this.class_nm});
+
+  factory Lecture.fromJson(Map<String, dynamic> parsedJson) {
+    return Lecture(
+      id: parsedJson['id'],
+      dept: parsedJson['dept'],
+      subject_div: parsedJson['subject_div'],
+      subject_div2: parsedJson['subject_div2'],
+      class_div: parsedJson['class_div'],
+      subjectname: parsedJson['subjectname'],
+      shyr: parsedJson['shyr'],
+      credit: parsedJson['credit'],
+      prof_nm: parsedJson['prof_nm'],
+      class_type: parsedJson['class_type'],
+      class_nm: parsedJson['class_nm'],
+    );
+  }
+}
