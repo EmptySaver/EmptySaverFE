@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/friend_check_screen.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
+import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -185,7 +186,23 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                     Row(
                                       children: [
                                         IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Scaffold(
+                                                      appBar: AppBar(
+                                                        title: const Text(
+                                                            '친구 시간표'),
+                                                      ),
+                                                      body: TimeTableScreen(
+                                                          friendMemberId:
+                                                              friendList[index]
+                                                                  .friendMemberId),
+                                                    ),
+                                                  ));
+                                            },
                                             icon: const Icon(
                                                 Icons.remove_red_eye)),
                                         IconButton(

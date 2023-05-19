@@ -375,7 +375,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                           width: 10,
                                         ),
                                         Text(
-                                            '${snapshot.data![index]['name']}'),
+                                            'id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}'),
                                         Row(
                                           children: [
                                             IconButton(

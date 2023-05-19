@@ -168,7 +168,7 @@ class MyApp extends ConsumerWidget {
       ),
       routes: {
         '/bar': (context) => const BarScreen(),
-        '/timetable': (context) => const TimeTableScreen(),
+        '/timetable': (context) => TimeTableScreen(),
         '/fg': (context) => const FriendGroupScreen(),
       },
       theme: ThemeData(
