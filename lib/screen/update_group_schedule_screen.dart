@@ -9,18 +9,18 @@ import 'package:interval_time_picker/interval_time_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
-class AddGroupScheduleScreen extends ConsumerStatefulWidget {
+class UpdateGroupScheduleScreen extends ConsumerStatefulWidget {
   Map<String, dynamic>? groupData;
-
-  AddGroupScheduleScreen({super.key, this.groupData});
+  int? scheduleId;
+  UpdateGroupScheduleScreen({super.key, this.groupData, this.scheduleId});
 
   @override
-  ConsumerState<AddGroupScheduleScreen> createState() =>
-      _AddGroupScheduleScreenState();
+  ConsumerState<UpdateGroupScheduleScreen> createState() =>
+      _UpdateGroupScheduleScreenState();
 }
 
-class _AddGroupScheduleScreenState
-    extends ConsumerState<AddGroupScheduleScreen> {
+class _UpdateGroupScheduleScreenState
+    extends ConsumerState<UpdateGroupScheduleScreen> {
   var baseUri = '43.201.208.100:8080';
 
   final List<bool> _selections = List.generate(2, (_) => false);
@@ -379,12 +379,12 @@ class _AddGroupScheduleScreenState
                                 'endTime': endTime,
                               };
                         var url = Uri.http(
-                            baseUri, '/timetable/team/saveSchedule', {
+                            baseUri, '/timetable/team/updateSchedule', {
                           'groupId': '${widget.groupData!['groupId']}',
-                          'isPublicTypeSchedule': 'true'
+                          'scheduleId': '${widget.scheduleId}',
                         });
                         print(url);
-                        var response = await http.post(url,
+                        var response = await http.put(url,
                             headers: <String, String>{
                               'Content-Type': 'application/json',
                               'authorization': 'Bearer $jwtToken'
@@ -393,19 +393,19 @@ class _AddGroupScheduleScreenState
                         if (response.statusCode == 200) {
                           print('success!');
                           print(response.body);
-                          Fluttertoast.showToast(msg: '추가되었습니다');
+                          Fluttertoast.showToast(msg: '변경되었습니다');
                           Navigator.pop(context, true);
                         } else {
                           print('fail..');
                           print(response.body);
-                          Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
+                          Fluttertoast.showToast(msg: '변경 실패, 입력을 확인하세요');
                         }
                       },
                       style: OutlinedButton.styleFrom(
                           // shape: const StadiumBorder(),
                           side: const BorderSide(color: Colors.grey)),
                       child: const Text(
-                        '추가하기',
+                        '변경하기',
                         style: TextStyle(color: Colors.black),
                       )),
                 ],
