@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:emptysaver_fe/screen/friend_group_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_screen.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
@@ -6,6 +8,8 @@ import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:emptysaver_fe/main.dart';
 
@@ -29,6 +33,36 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     const InfoScreenNew(),
   ];
   String? jwtToken;
+  static const storage = FlutterSecureStorage();
+  late dynamic userInfo;
+
+  Future<void> logoutMethod(BuildContext context) async {
+    {
+      var url = Uri.parse('http://43.201.208.100:8080/afterAuth/logout');
+      var response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer $jwtToken'
+        },
+      );
+      if (response.statusCode == 200) {
+        await storage.delete(key: 'login');
+        userInfo = await storage.read(key: 'login');
+        if (userInfo == null) {
+          Fluttertoast.showToast(msg: '로그아웃되었습니다');
+          ref.read(tokensProvider.notifier).removeToken(jwtToken);
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+        } else {
+          print('유저정보 남아있음');
+          return;
+        }
+      } else {
+        print(utf8.decode(response.bodyBytes));
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,22 +98,8 @@ class _BarScreenState extends ConsumerState<BarScreen> {
           )
         ],
         leading: IconButton(
-          onPressed: () async {
-            var url = Uri.parse('http://43.201.208.100:8080/afterAuth/logout');
-            var response = await http.post(
-              url,
-              headers: <String, String>{
-                'Content-Type': 'application/json',
-                'authorization': 'Bearer $jwtToken'
-              },
-            );
-            if (response.statusCode == 200) {
-              ref.read(tokensProvider.notifier).removeToken(jwtToken);
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-            } else {
-              print(response.statusCode);
-              print((response.body));
-            }
+          onPressed: () {
+            logoutMethod(context);
           },
           icon: const Icon(Icons.logout),
         ),
