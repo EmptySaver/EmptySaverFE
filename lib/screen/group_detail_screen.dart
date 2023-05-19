@@ -178,13 +178,24 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   children: [
                     const Text('일정 목록'),
                     OutlinedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => AddGroupScheduleScreen(
                                   groupData: widget.groupData),
+                            )).then((value) => setState(
+                              () {
+                                groupScheduleTextListFuture =
+                                    getGroupScheduleTextList();
+                              },
                             ));
+                        //                     if (isBack) {
+                        //                       setState(() {
+                        // groupScheduleTextListFuture = getGroupScheduleTextList();
+
+                        //                       });
+                        //                     }
                       },
                       child: const Text('추가'), // 그룹장이 아니면 안보이게
                     )

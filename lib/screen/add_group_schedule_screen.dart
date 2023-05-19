@@ -394,7 +394,7 @@ class _AddGroupScheduleScreenState
                           print('success!');
                           print(response.body);
                           Fluttertoast.showToast(msg: '추가되었습니다');
-                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                         } else {
                           print('fail..');
                           print(response.body);
