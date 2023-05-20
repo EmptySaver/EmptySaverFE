@@ -4,15 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class AddGroupScreen extends ConsumerStatefulWidget {
+class AddGroupScreenOld extends ConsumerStatefulWidget {
   String? type;
   String? name;
-  AddGroupScreen({super.key, this.type, this.name});
+  AddGroupScreenOld({super.key, this.type, this.name});
   @override
-  ConsumerState<AddGroupScreen> createState() => _AddGroupScreenState();
+  ConsumerState<AddGroupScreenOld> createState() => _AddGroupScreenState();
 }
 
-class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
+class _AddGroupScreenState extends ConsumerState<AddGroupScreenOld> {
   var baseUri = '43.201.208.100:8080';
   var dateTec = TextEditingController(text: '');
   var nameTec = TextEditingController(text: '');

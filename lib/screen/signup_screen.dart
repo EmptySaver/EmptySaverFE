@@ -51,24 +51,6 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
-  // void _showDialog(String text) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       Future.delayed(const Duration(seconds: 1), () {
-  //         Navigator.pop(context);
-  //       });
-
-  //       return AlertDialog(
-  //         title: const Text("공강구조대"),
-  //         shape:
-  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-  //         content: Text(text),
-  //       );
-  //     },
-  //   );
-  // }
-
   bool _checkSpace(String target) {
     String result = target.replaceAll(RegExp('\\s'), "");
     return result.length == target.length;
