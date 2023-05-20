@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/screen/friend_group_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_screen.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
-import 'package:emptysaver_fe/screen/mypage_screen%20copy.dart';
+import 'package:emptysaver_fe/screen/mypage_screen_new.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
