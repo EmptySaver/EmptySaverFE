@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -82,17 +83,17 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
       color: Colors.blue.shade100,
       child: ListView(
         children: <Widget>[
-          const SizedBox(
-            height: 30.0,
-          ),
-          const CircleAvatar(
-            maxRadius: 50,
-            backgroundColor: Colors.transparent,
-            child: PNetworkImage(origami),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
+          // const SizedBox(
+          //   height: 30.0,
+          // ),
+          // const CircleAvatar(
+          //   maxRadius: 50,
+          //   backgroundColor: Colors.transparent,
+          //   child: PNetworkImage(origami),
+          // ),
+          // const SizedBox(
+          //   height: 20.0,
+          // ),
           _buildAddScheduleForm(context),
         ],
       ),
@@ -107,7 +108,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
           ClipPath(
             clipper: RoundedDiagonalPathClipper(),
             child: Container(
-              height: 800,
+              height: 700,
               padding: const EdgeInsets.all(10.0),
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(40.0)),
@@ -600,7 +601,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
             ],
           ),
           SizedBox(
-            height: 820,
+            height: 720,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
@@ -728,7 +729,17 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('일정 추가')),
+      backgroundColor: Colors.blue.shade100,
+      appBar: AppBar(
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        title: const Text(
+          '일정 추가',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: _buildPageContent(context),
     );
   }

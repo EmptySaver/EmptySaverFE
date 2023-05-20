@@ -1,6 +1,8 @@
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -110,28 +112,28 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
           const SizedBox(
             height: 30.0,
           ),
-          const CircleAvatar(
-            maxRadius: 50,
-            backgroundColor: Colors.transparent,
-            child: PNetworkImage(origami),
-          ),
+          // const CircleAvatar(
+          //   maxRadius: 50,
+          //   backgroundColor: Colors.transparent,
+          //   child: PNetworkImage(origami),
+          // ),
           const SizedBox(
             height: 20.0,
           ),
           _buildAddGroupForm(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              FloatingActionButton(
-                mini: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.arrow_back),
-              )
-            ],
-          )
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: <Widget>[
+          //     FloatingActionButton(
+          //       mini: true,
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       },
+          //       backgroundColor: Colors.blue,
+          //       child: const Icon(Icons.arrow_back),
+          //     )
+          //   ],
+          // )
         ],
       ),
     );
@@ -267,6 +269,9 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                     ),
                   ),
                   _buildTagList(context),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -394,6 +399,17 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue.shade100,
+      appBar: AppBar(
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        title: const Text(
+          '그룹 생성',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: _buildPageContent(context),
     );
   }
