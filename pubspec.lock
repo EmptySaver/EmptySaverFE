@@ -287,7 +287,7 @@ packages:
     source: hosted
     version: "0.1.10"
   flutter_localizations:
-    dependency: transitive
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -307,6 +307,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
+  flutter_rounded_date_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_rounded_date_picker
+      sha256: e7143cc5cbf3aec1536286653e38b0809abc99fb76c91bd910dbd98ae003d890
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.3"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -793,7 +801,15 @@ packages:
       sha256: eb6ac1540b26de412b3403a163d919ba86f6a973fe6cc50ae3541b80092fdcfb
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.18"
+    version: "0.5.1"
+  time_range_picker:
+    dependency: "direct main"
+    description:
+      name: time_range_picker
+      sha256: "63c3e0beba3c261f7d95e9a2ecef3a3e0bc88d4874edbbef4471c1a60c228526"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   timezone:
     dependency: transitive
     description:

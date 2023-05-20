@@ -1,427 +1,216 @@
-import 'dart:convert';
+/**
+ * Author: Sudip Thapa  
+ * profile: https://github.com/sudeepthapa
+  */
 
-import 'package:emptysaver_fe/main.dart';
-import 'package:emptysaver_fe/screen/test_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:interval_time_picker/interval_time_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:ntp/ntp.dart';
-import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-class UITestScreen extends ConsumerStatefulWidget {
-  const UITestScreen({
-    super.key,
-  });
+class PlaceList1 extends StatelessWidget {
+  static const String path = "lib/src/pages/lists/list1.dart";
 
-  @override
-  ConsumerState<UITestScreen> createState() => _AddScheduleScreenState();
-}
-
-class _AddScheduleScreenState extends ConsumerState<UITestScreen> {
-  List<DateTime>? timeList;
-
-  var baseUri = '43.201.208.100:8080';
-  final List<bool> _selections = List.generate(2, (_) => false);
-  bool isPeriodic = false;
-  var dateTec = TextEditingController(text: '');
-  var nameTec = TextEditingController(text: '');
-  var bodyTec = TextEditingController(text: '');
-  var daysTec1 = TextEditingController();
-  var daysTec2 = TextEditingController();
-  var timeTec1 = TextEditingController();
-  var timeTec2 = TextEditingController();
-  var timeTec3 = TextEditingController();
-  var timeTec4 = TextEditingController();
-  bool isAdded = false;
-  String? startTime;
-  String? endTime;
-  List<DropdownMenuEntry<String>> days = [
-    const DropdownMenuEntry(value: '월', label: '월'),
-    const DropdownMenuEntry(value: '화', label: '화'),
-    const DropdownMenuEntry(value: '수', label: '수'),
-    const DropdownMenuEntry(value: '목', label: '목'),
-    const DropdownMenuEntry(value: '금', label: '금'),
-    const DropdownMenuEntry(value: '토', label: '토'),
-    const DropdownMenuEntry(value: '일', label: '일'),
-  ];
+  const PlaceList1({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일정 추가'),
+        title: const Text("Place List 1"),
+        backgroundColor: Colors.deepOrangeAccent,
+        elevation: 2,
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: const Icon(Icons.filter_list),
+          )
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Center(
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  ToggleButtons(
-                    isSelected: _selections,
-                    children: const [
-                      Text('비주기적'),
-                      Text('주기적'),
-                    ],
-                    onPressed: (index) async {
-                      for (int i = 0; i < _selections.length; i++) {
-                        _selections[i] = (i == index);
-                      }
-                      if (index == 0) {
-                        isPeriodic = false;
-                        print(isPeriodic);
-                      } else {
-                        isPeriodic = true;
-                        print(isPeriodic);
-                      }
-                      setState(() {});
-                    },
-                  ),
-                  Visibility(
-                    visible: !isPeriodic,
-                    child: TextField(
-                        controller: dateTec,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.calendar_month_outlined),
-                          labelText: '날짜 선택',
-                        ),
-                        onTap: () async {
-                          {
-                            DateTime? pickeddate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2024));
+      body: Lists(),
+    );
+  }
+}
 
-                            if (pickeddate != null) {
-                              setState(() {
-                                dateTec.text =
-                                    DateFormat('yyyy-MM-dd').format(pickeddate);
-                              });
-                            }
-                          }
-                        }),
-                  ),
-                  TextField(
-                    controller: nameTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.title),
-                      labelText: '제목',
-                    ),
-                  ),
-                  TextField(
-                    controller: bodyTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.text_snippet_outlined),
-                      labelText: '내용',
-                    ),
-                  ),
-                  TextButton(
-                      onPressed: () async {
-                        DateTime currentTime = await NTP.now();
-                        currentTime =
-                            currentTime.toUtc().add(Duration(hours: 9));
-                        timeList = await showOmniDateTimeRangePicker(
-                          context: context,
-                          startInitialDate: currentTime,
-                          endInitialDate: currentTime,
-                          minutesInterval: 30,
-                        );
-                        String? start = timeList?.elementAt(0).toString();
-                        print("start time : ${start}");
-                      },
-                      child: Text("날짜선택하깅")),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Visibility(
-                    // 첫번째 요일 시간 선택 row
-                    visible: isPeriodic,
-                    child: Row(
-                      children: [
-                        DropdownMenu(
-                          dropdownMenuEntries: days,
-                          label: const Text('요일'),
-                          controller: daysTec1,
-                          onSelected: (value) {
-                            print(value);
-                          },
+class Item {
+  final String? title;
+  final String? catagory;
+  final String? place;
+  final String? ratings;
+  final String? discount;
+  final String? image;
+
+  Item(
+      {this.title,
+      this.catagory,
+      this.place,
+      this.ratings,
+      this.discount,
+      this.image});
+}
+
+class Lists extends StatelessWidget {
+  final List<Item> _data = [
+    Item(
+        title: 'Gardens By the Bay',
+        catagory: "Gardens",
+        place: "Singapore",
+        ratings: "5.0/80",
+        discount: "10 %",
+        image:
+            "https://images.pexels.com/photos/672142/pexels-photo-672142.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
+    Item(
+        title: 'Singapore Zoo',
+        catagory: "Parks",
+        place: "Singapore",
+        ratings: "4.5/90",
+        discount: null,
+        image:
+            "https://images.pexels.com/photos/1736222/pexels-photo-1736222.jpeg?cs=srgb&dl=adult-adventure-backpacker-1736222.jpg&fm=jpg"),
+    Item(
+        title: 'National Orchid Garden',
+        catagory: "Parks",
+        place: "Singapore",
+        ratings: "4.5/90",
+        discount: "12 %",
+        image:
+            "https://images.pexels.com/photos/62403/pexels-photo-62403.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
+    Item(
+        title: 'Godabari',
+        catagory: "Parks",
+        place: "Singapore",
+        ratings: "4.5/90",
+        discount: "15 %",
+        image:
+            "https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
+    Item(
+        title: 'Rara National Park',
+        catagory: "Parks",
+        place: "Singapore",
+        ratings: "4.5/90",
+        discount: "12 %",
+        image:
+            "https://images.pexels.com/photos/1319515/pexels-photo-1319515.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
+  ];
+
+  Lists({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(6),
+      itemCount: _data.length,
+      itemBuilder: (BuildContext context, int index) {
+        Item item = _data[index];
+        return Card(
+          elevation: 3,
+          child: Row(
+            children: <Widget>[
+              Container(
+                height: 125,
+                width: 110,
+                padding: const EdgeInsets.only(
+                    left: 0, top: 10, bottom: 70, right: 20),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(item.image!), fit: BoxFit.cover)),
+                child: item.discount == null
+                    ? Container()
+                    : Container(
+                        color: Colors.deepOrange,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              item.discount!,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal),
+                            ),
+                            const Text(
+                              "Discount",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal),
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            onTap: () async {
-                              TimeOfDay? pickedTime =
-                                  await showIntervalTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                      interval: 30,
-                                      visibleStep: VisibleStep.thirtieths);
-                              if (pickedTime != null) {
-                                setState(() {
-                                  var df = DateFormat("a h:mm", "ko");
-                                  var dt = df.parse(pickedTime.format(context));
-                                  var finaltime =
-                                      DateFormat("HH:mm").format(dt);
-                                  timeTec1.text = finaltime;
-                                });
-                              }
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) => AlertDialog(
-                              //     content: TimePickerSpinner(
-                              //       is24HourMode: true,
-                              //       minutesInterval: 30,
-                              //       isForce2Digits: true,
-                              //       isShowSeconds: false,
-                              //       onTimeChange: (time) {
-                              //         var pickedTime =
-                              //             DateFormat('HH:mm').format(time);
-                              //         timeTec1.text = pickedTime;
-                              //         setState(() {});
-                              //       },
-                              //     ),
-                              //   ),
-                              // );
-                            },
-                            controller: timeTec1,
-                          ),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      item.title!,
+                      style: const TextStyle(
+                          color: Colors.deepOrange,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 17),
+                    ),
+                    Text(
+                      item.catagory!,
+                      style:
+                          const TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                    Text(
+                      item.place!,
+                      style:
+                          const TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: const <Widget>[
+                        Icon(
+                          Icons.star,
+                          color: Colors.pink,
+                          size: 18,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.pink,
+                          size: 18,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.pink,
+                          size: 18,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.pink,
+                          size: 18,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.pink,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          item.ratings!,
+                          style: const TextStyle(fontSize: 13),
                         ),
                         const SizedBox(
-                          width: 30,
+                          width: 5,
                         ),
-                        Expanded(
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            onTap: () async {
-                              TimeOfDay? pickedTime =
-                                  await showIntervalTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                      interval: 30,
-                                      visibleStep: VisibleStep.thirtieths);
-                              if (pickedTime != null) {
-                                setState(() {
-                                  var df = DateFormat("a h:mm", "ko");
-                                  var dt = df.parse(pickedTime.format(context));
-                                  var finaltime =
-                                      DateFormat("HH:mm").format(dt);
-                                  timeTec2.text = finaltime;
-                                });
-                              }
-                            },
-                            controller: timeTec2,
-                          ),
+                        const Text(
+                          "Ratings",
+                          style: TextStyle(fontSize: 13),
                         ),
                       ],
-                    ),
-                  ),
-                  if (isAdded)
-                    Visibility(
-                      // 두번째 요일 시간 선택 row
-                      visible: isPeriodic,
-                      child: Row(
-                        children: [
-                          DropdownMenu(
-                            dropdownMenuEntries: days,
-                            label: const Text('요일'),
-                            controller: daysTec2,
-                            onSelected: (value) {
-                              print(value);
-                            },
-                          ),
-                          Expanded(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              onTap: () async {
-                                TimeOfDay? pickedTime =
-                                    await showIntervalTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                        interval: 30,
-                                        visibleStep: VisibleStep.thirtieths);
-                                if (pickedTime != null) {
-                                  setState(() {
-                                    var df = DateFormat("a h:mm", "ko");
-                                    var dt =
-                                        df.parse(pickedTime.format(context));
-                                    var finaltime =
-                                        DateFormat("HH:mm").format(dt);
-                                    timeTec3.text = finaltime;
-                                  });
-                                }
-                              },
-                              controller: timeTec3,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 30,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              onTap: () async {
-                                TimeOfDay? pickedTime =
-                                    await showIntervalTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                  interval: 30,
-                                  visibleStep: VisibleStep.thirtieths,
-                                );
-                                if (pickedTime != null) {
-                                  setState(() {
-                                    var df = DateFormat("a h:mm", "ko");
-                                    var dt =
-                                        df.parse(pickedTime.format(context));
-                                    var finaltime =
-                                        DateFormat("HH:mm").format(dt);
-                                    timeTec4.text = finaltime;
-                                  });
-                                }
-                              },
-                              controller: timeTec4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  Visibility(
-                    visible: isPeriodic,
-                    child: TextButton(
-                        style: const ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.lightBlue)),
-                        onPressed: () {
-                          isAdded = !isAdded;
-                          setState(() {});
-                        },
-                        child: isAdded
-                            ? const Text('날짜 및 시간 제거')
-                            : const Text('날짜 및 시간 추가')),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Visibility(
-                    visible: !isPeriodic,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          child: TimePickerSpinner(
-                            is24HourMode: true,
-                            minutesInterval: 30,
-                            isForce2Digits: true,
-                            isShowSeconds: false,
-                            onTimeChange: (time) {
-                              if (dateTec != '') {
-                                var pickedTime =
-                                    DateFormat('HH:mm:ss').format(time);
-                                startTime = ('${dateTec.text}T$pickedTime')
-                                    .split(' ')[0];
-                              }
-                            },
-                          ),
-                        ),
-                        Container(
-                          child: TimePickerSpinner(
-                            is24HourMode: true,
-                            minutesInterval: 30,
-                            isForce2Digits: true,
-                            isShowSeconds: false,
-                            onTimeChange: (time) {
-                              if (dateTec != '') {
-                                var pickedTime =
-                                    DateFormat('HH:mm:ss').format(time);
-                                endTime = ('${dateTec.text}T$pickedTime')
-                                    .split(' ')[0];
-                              }
-                              print('Start : $startTime');
-                              print('End : $endTime');
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  OutlinedButton(
-                      onPressed: () async {
-                        var periodicTimeStringList = [
-                          if ((daysTec1.text != '') &&
-                              (timeTec1.text != '') &&
-                              (timeTec2.text != ''))
-                            "${daysTec1.text},${timeTec1.text}-${timeTec2.text}",
-                          if (((daysTec2.text != '') &&
-                              (timeTec3.text != '') &&
-                              (timeTec4.text != '')))
-                            "${daysTec2.text},${timeTec3.text}-${timeTec4.text}",
-                        ];
-                        print('pSL : $periodicTimeStringList');
-                        var postBody = isPeriodic
-                            ? {
-                                'name':
-                                    (nameTec.text == '') ? '제목' : nameTec.text,
-                                'body':
-                                    (bodyTec.text == '') ? '내용' : bodyTec.text,
-                                'periodicType': isPeriodic,
-                                'periodicTimeStringList':
-                                    periodicTimeStringList,
-                              }
-                            : {
-                                'name':
-                                    (nameTec.text == '') ? '제목' : nameTec.text,
-                                'body':
-                                    (bodyTec.text == '') ? '내용' : bodyTec.text,
-                                'periodicType': isPeriodic,
-                                'startTime': startTime,
-                                'endTime': endTime,
-                              };
-                        var url = Uri.http(baseUri, '/timetable/saveSchedule');
-                        print(url);
-                        var response = await http.post(url,
-                            headers: <String, String>{
-                              'Content-Type': 'application/json',
-                              'authorization': 'Bearer $jwtToken'
-                            },
-                            body: jsonEncode(postBody));
-                        if (response.statusCode == 200) {
-                          print('success!');
-                          print(response.body);
-                          Fluttertoast.showToast(msg: '추가되었습니다');
-                          Navigator.popAndPushNamed(context, '/bar');
-                        } else {
-                          print('fail..');
-                          print(response.body);
-                          Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
-                        }
-                      },
-                      style: OutlinedButton.styleFrom(
-                          // shape: const StadiumBorder(),
-                          side: const BorderSide(color: Colors.grey)),
-                      child: const Text(
-                        '추가하기',
-                        style: TextStyle(color: Colors.black),
-                      )),
-                ],
-              ),
-            ),
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
