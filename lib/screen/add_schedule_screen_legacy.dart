@@ -89,16 +89,6 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreenOld> {
                       setState(() {});
                     },
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const UITestScreen()));
-                    },
-                    child: const Text("goTestPage"),
-                  ),
                   Visibility(
                     visible: !isPeriodic,
                     child: TextField(
