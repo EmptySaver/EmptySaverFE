@@ -4,6 +4,8 @@ import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
+import 'package:emptysaver_fe/screen/timetable_screen.dart';
+import 'package:emptysaver_fe/screen/update_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -178,13 +180,24 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   children: [
                     const Text('일정 목록'),
                     OutlinedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => AddGroupScheduleScreen(
                                   groupData: widget.groupData),
+                            )).then((value) => setState(
+                              () {
+                                groupScheduleTextListFuture =
+                                    getGroupScheduleTextList();
+                              },
                             ));
+                        //                     if (isBack) {
+                        //                       setState(() {
+                        // groupScheduleTextListFuture = getGroupScheduleTextList();
+
+                        //                       });
+                        //                     }
                       },
                       child: const Text('추가'), // 그룹장이 아니면 안보이게
                     )
@@ -207,15 +220,82 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           return ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                height: 60,
-                                decoration: BoxDecoration(border: Border.all()),
-                                child: Column(
-                                  children: [
-                                    Text('${snapshot.data![index].name}'),
-                                    Text('${snapshot.data![index].body}'),
-                                    Text('${snapshot.data![index].timeData}'),
-                                  ],
+                              return GestureDetector(
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return SimpleDialog(
+                                        title: const Text('그룹 일정 변경'),
+                                        children: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          UpdateGroupScheduleScreen(
+                                                        groupData:
+                                                            widget.groupData,
+                                                        scheduleId: snapshot
+                                                            .data![index].id,
+                                                      ),
+                                                    )).then((value) => setState(
+                                                      () {
+                                                        groupScheduleTextListFuture =
+                                                            getGroupScheduleTextList();
+                                                      },
+                                                    ));
+                                              },
+                                              child: const Text('변경')),
+                                          TextButton(
+                                              onPressed: () async {
+                                                var url = Uri.http(
+                                                    baseUri,
+                                                    '/timetable/team/deleteSchedule',
+                                                    {
+                                                      'groupId':
+                                                          '${widget.groupData!['groupId']}',
+                                                      'scheduleId':
+                                                          '${snapshot.data![index].id}'
+                                                    });
+                                                var response = await http
+                                                    .delete(url, headers: {
+                                                  'authorization':
+                                                      'Bearer $jwtToken'
+                                                });
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  Fluttertoast.showToast(
+                                                      msg: '삭제되었습니다');
+                                                  Navigator.pop(context);
+                                                  setState(() {
+                                                    groupScheduleTextListFuture =
+                                                        getGroupScheduleTextList();
+                                                  });
+                                                } else {
+                                                  print(utf8.decode(
+                                                      response.bodyBytes));
+                                                }
+                                              },
+                                              child: const Text('삭제')),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  height: 60,
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  child: Column(
+                                    children: [
+                                      Text('${snapshot.data![index].name}'),
+                                      Text('${snapshot.data![index].body}'),
+                                      Text('${snapshot.data![index].timeData}'),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
@@ -296,11 +376,29 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                           width: 10,
                                         ),
                                         Text(
-                                            '${snapshot.data![index]['name']}'),
+                                            'id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}'),
                                         Row(
                                           children: [
                                             IconButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Scaffold(
+                                                          appBar: AppBar(
+                                                            title: Text(
+                                                                '${snapshot.data![index]['name']} 시간표 조회'),
+                                                          ),
+                                                          body: TimeTableScreen(
+                                                            groupMemberId:
+                                                                snapshot.data![
+                                                                        index][
+                                                                    'memberId'],
+                                                          ),
+                                                        ),
+                                                      ));
+                                                },
                                                 icon: const Icon(
                                                     Icons.remove_red_eye)),
                                             IconButton(

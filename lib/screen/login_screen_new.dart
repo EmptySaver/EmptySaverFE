@@ -24,12 +24,29 @@ class NewLoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
-  final storage = const FlutterSecureStorage();
-  bool? isAutoLogin = false;
-  bool? isIdSave = false;
+  static const storage = FlutterSecureStorage();
+  dynamic userInfo = '';
+  bool isAutoLogin = false;
+  bool isIdSave = false;
   TextEditingController addrTecLogin = TextEditingController();
   TextEditingController pwdTecLogin = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    userInfo = await storage.read(key: 'login');
+    if (userInfo != null) {
+      Navigator.pushNamed(context, '/bar');
+    } else {
+      print('유저정보 없음, 로그인 필요');
+    }
+  }
   // void _showDialog(String text) {
   //   showDialog(
   //     context: context,
@@ -58,25 +75,27 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
     //   Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
     //   return;
     // }
+    Map<String, dynamic> loginInfo = {
+      'email': addrTecLogin.text,
+      'password': pwdTecLogin.text,
+      'fcmToken': widget.firebaseToken!,
+    };
     var response = await http.post(
       url,
-      body: jsonEncode(<String, String>{
-        'email': addrTecLogin.text,
-        'password': pwdTecLogin.text,
-        'fcmToken': widget.firebaseToken!,
-      }),
+      body: jsonEncode(loginInfo),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         // 'authorization' :
       },
     );
-
     if (response.statusCode == 200) {
-      await storage.write(key: 'login', value: response.body);
-      var jwtToken = await storage.read(key: 'login');
+      if (isAutoLogin) {
+        await storage.write(key: 'login', value: jsonEncode(loginInfo));
+        print('유저정보 저장');
+      }
+      await storage.write(key: 'jwtToken', value: response.body);
+      var jwtToken = await storage.read(key: 'jwtToken');
       ref.read(tokensProvider.notifier).addToken(jwtToken);
-      // var test = ref.read(tokensProvider.notifier).state[1];
-      // print('됐냐 : $test');
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -84,9 +103,9 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           ),
           (route) => false);
     } else {
-      var result = jsonDecode(utf8.decode(response.bodyBytes));
-      print(result['message']);
-      Fluttertoast.showToast(msg: '${result['message']}');
+      var result = utf8.decode(response.bodyBytes);
+      print(result);
+      Fluttertoast.showToast(msg: '로그인에 실패하였습니다');
     }
   }
 
@@ -190,6 +209,27 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Checkbox(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        value: isAutoLogin,
+                        onChanged: (value) {
+                          setState(() {
+                            isAutoLogin = value!;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Text('자동 로그인'),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

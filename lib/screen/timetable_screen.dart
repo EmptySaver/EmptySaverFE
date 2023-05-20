@@ -3,6 +3,8 @@ import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
+import 'package:emptysaver_fe/screen/lecture_search_result_screen.dart';
+import 'package:emptysaver_fe/screen/update_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +17,10 @@ const double defaultBoxWidth = 75;
 const double defaultBoxHeight = 35;
 
 class TimeTableScreen extends ConsumerStatefulWidget {
-  const TimeTableScreen({super.key});
+  int? friendMemberId;
+  int? groupMemberId;
+
+  TimeTableScreen({super.key, this.friendMemberId, this.groupMemberId});
 
   @override
   ConsumerState<TimeTableScreen> createState() => _TimeTableScreenState();
@@ -39,8 +44,10 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   late var groupBodyListsTotal;
   late var groupIdListsTotal;
   int pageIndex = 0;
+  var searchTec = TextEditingController();
 
   Future<ScheduleList> getMemberSchedule() async {
+    // getSchedule입니다
     {
       memberTrueIndexListsTotal = [];
       memberNameListsTotal = [];
@@ -51,8 +58,17 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
           .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
       var endDate = DateFormat('yyyy-MM-dd').format(
           DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
-      var url = Uri.http(baseUri, '/timetable/getTimeTable');
-      var response = await http.post(
+      Uri url;
+      (widget.friendMemberId == null)
+          ? (widget.groupMemberId == null)
+              ? url = Uri.http(baseUri, '/timetable/getTimeTable')
+              : url = Uri.http(baseUri, '/group/getMemberTimeTable',
+                  {'groupMemberId': '${widget.groupMemberId}'})
+          : url = Uri.http(baseUri, '/friend/getFriendTimeTable', {
+              'friendMemberId': '${widget.friendMemberId}',
+            });
+      http.Response response;
+      response = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -60,6 +76,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         },
         body: jsonEncode({"startDate": startDate, "endDate": endDate}),
       );
+
       if (response.statusCode == 200) {
         print('getsuccess');
         print('$startDate  $endDate');
@@ -260,31 +277,96 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                     [0],
                                             left: defaultBoxWidth * h,
                                             child: GestureDetector(
-                                              onLongPress: () async {
+                                              onLongPress: () {
                                                 print(memberIdListsTotal[h][i]);
-                                                var url = Uri.http(
-                                                    baseUri,
-                                                    '/timetable/deleteSchedule',
-                                                    {
-                                                      'scheduleId':
-                                                          '${memberIdListsTotal[h][i]}'
-                                                    });
-                                                var response = await http
-                                                    .delete(url, headers: {
-                                                  'authorization':
-                                                      'Bearer $jwtToken'
-                                                });
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  Fluttertoast.showToast(
-                                                      msg: '삭제되었습니다');
-                                                  setState(() {});
-                                                } else {
-                                                  Fluttertoast.showToast(
-                                                      msg: 'error!');
-                                                  print(utf8.decode(
-                                                      response.bodyBytes));
-                                                }
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    var lectureInfo = snapshot
+                                                            .data!
+                                                            .scheduleListPerDays![
+                                                        h][i];
+                                                    return SimpleDialog(
+                                                      title:
+                                                          const Text('스케줄 변경'),
+                                                      children: [
+                                                        !(lectureInfo[
+                                                                    'groupType'] ==
+                                                                true)
+                                                            ? TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                UpdateScheduleScreen(
+                                                                          scheduleId:
+                                                                              memberIdListsTotal[h][i],
+                                                                          groupId:
+                                                                              lectureInfo['groupId'],
+                                                                        ),
+                                                                      ));
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                        '변경'))
+                                                            : const Center(
+                                                                child: Text(
+                                                                  '그룹스케줄은 변경이 불가능합니다',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .grey),
+                                                                ),
+                                                              ),
+                                                        TextButton(
+                                                            onPressed:
+                                                                () async {
+                                                              var url = Uri.http(
+                                                                  baseUri,
+                                                                  '/timetable/deleteSchedule',
+                                                                  {
+                                                                    'scheduleId':
+                                                                        '${memberIdListsTotal[h][i]}'
+                                                                  });
+                                                              var response =
+                                                                  await http.delete(
+                                                                      url,
+                                                                      headers: {
+                                                                    'authorization':
+                                                                        'Bearer $jwtToken'
+                                                                  });
+                                                              if (response
+                                                                      .statusCode ==
+                                                                  200) {
+                                                                Fluttertoast
+                                                                    .showToast(
+                                                                        msg:
+                                                                            '삭제되었습니다');
+                                                                setState(() {});
+                                                                Navigator.pop(
+                                                                    context);
+                                                              } else {
+                                                                Fluttertoast
+                                                                    .showToast(
+                                                                        msg:
+                                                                            'error!');
+                                                                print(utf8.decode(
+                                                                    response
+                                                                        .bodyBytes));
+                                                              }
+                                                            },
+                                                            child: !(lectureInfo[
+                                                                        'groupType'] ==
+                                                                    true)
+                                                                ? const Text(
+                                                                    '삭제')
+                                                                : const Text(
+                                                                    '나에게서만 삭제')),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
                                               },
                                               child: Container(
                                                 height: defaultBoxHeight *
@@ -449,7 +531,62 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                   child: const Icon(Icons.class_outlined),
                   label: '강의 추가',
                   backgroundColor: Colors.blue,
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return SimpleDialog(
+                          contentPadding: const EdgeInsets.all(10),
+                          title: const Text('강의 검색'),
+                          children: [
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  icon: Icon(Icons.search),
+                                  hintText: '검색어를 입력하세요',
+                                  labelText: '강의 검색'),
+                              controller: searchTec,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            OutlinedButton(
+                                onPressed: () async {
+                                  var url = Uri.http(
+                                    baseUri,
+                                    '/subject/search',
+                                  );
+                                  var response = await http.post(url,
+                                      headers: {
+                                        'authorization': 'Bearer $jwtToken',
+                                        'Content-Type': 'application/json'
+                                      },
+                                      body:
+                                          jsonEncode({'name': searchTec.text}));
+                                  if (response.statusCode == 200) {
+                                    var parsedJson = jsonDecode(
+                                            utf8.decode(response.bodyBytes))
+                                        as List;
+                                    List<Lecture> data = parsedJson
+                                        .map((e) => Lecture.fromJson(e))
+                                        .toList();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              LectureSearchResultScreen(
+                                                  resultList: data),
+                                        ));
+                                  } else {
+                                    print(utf8.decode(response.bodyBytes));
+                                    Fluttertoast.showToast(msg: '검색 에러');
+                                  }
+                                },
+                                child: const Text('찾기'))
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
                 SpeedDialChild(
                     child: const Icon(Icons.group_add),

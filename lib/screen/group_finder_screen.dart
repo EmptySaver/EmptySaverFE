@@ -18,13 +18,13 @@ class GroupFinderScreen extends ConsumerStatefulWidget {
 class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   String? jwtToken;
   var baseUri = '43.201.208.100:8080';
-  Future<List<Group>>? groupData;
+  late Future<List<Group>> groupData;
   bool isSearch = false;
   bool isCategorySelected = false;
   Future<List<Map<String, dynamic>>>? allCategoryFuture;
   Future<List<dynamic>>? allTagFuture;
-  String initialCategory = '게임';
-  late String initialTag;
+  String initialCategory = '전체';
+  String? initialTag;
   // String initialTag = '';
 
   Future<List<Group>> getAllGroup() async {
@@ -67,6 +67,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('나, 빌드');
+    Future<List<Group>>? searchCategoryTeam;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -93,6 +95,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                           isSearch = !isSearch;
                           setState(() {
                             groupData = getAllGroup();
+                            isCategorySelected = false;
                           });
                         },
                         icon: const Icon(Icons.search))
@@ -122,6 +125,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 for (int i = 0; i < snapshot.data!.length; i++)
                                   snapshot.data![i]['name']!
                               ];
+                              items.insert(0, '전체');
                               var dropItems = items
                                   .map<DropdownMenuItem<String>>(
                                       (e) => DropdownMenuItem(
@@ -136,39 +140,53 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               return DropdownButton<String>(
                                 items: dropItems,
                                 onChanged: (value) async {
-                                  var query = items.indexOf(value);
-                                  var url = Uri.http(baseUri,
-                                      '/group/getCategoryTeam/${types[query]}');
-                                  var response = await http.get(url, headers: {
-                                    'authorization': 'Bearer $jwtToken'
-                                  });
-                                  if (response.statusCode == 200) {
-                                    var rawData = jsonDecode(utf8.decode(
-                                        response.bodyBytes))['data'] as List;
-                                    var data = rawData
-                                        .map((e) => Group.fromJson(e))
-                                        .toList();
-                                    setState(() {
-                                      groupData = Future(() => data);
+                                  var query = items.indexOf(value) - 1;
+                                  var url, response;
+                                  if (!(value == '전체')) {
+                                    url = Uri.http(baseUri,
+                                        '/group/getCategoryTeam/${types[query]}');
+                                    response = await http.get(url, headers: {
+                                      'authorization': 'Bearer $jwtToken'
                                     });
+                                    if (response.statusCode == 200) {
+                                      var rawData = jsonDecode(utf8.decode(
+                                          response.bodyBytes))['data'] as List;
+                                      var data = rawData
+                                          .map((e) => Group.fromJson(e))
+                                          .toList();
+                                      searchCategoryTeam = Future(() => data);
+                                      setState(() {
+                                        groupData = searchCategoryTeam!;
+                                      });
+                                    } else {
+                                      print(utf8.decode(response.bodyBytes));
+                                      throw Exception(
+                                          'failed to get groupData');
+                                    }
                                   } else {
-                                    print(utf8.decode(response.bodyBytes));
-                                    throw Exception('failed to get groupData');
+                                    setState(() {
+                                      groupData = getAllGroup();
+                                    });
                                   }
+                                  var tags = [];
+                                  tags.isEmpty
+                                      ? initialTag = null
+                                      : initialTag =
+                                          tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
                                   url = Uri.http(baseUri,
                                       '/category/getLabels/${types[query]}');
                                   response = await http.get(url, headers: {
                                     'authorization': 'Bearer $jwtToken'
                                   });
                                   if (response.statusCode == 200) {
-                                    var tags = jsonDecode(utf8.decode(
+                                    tags = jsonDecode(utf8.decode(
                                         response.bodyBytes))['result'] as List;
-                                    initialTag = tags[0];
                                     allTagFuture = Future(() => tags);
                                     // print(allTagFuture);
                                     setState(() {
                                       initialCategory = value!;
-                                      isCategorySelected = !isCategorySelected;
+                                      // initialTag = tags[0];
+                                      isCategorySelected = true;
                                     });
                                   }
                                 },
@@ -204,7 +222,6 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                             'authorization': 'Bearer $jwtToken'
                                           });
                                       if (response.statusCode == 200) {
-                                        print(response.body);
                                         var rawData = jsonDecode(utf8.decode(
                                                 response.bodyBytes))['data']
                                             as List;

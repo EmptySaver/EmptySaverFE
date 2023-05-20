@@ -132,7 +132,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreenOld> {
                       onPressed: () async {
                         DateTime currentTime = await NTP.now();
                         currentTime =
-                            currentTime.toUtc().add(Duration(hours: 9));
+                            currentTime.toUtc().add(const Duration(hours: 9));
                         timeList = await showOmniDateTimeRangePicker(
                           context: context,
                           startInitialDate: currentTime,
@@ -140,9 +140,9 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreenOld> {
                           minutesInterval: 30,
                         );
                         String? start = timeList?.elementAt(0).toString();
-                        print("start time : ${start}");
+                        print("start time : $start");
                       },
-                      child: Text("날짜선택하깅")),
+                      child: const Text("날짜선택하깅")),
                   const SizedBox(
                     height: 30,
                   ),

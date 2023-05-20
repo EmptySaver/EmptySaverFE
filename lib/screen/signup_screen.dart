@@ -115,10 +115,10 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void postSignUp() async {
-    if (!isauthed) {
-      Fluttertoast.showToast(msg: '이메일 인증 후 진행해주세요');
-      return;
-    }
+    // if (!isauthed) {
+    //   Fluttertoast.showToast(msg: '이메일 인증 후 진행해주세요');
+    //   return;
+    // }
     if (!_checkSpace(addrTec.text) ||
         !_checkSpace(pwdTec.text) ||
         !_checkSpace(classnumTec.text) ||
@@ -161,7 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
       },
     );
     if (response.statusCode == 200) {
-      print('good');
+      Fluttertoast.showToast(msg: '가입되었습니다');
       Navigator.pop(context);
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
