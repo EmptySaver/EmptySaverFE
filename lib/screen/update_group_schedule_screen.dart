@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class UpdateGroupScheduleScreen extends ConsumerStatefulWidget {
-  Map<String, dynamic>? groupData;
+  Group? groupData;
   int? scheduleId;
   UpdateGroupScheduleScreen({super.key, this.groupData, this.scheduleId});
 
@@ -380,7 +381,7 @@ class _UpdateGroupScheduleScreenState
                               };
                         var url = Uri.http(
                             baseUri, '/timetable/team/updateSchedule', {
-                          'groupId': '${widget.groupData!['groupId']}',
+                          'groupId': '${widget.groupData!.groupId}',
                           'scheduleId': '${widget.scheduleId}',
                         });
                         print(url);

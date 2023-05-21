@@ -12,7 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class GroupDetailScreen extends ConsumerStatefulWidget {
-  Map<String, dynamic>? groupData;
+  Group? groupData;
 
   GroupDetailScreen({super.key, this.groupData});
 
@@ -28,8 +28,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   var memberIdTec = TextEditingController();
 
   Future<List<Map<String, dynamic>>> getGroupMember() async {
-    var url = Uri.http(
-        baseUri, '/group/getGroupMember/${widget.groupData!['groupId']}');
+    var url =
+        Uri.http(baseUri, '/group/getGroupMember/${widget.groupData!.groupId}');
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
@@ -46,7 +46,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
   Future<List<ScheduleText>> getGroupScheduleTextList() async {
     var url = Uri.http(baseUri, '/timetable/team/getScheduleList',
-        {'groupId': '${widget.groupData!['groupId']}'});
+        {'groupId': '${widget.groupData!.groupId}'});
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
@@ -68,7 +68,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         },
         body: jsonEncode({
           'memberId': memberIdTec.text,
-          'groupId': widget.groupData!['groupId']
+          'groupId': widget.groupData!.groupId
         }));
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '초대를 보냈습니다');
@@ -95,7 +95,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           IconButton(
               onPressed: () async {
                 var url = Uri.http(
-                    baseUri, '/group/deleteMe/${widget.groupData!['groupId']}');
+                    baseUri, '/group/deleteMe/${widget.groupData!.groupId}');
                 var response = await http.delete(url, headers: {
                   'authorization': 'Bearer $jwtToken',
                 });
@@ -109,7 +109,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           IconButton(
               onPressed: () async {
                 var url = Uri.http(
-                    baseUri, '/group/delete/${widget.groupData!['groupId']}');
+                    baseUri, '/group/delete/${widget.groupData!.groupId}');
                 var response = await http.delete(url, headers: {
                   'authorization': 'Bearer $jwtToken',
                 });
@@ -137,7 +137,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.groupData!['groupName'],
+                      '${widget.groupData!.groupId}',
                       style: const TextStyle(
                         fontSize: 25,
                       ),
@@ -148,7 +148,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => GroupCheckScreen(
-                                  groupId: widget.groupData!['groupId']),
+                                  groupId: widget.groupData!.groupId),
                             ));
                       },
                       child: const Text('조회'),
@@ -256,7 +256,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                     '/timetable/team/deleteSchedule',
                                                     {
                                                       'groupId':
-                                                          '${widget.groupData!['groupId']}',
+                                                          '${widget.groupData!.groupId}',
                                                       'scheduleId':
                                                           '${snapshot.data![index].id}'
                                                     });
@@ -419,8 +419,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                                     index]
                                                                 ['memberId'],
                                                             'groupId': widget
-                                                                    .groupData![
-                                                                'groupId']
+                                                                .groupData!
+                                                                .groupId
                                                           }));
                                                   if (response.statusCode ==
                                                       200) {

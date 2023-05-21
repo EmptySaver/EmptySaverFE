@@ -94,6 +94,7 @@ class Group {
   bool? isPublic;
   bool? isAnonymous;
   String? categoryLabel;
+  bool? amIOwner;
   List<dynamic>? commentList;
 
   Group(
@@ -106,6 +107,7 @@ class Group {
       this.isPublic,
       this.isAnonymous,
       this.categoryLabel,
+      this.amIOwner,
       this.commentList});
 
   // Group.fromJson(Map<String, dynamic> parsedJson)
@@ -129,6 +131,7 @@ class Group {
       isPublic: parsedJson['isPublic'],
       isAnonymous: parsedJson['isAnonymous'],
       categoryLabel: parsedJson['categoryLabel'],
+      amIOwner: parsedJson['amIOwner'],
       commentList: parsedJson['commentList'],
     );
   }

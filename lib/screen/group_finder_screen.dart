@@ -25,14 +25,14 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   Future<List<dynamic>>? allTagFuture;
   String initialCategory = '전체';
   String? initialTag;
-  // String initialTag = '';
+  String? categoryForTagApi;
 
   Future<List<Group>> getAllGroup() async {
     var url = Uri.http(baseUri, '/group/getAllGroup');
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Group.fromJson(e)).toList();
       return data;
     } else {
@@ -122,10 +122,10 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               var items = [
+                                '전체',
                                 for (int i = 0; i < snapshot.data!.length; i++)
                                   snapshot.data![i]['name']!
                               ];
-                              items.insert(0, '전체');
                               var dropItems = items
                                   .map<DropdownMenuItem<String>>(
                                       (e) => DropdownMenuItem(
@@ -134,13 +134,14 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                           ))
                                   .toList();
                               var types = [
+                                '전체',
                                 for (int i = 0; i < snapshot.data!.length; i++)
                                   snapshot.data![i]['type']
                               ];
                               return DropdownButton<String>(
                                 items: dropItems,
                                 onChanged: (value) async {
-                                  var query = items.indexOf(value) - 1;
+                                  var query = items.indexOf(value);
                                   var url, response;
                                   if (!(value == '전체')) {
                                     url = Uri.http(baseUri,
@@ -149,8 +150,9 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                       'authorization': 'Bearer $jwtToken'
                                     });
                                     if (response.statusCode == 200) {
-                                      var rawData = jsonDecode(utf8.decode(
-                                          response.bodyBytes))['data'] as List;
+                                      var rawData = jsonDecode(
+                                              utf8.decode(response.bodyBytes))
+                                          as List;
                                       var data = rawData
                                           .map((e) => Group.fromJson(e))
                                           .toList();
@@ -179,6 +181,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                     'authorization': 'Bearer $jwtToken'
                                   });
                                   if (response.statusCode == 200) {
+                                    categoryForTagApi = jsonDecode(utf8
+                                        .decode(response.bodyBytes))['type'];
                                     tags = jsonDecode(utf8.decode(
                                         response.bodyBytes))['result'] as List;
                                     allTagFuture = Future(() => tags);
@@ -215,15 +219,20 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                     value: initialTag,
                                     onChanged: (value) async {
                                       initialTag = value!;
-                                      var url = Uri.http(baseUri,
-                                          '/group/getLabelTeam/${utf8.decode(utf8.encode(value))}');
+                                      print(categoryForTagApi);
+                                      print(value);
+                                      var url = Uri.http(
+                                          baseUri, '/group/getLabelTeam', {
+                                        'categoryName': categoryForTagApi,
+                                        'label': utf8.decode(utf8.encode(value))
+                                      });
                                       var response = await http.get(url,
                                           headers: {
                                             'authorization': 'Bearer $jwtToken'
                                           });
                                       if (response.statusCode == 200) {
-                                        var rawData = jsonDecode(utf8.decode(
-                                                response.bodyBytes))['data']
+                                        var rawData = jsonDecode(
+                                                utf8.decode(response.bodyBytes))
                                             as List;
                                         var data = rawData
                                             .map((e) => Group.fromJson(e))

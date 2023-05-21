@@ -92,13 +92,13 @@ Future<void> fbMsgForegroundHandler(
         print('onDidReceiveNotificationResponse - payload: ${details.payload}');
 
         String value = message.data["route"];
-        print("route Value : ${value}");
+        print("route Value : $value");
         //이런식으로 메세지 data에 값을 넣어서 (Map<string,string>) route값을 백에서 보내겠슴다
         //그러면 값을 보고 뭔가 부차적인(*그룹id같은)값이 더 필요한 경우 공유해주시면 dataMap에 id로 추가해서 넣어주겠슴다
         //근데 여기서 큰 문제가 하나 있는데, 로그인,회원가입,비번초기화 페이지 제외하고는 로그인한 상태로 넘어가면 안되는디
         // 넘어가집니다
         // 그상태로 back갈기면 로그인페이지로 돌아가긴함다.
-        Get.to(InfoScreenNew());
+        Get.to(const InfoScreenNew());
         // Navigator.pushNamed(context, routeName)
       },
     );
@@ -134,13 +134,14 @@ void _handleMessage(RemoteMessage message) async {
   //   return;
   // }
   String value = message.data["route"];
-  print("route Value : ${value}");
+  print('백그라운드 클릭');
+  print("route Value : $value");
   //이런식으로 메세지 data에 값을 넣어서 (Map<string,string>) route값을 백에서 보내겠슴다
   //그러면 값을 보고 뭔가 부차적인(*그룹id같은)값이 더 필요한 경우 공유해주시면 dataMap에 id로 추가해서 넣어주겠슴다
   //근데 여기서 큰 문제가 하나 있는데, 로그인,회원가입,비번초기화 페이지 제외하고는 로그인한 상태로 넘어가면 안되는디
   // 넘어가집니다
   // 그상태로 back갈기면 로그인페이지로 돌아가긴함다.
-  Get.to(NotificationsScreen());
+  Get.to(const NotificationsScreen());
 }
 
 void main() async {
