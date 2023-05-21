@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/widgets/network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:emptysaver_fe/core/assets.dart';
@@ -59,19 +60,19 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
             height: 20.0,
           ),
           _buildLoginForm(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              FloatingActionButton(
-                mini: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.arrow_back),
-              )
-            ],
-          )
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: <Widget>[
+          //     FloatingActionButton(
+          //       mini: true,
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       },
+          //       backgroundColor: Colors.blue,
+          //       child: const Icon(Icons.arrow_back),
+          //     )
+          //   ],
+          // )
         ],
       ),
     );
@@ -149,7 +150,10 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
               CircleAvatar(
                 radius: 40.0,
                 backgroundColor: Colors.blue.shade600,
-                child: const Icon(Icons.person),
+                child: const Icon(
+                  Icons.lock_reset_sharp,
+                  size: 45,
+                ),
               ),
             ],
           ),
@@ -181,6 +185,17 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue.shade100,
+      appBar: AppBar(
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        title: const Text(
+          'Forgot Password',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: _buildPageContent(context),
     );
   }
