@@ -8,14 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-class GroupFinderScreen extends ConsumerStatefulWidget {
-  const GroupFinderScreen({super.key});
+class GroupFinderScreenOld extends ConsumerStatefulWidget {
+  const GroupFinderScreenOld({super.key});
 
   @override
-  ConsumerState<GroupFinderScreen> createState() => _GroupFinderScreenState();
+  ConsumerState<GroupFinderScreenOld> createState() =>
+      _GroupFinderScreenState();
 }
 
-class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
+class _GroupFinderScreenState extends ConsumerState<GroupFinderScreenOld> {
   String? jwtToken;
   var baseUri = '43.201.208.100:8080';
   late Future<List<Group>> groupData;

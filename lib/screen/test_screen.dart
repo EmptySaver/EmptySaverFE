@@ -1,216 +1,325 @@
-/**
- * Author: Sudip Thapa  
- * profile: https://github.com/sudeepthapa
-  */
-
+import 'dart:convert';
+import 'package:emptysaver_fe/models/job.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class PlaceList1 extends StatelessWidget {
-  static const String path = "lib/src/pages/lists/list1.dart";
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
-  const PlaceList1({super.key});
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var jsonD = {
+    "jobs": [
+      {
+        "title": "Senior/Staff Backend Engineer",
+        "address": "Canada",
+        "timeAgo": "2 minutes ago",
+        "companyLogo": "assets/images/reddit.jpeg",
+        "type": "Full Time",
+        "experienceLevel": "Senior level",
+        "experienceLevelColor": "ff0000",
+        "isMyFav": false
+      },
+      {
+        "title": "junior Node.js Developer",
+        "address": "Nelson, BC",
+        "timeAgo": "1 hours ago",
+        "companyLogo": "assets/images/certicraft.png",
+        "type": "Full Time",
+        "experienceLevel": "Entry level",
+        "experienceLevelColor": "92D88B",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior Software Engineer",
+        "address": "Vancouver, BC",
+        "timeAgo": "2 hours ago",
+        "companyLogo": "assets/images/beanworks.jpeg",
+        "type": "Full Time",
+        "experienceLevel": "Mid-Senior level",
+        "experienceLevelColor": "4495FF",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior Front-End Engineer",
+        "address": "Calgary, AB",
+        "timeAgo": "4 days ago",
+        "companyLogo": "assets/images/mozila.png",
+        "type": "Full Time",
+        "experienceLevel": "Associate",
+        "experienceLevelColor": "0000ff",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior Software Engineer",
+        "address": "Vancouver, BC",
+        "timeAgo": "2 weeks ago",
+        "companyLogo": "assets/images/mailchimp.jpeg",
+        "type": "Full Time",
+        "experienceLevel": "Associate",
+        "experienceLevelColor": "0000ff",
+        "isMyFav": false
+      },
+      {
+        "title": "junior Node.js Developer",
+        "address": "Nelson, BC",
+        "timeAgo": "1 hours ago",
+        "companyLogo": "assets/images/certicraft.png",
+        "type": "Full Time",
+        "experienceLevel": "Entry level",
+        "experienceLevelColor": "92D88B",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior/Staff Backend Engineer",
+        "address": "Canada",
+        "timeAgo": "2 minutes ago",
+        "companyLogo": "assets/images/reddit.jpeg",
+        "type": "Full Time",
+        "experienceLevel": "Senior level",
+        "experienceLevelColor": "ff0000",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior Front-End Engineer",
+        "address": "Calgary, AB",
+        "timeAgo": "4 days ago",
+        "companyLogo": "assets/images/mozila.png",
+        "type": "Full Time",
+        "experienceLevel": "Associate",
+        "experienceLevelColor": "0000ff",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior Software Engineer",
+        "address": "Vancouver, BC",
+        "timeAgo": "2 weeks ago",
+        "companyLogo": "assets/images/mailchimp.jpeg",
+        "type": "Full Time",
+        "experienceLevel": "Associate",
+        "experienceLevelColor": "0000ff",
+        "isMyFav": false
+      },
+      {
+        "title": "Senior Software Engineer",
+        "address": "Vancouver, BC",
+        "timeAgo": "2 hours ago",
+        "companyLogo": "assets/images/beanworks.jpeg",
+        "type": "Full Time",
+        "experienceLevel": "Mid-Senior level",
+        "experienceLevelColor": "4495FF",
+        "isMyFav": false
+      }
+    ]
+  };
+
+  List<dynamic> jobList = [];
+
+  Future<void> readJson() async {
+    // final String response =
+    //     await rootBundle.loadString('/lib/element/jobs.json');
+    // final data = await json.decode(jsonD.);
+    final data = jsonD;
+    setState(() {
+      jobList = data['jobs']!.map((data) => Job.fromJson(data)).toList();
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    readJson();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Place List 1"),
-        backgroundColor: Colors.deepOrangeAccent,
-        elevation: 2,
-        actions: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: const Icon(Icons.filter_list),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leadingWidth: 20,
+        leading: IconButton(
+            padding: EdgeInsets.only(left: 20),
+            onPressed: () {},
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.grey.shade600,
+            )),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                iconSize: 30,
+                onPressed: () {},
+                icon: Icon(
+                  Icons.notifications_none,
+                  color: Colors.grey.shade400,
+                )),
           )
         ],
+        title: Container(
+          height: 45,
+          child: TextField(
+            cursorColor: Colors.grey,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              filled: true,
+              fillColor: Colors.grey.shade200,
+              prefixIcon: Icon(Icons.search, color: Colors.grey),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  borderSide: BorderSide.none),
+              hintText: "Search e.g Software Developer",
+              hintStyle: TextStyle(fontSize: 14),
+            ),
+          ),
+        ),
       ),
-      body: Lists(),
+      body: Container(
+        child: ListView.builder(
+            padding: EdgeInsets.all(20),
+            itemCount: jobList.length,
+            itemBuilder: (context, index) {
+              // return FadeAnimation(
+              //     (1.0 + index) / 4, jobComponent(job: jobList[index]));
+              return jobComponent(job: jobList[index]);
+            }),
+      ),
     );
   }
-}
 
-class Item {
-  final String? title;
-  final String? catagory;
-  final String? place;
-  final String? ratings;
-  final String? discount;
-  final String? image;
-
-  Item(
-      {this.title,
-      this.catagory,
-      this.place,
-      this.ratings,
-      this.discount,
-      this.image});
-}
-
-class Lists extends StatelessWidget {
-  final List<Item> _data = [
-    Item(
-        title: 'Gardens By the Bay',
-        catagory: "Gardens",
-        place: "Singapore",
-        ratings: "5.0/80",
-        discount: "10 %",
-        image:
-            "https://images.pexels.com/photos/672142/pexels-photo-672142.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
-    Item(
-        title: 'Singapore Zoo',
-        catagory: "Parks",
-        place: "Singapore",
-        ratings: "4.5/90",
-        discount: null,
-        image:
-            "https://images.pexels.com/photos/1736222/pexels-photo-1736222.jpeg?cs=srgb&dl=adult-adventure-backpacker-1736222.jpg&fm=jpg"),
-    Item(
-        title: 'National Orchid Garden',
-        catagory: "Parks",
-        place: "Singapore",
-        ratings: "4.5/90",
-        discount: "12 %",
-        image:
-            "https://images.pexels.com/photos/62403/pexels-photo-62403.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
-    Item(
-        title: 'Godabari',
-        catagory: "Parks",
-        place: "Singapore",
-        ratings: "4.5/90",
-        discount: "15 %",
-        image:
-            "https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"),
-    Item(
-        title: 'Rara National Park',
-        catagory: "Parks",
-        place: "Singapore",
-        ratings: "4.5/90",
-        discount: "12 %",
-        image:
-            "https://images.pexels.com/photos/1319515/pexels-photo-1319515.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"),
-  ];
-
-  Lists({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(6),
-      itemCount: _data.length,
-      itemBuilder: (BuildContext context, int index) {
-        Item item = _data[index];
-        return Card(
-          elevation: 3,
-          child: Row(
-            children: <Widget>[
-              Container(
-                height: 125,
-                width: 110,
-                padding: const EdgeInsets.only(
-                    left: 0, top: 10, bottom: 70, right: 20),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(item.image!), fit: BoxFit.cover)),
-                child: item.discount == null
-                    ? Container()
-                    : Container(
-                        color: Colors.deepOrange,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              item.discount!,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal),
-                            ),
-                            const Text(
-                              "Discount",
+  jobComponent({required Job job}) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 2,
+              offset: Offset(0, 1),
+            ),
+          ]),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(children: [
+                  Container(
+                      width: 60,
+                      height: 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(job.companyLogo),
+                      )),
+                  SizedBox(width: 10),
+                  Flexible(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(job.title,
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(job.address,
+                              style: TextStyle(color: Colors.grey[500])),
+                        ]),
+                  )
+                ]),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      item.title!,
-                      style: const TextStyle(
-                          color: Colors.deepOrange,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 17),
-                    ),
-                    Text(
-                      item.catagory!,
-                      style:
-                          const TextStyle(fontSize: 14, color: Colors.black87),
-                    ),
-                    Text(
-                      item.place!,
-                      style:
-                          const TextStyle(fontSize: 14, color: Colors.black87),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: const <Widget>[
-                        Icon(
-                          Icons.star,
-                          color: Colors.pink,
-                          size: 18,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.pink,
-                          size: 18,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.pink,
-                          size: 18,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.pink,
-                          size: 18,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.pink,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          item.ratings!,
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        const Text(
-                          "Ratings",
-                          style: TextStyle(fontSize: 13),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    job.isMyFav = !job.isMyFav;
+                  });
+                },
+                child: AnimatedContainer(
+                    height: 35,
+                    padding: EdgeInsets.all(5),
+                    duration: Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: job.isMyFav
+                              ? Colors.red.shade100
+                              : Colors.grey.shade300,
+                        )),
+                    child: Center(
+                        child: job.isMyFav
+                            ? Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                              )
+                            : Icon(
+                                Icons.favorite_outline,
+                                color: Colors.grey.shade600,
+                              ))),
               )
             ],
           ),
-        );
-      },
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey.shade200),
+                      child: Text(
+                        job.type,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Color(
+                                  int.parse("0xff${job.experienceLevelColor}"))
+                              .withAlpha(20)),
+                      child: Text(
+                        job.experienceLevel,
+                        style: TextStyle(
+                            color: Color(
+                                int.parse("0xff${job.experienceLevelColor}"))),
+                      ),
+                    )
+                  ],
+                ),
+                Text(
+                  job.timeAgo,
+                  style: TextStyle(color: Colors.grey.shade800, fontSize: 12),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
