@@ -215,32 +215,59 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                         infoTitle,
                         style: TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
                       ),
-
                     ],
                   ),
                 ),
               ),
               Align(
+                alignment: Alignment.topLeft,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(5, 18, 0, 0),
+                  child: Visibility(
+                    visible: !recruitType,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          targetList = recruitingList;
+                          print("취업으로");
+                          infoTitle = recruitTitle; //recruitType = true;
+
+                          recruitType = !recruitType;
+                        });
+                      },
+                      child: Text('<-리크루팅',
+                        style: TextStyle(fontSize: 22,color: Colors.white70,fontWeight: FontWeight.bold),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, onPrimary: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              Align(
                 alignment: Alignment.topRight,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      if(recruitType){
-                        targetList = nonSubjectList;
-                        print("비교과로");
-                        infoTitle = nonSubjectTitle;
-                        recruitType = false;
-                      }else{
-                        targetList = recruitingList;
-                        print("취업으로");
-                        infoTitle = recruitTitle;
-                        recruitType = true;
-                      }
-                    });
-                  },
-                  child: const Text('다른거로'),
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.lightBlueAccent, onPrimary: Colors.white),
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0, 18, 5, 0),
+                    child: Visibility(
+                      visible: recruitType,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            targetList = nonSubjectList;
+                            print("비교과로");
+                            infoTitle = nonSubjectTitle;
+                            //recruitType = false;
+
+                            recruitType = !recruitType;
+                          });
+                        },
+                        child: Text('비교과 ->',
+                          style: TextStyle(fontSize: 22,color: Colors.white70,fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.blue, onPrimary: Colors.white),
+                      ),
+                    ),
                 ),
               ),
               //원래 여기
