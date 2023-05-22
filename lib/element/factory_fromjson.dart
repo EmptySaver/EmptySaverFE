@@ -96,6 +96,7 @@ class Group {
   String? categoryLabel;
   bool? amIOwner;
   List<dynamic>? commentList;
+  String? categoryName;
 
   Group(
       {this.groupId,
@@ -108,7 +109,8 @@ class Group {
       this.isAnonymous,
       this.categoryLabel,
       this.amIOwner,
-      this.commentList});
+      this.commentList,
+      this.categoryName});
 
   // Group.fromJson(Map<String, dynamic> parsedJson)
   //     : groupId = parsedJson['groupId'],
@@ -122,18 +124,18 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> parsedJson) {
     return Group(
-      groupId: parsedJson['groupId'],
-      groupName: parsedJson['groupName'],
-      oneLineInfo: parsedJson['oneLineInfo'],
-      groupDescription: parsedJson['groupDescription'],
-      nowMember: parsedJson['nowMember'],
-      maxMember: parsedJson['maxMember'],
-      isPublic: parsedJson['isPublic'],
-      isAnonymous: parsedJson['isAnonymous'],
-      categoryLabel: parsedJson['categoryLabel'],
-      amIOwner: parsedJson['amIOwner'],
-      commentList: parsedJson['commentList'],
-    );
+        groupId: parsedJson['groupId'],
+        groupName: parsedJson['groupName'],
+        oneLineInfo: parsedJson['oneLineInfo'],
+        groupDescription: parsedJson['groupDescription'],
+        nowMember: parsedJson['nowMember'],
+        maxMember: parsedJson['maxMember'],
+        isPublic: parsedJson['isPublic'],
+        isAnonymous: parsedJson['isAnonymous'],
+        categoryLabel: parsedJson['categoryLabel'],
+        amIOwner: parsedJson['amIOwner'],
+        commentList: parsedJson['commentList'],
+        categoryName: parsedJson['categoryName']);
   }
 }
 
