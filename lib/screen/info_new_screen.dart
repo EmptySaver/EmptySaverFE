@@ -17,6 +17,7 @@ class InfoScreenNew extends ConsumerStatefulWidget {
 class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   final TextStyle dropdownMenuItem =
   const TextStyle(color: Colors.black, fontSize: 18);
+  final ScrollController _scrollController = ScrollController();  //스크롤 감지용
 
   final primary = const Color(0xff696b9e);
   final secondary = const Color(0xfff29a94);
@@ -25,6 +26,14 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   var baseUri = '43.201.208.100:8080';
   int nonSubjectPageNum = 0;
   int recruitingPageNum = 0;
+  late List<Info> nonSubjectLoadedList =  [];
+  late List<Info> recruitingLoadedList =  [];
+  late Future<List<Info>> targetList;
+  late bool recruitType;
+  String infoTitle = " - ";
+  String recruitTitle = "리쿠르팅";
+  String nonSubjectTitle = "비교과";
+
   late Future<List<Info>> nonSubjectList;
   late Future<List<Info>> recruitingList;
 
@@ -35,7 +44,13 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Info.fromJson(e)).toList();
-      return data;
+
+      if(data.isNotEmpty){
+        nonSubjectPageNum++;
+      }
+
+      nonSubjectLoadedList.addAll(data);
+      return nonSubjectLoadedList;
     } else {
       print(utf8.decode(response.bodyBytes));
       throw Exception('failed to get nonsubjectdata');
@@ -43,30 +58,68 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   }
 
   Future<List<Info>> getRecruiting() async {
-    var url = Uri.http(baseUri, '/info/nonSubject/$recruitingPageNum');
+    var url = Uri.http(baseUri, '/info/recruiting/$recruitingPageNum');
     var response =
     await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Info.fromJson(e)).toList();
-      return data;
+
+      if(data.isNotEmpty){
+        recruitingPageNum++;
+      }
+
+      recruitingLoadedList.addAll(data);
+      print(recruitingLoadedList.length);
+      return recruitingLoadedList;
     } else {
       print(utf8.decode(response.bodyBytes));
       throw Exception('failed to get recruitingdata');
     }
   }
 
+  scrollListener() async {
+    // print('offset = ${_scrollController.offset}');
+
+    if (_scrollController.offset == _scrollController.position.maxScrollExtent
+        && !_scrollController.position.outOfRange) {
+      print('스크롤이 맨 바닥에 위치해서, 다음을 로드함니다.');
+      setState(() {
+        if(recruitType){
+          print('취업재로딩');
+          recruitingList = getRecruiting();
+          targetList = recruitingList;
+        }else{
+          print('비교과재로딩');
+          nonSubjectList = getNonsubject();
+          targetList = nonSubjectList;
+        }
+      });
+
+    } else if (_scrollController.offset == _scrollController.position.minScrollExtent
+        && !_scrollController.position.outOfRange) {
+      print('스크롤이 맨 위에 위치해 있습니다');
+    }
+  }
+
   @override
   void initState() {
+    recruitType = true;
+    infoTitle = recruitTitle;
+    _scrollController.addListener(() {
+      scrollListener();
+    });
     super.initState();
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     nonSubjectList = getNonsubject();
     recruitingList = getRecruiting();
+
+    targetList = recruitingList;
   }
 
   FutureBuilder getFutureBuilder(){
     return FutureBuilder(
-      future: nonSubjectList,
+      future: targetList,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Container(
@@ -75,6 +128,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
             width: double.infinity,
             decoration: BoxDecoration(border: Border.all()),
             child: ListView.builder(
+              controller: _scrollController,
               shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
               itemCount: snapshot.data!.length,
@@ -157,14 +211,66 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      const Text(
-                        "비교과",
+                      Text(
+                        infoTitle,
                         style: TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
               ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(5, 18, 0, 0),
+                  child: Visibility(
+                    visible: !recruitType,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          targetList = recruitingList;
+                          print("취업으로");
+                          infoTitle = recruitTitle; //recruitType = true;
+
+                          recruitType = !recruitType;
+                        });
+                      },
+                      child: Text('<-리크루팅',
+                        style: TextStyle(fontSize: 22,color: Colors.white70,fontWeight: FontWeight.bold),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, onPrimary: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0, 18, 5, 0),
+                    child: Visibility(
+                      visible: recruitType,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            targetList = nonSubjectList;
+                            print("비교과로");
+                            infoTitle = nonSubjectTitle;
+                            //recruitType = false;
+
+                            recruitType = !recruitType;
+                          });
+                        },
+                        child: Text('비교과 ->',
+                          style: TextStyle(fontSize: 22,color: Colors.white70,fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.blue, onPrimary: Colors.white),
+                      ),
+                    ),
+                ),
+              ),
+              //원래 여기
               /*
               Column(
                 children: <Widget>[
