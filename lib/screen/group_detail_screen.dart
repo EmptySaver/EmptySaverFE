@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
+import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
+import 'package:emptysaver_fe/screen/make_post_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:emptysaver_fe/screen/update_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   var baseUri = '43.201.208.100:8080';
   late Future<List<Map<String, dynamic>>> groupMemberFuture;
   late Future<List<ScheduleText>> groupScheduleTextListFuture;
+  late Future<List<dynamic>> groupPostListFuture;
   var memberIdTec = TextEditingController();
 
   Future<List<Map<String, dynamic>>> getGroupMember() async {
@@ -78,16 +81,32 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     }
   }
 
+  Future<List<dynamic>> getPostList() async {
+    var url =
+        Uri.http(baseUri, '/board/getPostList/${widget.groupData!.groupId}');
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      var data = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('공지사항 가져오기 실패');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     jwtToken = ref.read(tokensProvider.notifier).state[0];
     groupMemberFuture = getGroupMember();
     groupScheduleTextListFuture = getGroupScheduleTextList();
+    groupPostListFuture = getPostList();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('빌드된다잉2');
     return Scaffold(
       appBar: AppBar(
         title: const Text('그룹 상세'),
@@ -137,7 +156,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${widget.groupData!.groupId}',
+                      '${widget.groupData!.groupName}',
                       style: const TextStyle(
                         fontSize: 25,
                       ),
@@ -158,19 +177,129 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('공지사항'),
+                    const Text('공지사항'),
+                    OutlinedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MakePostScreen(
+                                  groupdata: widget.groupData,
+                                ),
+                              )).then((value) => setState(
+                                () {
+                                  groupPostListFuture = getPostList();
+                                },
+                              ));
+                        },
+                        child: const Text('글쓰기')),
                   ],
-                ),
-                const SizedBox(
-                  height: 20,
                 ),
                 Container(
                   height: 150,
                   width: 350,
                   decoration: BoxDecoration(border: Border.all()),
+                  child: FutureBuilder(
+                    future: groupPostListFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isNotEmpty) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              var postId = snapshot.data![index]['postId'];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EachPostScreen(
+                                          postId: postId,
+                                        ),
+                                      ));
+                                },
+                                onLongPress: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return SimpleDialog(
+                                        contentPadding: const EdgeInsets.all(8),
+                                        children: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          EachPostScreen(
+                                                        mode: 'write',
+                                                        postId: snapshot
+                                                                .data![index]
+                                                            ['postId'],
+                                                      ),
+                                                    )).then((value) => setState(
+                                                      () {
+                                                        groupPostListFuture =
+                                                            getPostList();
+                                                      },
+                                                    ));
+                                              },
+                                              child: const Text('수정')),
+                                          TextButton(
+                                              onPressed: () async {
+                                                var url = Uri.http(baseUri,
+                                                    '/board/deletePost/${snapshot.data![index]['postId']}');
+                                                var response = await http
+                                                    .delete(url, headers: {
+                                                  'authorization':
+                                                      'Bearer $jwtToken'
+                                                });
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  Fluttertoast.showToast(
+                                                      msg: '삭제되었습니다');
+                                                  setState(() {
+                                                    groupPostListFuture =
+                                                        getPostList();
+                                                  });
+                                                  Navigator.pop(context);
+                                                } else {
+                                                  print(utf8.decode(
+                                                      response.bodyBytes));
+                                                  return;
+                                                }
+                                              },
+                                              child: const Text('삭제'))
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  height: 40,
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  child:
+                                      Text('${snapshot.data![index]['title']}'),
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            child: Text('등록된 공지사항이 없습니다'),
+                          );
+                        }
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
