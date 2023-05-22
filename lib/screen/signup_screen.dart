@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -50,24 +51,6 @@ class _SignupScreenState extends State<SignupScreen> {
       });
     });
   }
-
-  // void _showDialog(String text) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       Future.delayed(const Duration(seconds: 1), () {
-  //         Navigator.pop(context);
-  //       });
-
-  //       return AlertDialog(
-  //         title: const Text("공강구조대"),
-  //         shape:
-  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-  //         content: Text(text),
-  //       );
-  //     },
-  //   );
-  // }
 
   bool _checkSpace(String target) {
     String result = target.replaceAll(RegExp('\\s'), "");
@@ -187,19 +170,19 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 20.0,
           ),
           _buildSingUpForm(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              FloatingActionButton(
-                mini: true,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.arrow_back),
-              )
-            ],
-          )
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: <Widget>[
+          //     FloatingActionButton(
+          //       mini: true,
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       },
+          //       backgroundColor: Colors.blue,
+          //       child: const Icon(Icons.arrow_back),
+          //     )
+          //   ],
+          // )
         ],
       ),
     );
@@ -444,7 +427,10 @@ class _SignupScreenState extends State<SignupScreen> {
               CircleAvatar(
                 radius: 40.0,
                 backgroundColor: Colors.blue.shade600,
-                child: const Icon(Icons.person),
+                child: const Icon(
+                  Icons.menu_book_sharp,
+                  size: 30,
+                ),
               ),
             ],
           ),
@@ -472,6 +458,17 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue.shade100,
+      appBar: AppBar(
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        title: const Text(
+          '회원가입',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: _buildPageContent(context),
     );
   }

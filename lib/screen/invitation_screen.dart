@@ -26,7 +26,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Group.fromJson(e)).toList();
       return data;
     } else {
@@ -40,7 +40,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Group.fromJson(e)).toList();
       return data;
     } else {

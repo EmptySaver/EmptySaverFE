@@ -27,7 +27,7 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Ticket.fromJson(e)).toList();
       return data;
     } else {
@@ -41,7 +41,7 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Ticket.fromJson(e)).toList();
       return data;
     } else {

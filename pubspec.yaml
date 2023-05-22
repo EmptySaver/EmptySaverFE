@@ -59,6 +59,11 @@ dependencies:
   ntp: ^2.0.0
   dropdown_button2: ^2.1.2
   time_range_picker: any
+  flutter_localizations:
+    sdk: flutter
+  flutter_rounded_date_picker: ^3.0.3
+  firebase_analytics: ^10.4.1
+  simple_animations: ^5.0.0+3
 dev_dependencies:
   flutter_test:
     sdk: flutter

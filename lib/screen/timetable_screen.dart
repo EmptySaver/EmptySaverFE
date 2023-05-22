@@ -17,7 +17,10 @@ const double defaultBoxWidth = 75;
 const double defaultBoxHeight = 35;
 
 class TimeTableScreen extends ConsumerStatefulWidget {
-  const TimeTableScreen({super.key});
+  int? friendMemberId;
+  int? groupMemberId;
+
+  TimeTableScreen({super.key, this.friendMemberId, this.groupMemberId});
 
   @override
   ConsumerState<TimeTableScreen> createState() => _TimeTableScreenState();
@@ -55,8 +58,17 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
           .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
       var endDate = DateFormat('yyyy-MM-dd').format(
           DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
-      var url = Uri.http(baseUri, '/timetable/getTimeTable');
-      var response = await http.post(
+      Uri url;
+      (widget.friendMemberId == null)
+          ? (widget.groupMemberId == null)
+              ? url = Uri.http(baseUri, '/timetable/getTimeTable')
+              : url = Uri.http(baseUri, '/group/getMemberTimeTable',
+                  {'groupMemberId': '${widget.groupMemberId}'})
+          : url = Uri.http(baseUri, '/friend/getFriendTimeTable', {
+              'friendMemberId': '${widget.friendMemberId}',
+            });
+      http.Response response;
+      response = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -64,6 +76,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         },
         body: jsonEncode({"startDate": startDate, "endDate": endDate}),
       );
+
       if (response.statusCode == 200) {
         print('getsuccess');
         print('$startDate  $endDate');

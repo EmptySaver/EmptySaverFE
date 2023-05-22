@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/friend_check_screen.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
+import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,18 +22,18 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   var addFriendTec = TextEditingController();
   var baseUri = '43.201.208.100:8080';
   late var jwtToken;
-  late Future<Unwrap> UnwrapData;
+  late Future<List<Group>> myGroupListFuture;
   late Future<List<Friend>> friendListFuture;
 
-  Future<Unwrap> getMyGroup(String? jwtToken) async {
+  Future<List<Group>> getMyGroup(String? jwtToken) async {
     var url = Uri.http(baseUri, '/group/getMyGroup');
     var response =
         await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     dynamic data;
     if (response.statusCode == 200) {
       print('getmygroupsuccess');
-      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes));
-      data = Unwrap.fromJson(parsedJson);
+      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+      data = parsedJson.map((e) => Group.fromJson(e)).toList();
     } else {
       print('fail ${response.statusCode}');
     }
@@ -71,7 +72,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
     // TODO: implement initState
     super.initState();
     jwtToken = ref.read(tokensProvider.notifier).state[0];
-    UnwrapData = getMyGroup(jwtToken);
+    myGroupListFuture = getMyGroup(jwtToken);
     friendListFuture = getFriendList();
   }
 
@@ -185,7 +186,23 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                     Row(
                                       children: [
                                         IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Scaffold(
+                                                      appBar: AppBar(
+                                                        title: Text(
+                                                            '${friendList[index].friendName} 시간표'),
+                                                      ),
+                                                      body: TimeTableScreen(
+                                                          friendMemberId:
+                                                              friendList[index]
+                                                                  .friendMemberId),
+                                                    ),
+                                                  ));
+                                            },
                                             icon: const Icon(
                                                 Icons.remove_red_eye)),
                                         IconButton(
@@ -263,57 +280,65 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: FutureBuilder(
-                  future: UnwrapData,
+                  future: myGroupListFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      var groupList = snapshot.data!.data;
-                      return ListView.separated(
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onLongPress: () async {
-                                var url = Uri.http(baseUri,
-                                    '/group/delete/${groupList[index]['groupId']}');
-                                var response = await http.delete(url, headers: {
-                                  'authorization': 'Bearer $jwtToken'
-                                });
-                                if (response.statusCode == 200) {
-                                  Fluttertoast.showToast(msg: '삭제되었습니다');
-                                  setState(() {
-                                    UnwrapData = getMyGroup(jwtToken);
+                      if (snapshot.data!.isNotEmpty) {
+                        return ListView.separated(
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onLongPress: () async {
+                                  var url = Uri.http(baseUri,
+                                      '/group/delete/${snapshot.data![index].groupId}');
+                                  var response = await http.delete(url,
+                                      headers: {
+                                        'authorization': 'Bearer $jwtToken'
+                                      });
+                                  if (response.statusCode == 200) {
+                                    Fluttertoast.showToast(msg: '삭제되었습니다');
+                                    setState(() {
+                                      myGroupListFuture = getMyGroup(jwtToken);
+                                    });
+                                  } else {
+                                    Fluttertoast.showToast(msg: 'error!');
+                                  }
+                                },
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => GroupDetailScreen(
+                                          groupData: snapshot.data![index],
+                                        ),
+                                      )).then((value) {
+                                    setState(() {
+                                      myGroupListFuture = getMyGroup(jwtToken);
+                                    });
                                   });
-                                } else {
-                                  Fluttertoast.showToast(msg: 'error!');
-                                }
-                              },
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => GroupDetailScreen(
-                                        groupData: groupList[index],
-                                      ),
-                                    )).then((value) {
-                                  setState(() {
-                                    UnwrapData = getMyGroup(jwtToken);
-                                  });
-                                });
-                              },
-                              child: Container(
-                                height: 40,
-                                width: double.infinity,
-                                decoration: BoxDecoration(border: Border.all()),
-                                child: Center(
-                                    child: Text(
-                                  groupList![index]['groupName'],
-                                  style: const TextStyle(fontSize: 25),
-                                )),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) => const SizedBox(
-                                height: 5,
-                              ),
-                          itemCount: snapshot.data!.data!.length);
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width: double.infinity,
+                                  decoration:
+                                      BoxDecoration(border: Border.all()),
+                                  child: Center(
+                                      child: Text(
+                                    snapshot.data![index].groupName!,
+                                    style: const TextStyle(fontSize: 25),
+                                  )),
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                            itemCount: snapshot.data!.length);
+                      } else {
+                        return const Center(
+                          child: Text('소속된 그룹이 없습니다'),
+                        );
+                      }
                     } else {
                       return const Center(child: Text('불러오는 중...'));
                     }
