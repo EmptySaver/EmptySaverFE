@@ -72,24 +72,24 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                           } else {
                             activeIndex = currentIndex;
                             selectedTag = items[activeIndex];
-                            print("select : ${selectedTag}");
+                            print("select : $selectedTag");
                           }
                         });
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 14.0, vertical: 12.0),
-                        margin: EdgeInsets.only(right: 8.0, bottom: 8.0),
+                        margin: const EdgeInsets.only(right: 8.0, bottom: 8.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
                           border: Border.all(
                             color: activeIndex == currentIndex
                                 ? Colors.cyanAccent
-                                : Color.fromRGBO(195, 228, 243, 1),
+                                : const Color.fromRGBO(195, 228, 243, 1),
                           ),
                           color: activeIndex == currentIndex
                               ? Colors.lightBlue
-                              : Color.fromRGBO(196, 220, 227, 1),
+                              : const Color.fromRGBO(196, 220, 227, 1),
                         ),
                         child: Text(item),
                       ),
