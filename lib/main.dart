@@ -1,6 +1,6 @@
 // import 'package:emptysaver_fe/fcm_setting.dart';
 import 'package:emptysaver_fe/screen/bar_screen.dart';
-import 'package:emptysaver_fe/screen/friend_group_screen.dart';
+import 'package:emptysaver_fe/screen/friend_group_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen_new.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
@@ -232,7 +232,7 @@ class MyApp extends ConsumerWidget {
       routes: {
         '/bar': (context) => const BarScreen(),
         '/timetable': (context) => TimeTableScreen(),
-        '/fg': (context) => const FriendGroupScreen(),
+        '/fg': (context) => const FriendGroupScreenOld(),
         '/noti': (context) => const NotificationsScreen(),
         '/info': (context) => const InfoScreenNew(),
       },

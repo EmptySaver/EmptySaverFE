@@ -169,11 +169,13 @@ class Info {
 
 class Friend {
   String? friendName;
+  String? friendEmail;
   int? friendId;
   int? friendMemberId;
 
   Friend.fromJson(Map<String, dynamic> parsedJson)
       : friendName = parsedJson['friendName'],
+        friendEmail = parsedJson['friendEmail'],
         friendId = parsedJson['friendId'],
         friendMemberId = parsedJson['friendMemberId'];
 }

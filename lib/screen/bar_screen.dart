@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:emptysaver_fe/screen/friend_group_screen.dart';
+// import 'package:emptysaver_fe/screen/friend_group_screen_legacy.dart';
+import 'package:emptysaver_fe/screen/friend_group_screen_new.dart';
 // import 'package:emptysaver_fe/screen/group_finder_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/group_finder_screen_new.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
@@ -125,7 +126,7 @@ class _BarScreenState extends ConsumerState<BarScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_pin_rounded),
-              label: '친구/그룹',
+              label: '그룹/친구',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.group_add),
