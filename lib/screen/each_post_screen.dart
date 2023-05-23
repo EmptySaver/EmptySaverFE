@@ -53,55 +53,54 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
               future: postDetailFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  if (widget.mode == 'read') {
-                    return Column(
-                      children: [
-                        Text('${snapshot.data!['title']}'),
-                        Text('${snapshot.data!['content']}')
-                      ],
-                    );
-                  } else {
-                    var titleTec =
-                        TextEditingController(text: snapshot.data!['title']);
-                    var contentTec =
-                        TextEditingController(text: snapshot.data!['content']);
-                    return Column(
-                      children: [
-                        TextField(
-                          controller: titleTec,
-                        ),
-                        TextField(
-                          controller: contentTec,
-                        ),
-                        OutlinedButton(
-                            onPressed: () async {
-                              var url = Uri.http(baseUri, '/board/updatePost');
-                              var response = await http.put(url,
-                                  headers: {
-                                    'authorization': 'Bearer $jwtToken',
-                                    'Content-Type':
-                                        'application/json; charset=UTF-8'
-                                  },
-                                  body: jsonEncode({
-                                    'title': titleTec.text,
-                                    'content': contentTec.text,
-                                    'postId': widget.postId
-                                  }));
-                              if (response.statusCode == 200) {
-                                Fluttertoast.showToast(msg: '수정되었습니다');
-                                // Navigator.pop(context, '');
-                                int count = 2;
-                                Navigator.popUntil(
-                                    context, (route) => count-- <= 0);
-                              } else {
-                                print(utf8.decode(response.bodyBytes));
-                                return;
-                              }
-                            },
-                            child: const Text('수정하기')),
-                      ],
-                    );
-                  }
+                  var titleTec =
+                      TextEditingController(text: snapshot.data!['title']);
+                  var contentTec =
+                      TextEditingController(text: snapshot.data!['content']);
+                  return (widget.mode == 'read')
+                      ? Column(
+                          children: [
+                            Text('${snapshot.data!['title']}'),
+                            Text('${snapshot.data!['content']}')
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            TextField(
+                              controller: titleTec,
+                            ),
+                            TextField(
+                              controller: contentTec,
+                            ),
+                            OutlinedButton(
+                                onPressed: () async {
+                                  var url =
+                                      Uri.http(baseUri, '/board/updatePost');
+                                  var response = await http.put(url,
+                                      headers: {
+                                        'authorization': 'Bearer $jwtToken',
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8'
+                                      },
+                                      body: jsonEncode({
+                                        'title': titleTec.text,
+                                        'content': contentTec.text,
+                                        'postId': widget.postId
+                                      }));
+                                  if (response.statusCode == 200) {
+                                    Fluttertoast.showToast(msg: '수정되었습니다');
+                                    // Navigator.pop(context, '');
+                                    int count = 2;
+                                    Navigator.popUntil(
+                                        context, (route) => count-- <= 0);
+                                  } else {
+                                    print(utf8.decode(response.bodyBytes));
+                                    return;
+                                  }
+                                },
+                                child: const Text('수정하기')),
+                          ],
+                        );
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
