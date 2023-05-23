@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
-import 'package:emptysaver_fe/screen/friend_check_screen.dart';
+import 'package:emptysaver_fe/screen/friend_check_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +11,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-class FriendGroupScreen extends ConsumerStatefulWidget {
-  const FriendGroupScreen({super.key});
+class FriendGroupScreenOld extends ConsumerStatefulWidget {
+  const FriendGroupScreenOld({super.key});
 
   @override
-  ConsumerState<FriendGroupScreen> createState() => _FriendGroupScreenState();
+  ConsumerState<FriendGroupScreenOld> createState() =>
+      _FriendGroupScreenState();
 }
 
-class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
+class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
   var addFriendTec = TextEditingController();
   var baseUri = '43.201.208.100:8080';
   late var jwtToken;
@@ -99,7 +100,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const FriendCheckScreen(),
+                                      const FriendCheckScreenOld(),
                                 ));
                             print(isBack);
                             if (isBack!) {

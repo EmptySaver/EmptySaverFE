@@ -7,14 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-class FriendCheckScreen extends ConsumerStatefulWidget {
-  const FriendCheckScreen({super.key});
+class FriendCheckScreenOld extends ConsumerStatefulWidget {
+  const FriendCheckScreenOld({super.key});
 
   @override
-  ConsumerState<FriendCheckScreen> createState() => _FriendCheckScreenState();
+  ConsumerState<FriendCheckScreenOld> createState() =>
+      _FriendCheckScreenState();
 }
 
-class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
+class _FriendCheckScreenState extends ConsumerState<FriendCheckScreenOld> {
   var baseUri = '43.201.208.100:8080';
   late var jwtToken;
   late Future<List<Friend>> requestFriendListFuture;
