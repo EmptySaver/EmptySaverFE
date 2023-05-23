@@ -22,6 +22,7 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
   var baseUri = '43.201.208.100:8080';
   late Future<Map<String, dynamic>> postDetailFuture;
   var commentTec = TextEditingController();
+  // int commentId = 0;
 
   @override
   void initState() {
@@ -81,55 +82,365 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
                                           var parentComment =
                                               commentList[index]['parent'];
                                           var childCommentList =
-                                              commentList[index]['childList'];
-                                          return Container(
-                                            padding: const EdgeInsets.all(5),
-                                            height: 100,
-                                            decoration: const BoxDecoration(
-                                                border: Border(
-                                                    bottom: BorderSide(
-                                                        width: 1,
-                                                        color: Colors.grey))),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                              commentList[index]['childList']
+                                                  as List;
+                                          bool hasChild =
+                                              (childCommentList.isNotEmpty);
+                                          return Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(5),
+                                                height: 100,
+                                                decoration: const BoxDecoration(
+                                                    border: Border(
+                                                        bottom: BorderSide(
+                                                            width: 1,
+                                                            color:
+                                                                Colors.grey))),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text('아이콘,이름'),
-                                                    ButtonBar(
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
-                                                        IconButton(
-                                                            padding:
-                                                                EdgeInsets.zero,
-                                                            constraints:
-                                                                const BoxConstraints(),
-                                                            onPressed: () {},
-                                                            icon: const Icon(Icons
-                                                                .add_comment_rounded)),
-                                                        IconButton(
-                                                            padding:
-                                                                EdgeInsets.zero,
-                                                            constraints:
-                                                                const BoxConstraints(),
-                                                            onPressed: () {},
-                                                            icon: const Icon(Icons
-                                                                .more_vert_rounded)),
+                                                        const Text('아이콘,이름'),
+                                                        Text(
+                                                            '${parentComment['commentId']}'),
+                                                        ButtonBar(
+                                                          children: [
+                                                            IconButton(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .zero,
+                                                                constraints:
+                                                                    const BoxConstraints(),
+                                                                onPressed: () {
+                                                                  showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      var childCommentTec =
+                                                                          TextEditingController();
+                                                                      return SimpleDialog(
+                                                                        title: const Text(
+                                                                            '대댓글'),
+                                                                        children: [
+                                                                          TextField(
+                                                                            controller:
+                                                                                childCommentTec,
+                                                                          ),
+                                                                          OutlinedButton(
+                                                                              onPressed: () async {
+                                                                                {
+                                                                                  var url = Uri.http(baseUri, '/board/addPostComment');
+                                                                                  var response = await http.post(url,
+                                                                                      headers: {
+                                                                                        'authorization': 'Bearer $jwtToken',
+                                                                                        'Content-Type': 'application/json; charset=UTF-8'
+                                                                                      },
+                                                                                      body: jsonEncode({
+                                                                                        'groupId': widget.groupId,
+                                                                                        'parentCommentId': parentComment['commentId'],
+                                                                                        'postId': widget.postId,
+                                                                                        'text': childCommentTec.text,
+                                                                                      }));
+                                                                                  if (response.statusCode == 200) {
+                                                                                    print(utf8.decode(response.bodyBytes));
+                                                                                    // commentTec.clear();
+                                                                                    Navigator.pop(context);
+                                                                                    setState(() {
+                                                                                      postDetailFuture = getPost();
+                                                                                    });
+                                                                                  } else {
+                                                                                    print(utf8.decode(response.bodyBytes));
+                                                                                    return;
+                                                                                  }
+                                                                                }
+                                                                              },
+                                                                              child: const Text('입력'))
+                                                                        ],
+                                                                      );
+                                                                    },
+                                                                  );
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .add_comment_rounded)),
+                                                            IconButton(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .zero,
+                                                                constraints:
+                                                                    const BoxConstraints(),
+                                                                onPressed: () {
+                                                                  showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) =>
+                                                                            SimpleDialog(
+                                                                      children: [
+                                                                        TextButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              var updateTec = TextEditingController(text: parentComment['text']);
+                                                                              showDialog(
+                                                                                context: context,
+                                                                                builder: (context) => SimpleDialog(
+                                                                                  children: [
+                                                                                    TextField(
+                                                                                      controller: updateTec,
+                                                                                      decoration: const InputDecoration(),
+                                                                                    ),
+                                                                                    OutlinedButton(
+                                                                                        onPressed: () async {
+                                                                                          var url = Uri.http(baseUri, '/board/updateComment');
+                                                                                          var response = await http.put(url,
+                                                                                              headers: {
+                                                                                                'authorization': 'Bearer $jwtToken',
+                                                                                                'Content-Type': 'application/json; charset=UTF-8'
+                                                                                              },
+                                                                                              body: jsonEncode({
+                                                                                                'commentId': parentComment['commentId'],
+                                                                                                'text': updateTec.text,
+                                                                                              }));
+                                                                                          if (response.statusCode == 200) {
+                                                                                            setState(() {
+                                                                                              print(utf8.decode(response.bodyBytes));
+                                                                                              Navigator.pop(context);
+                                                                                              Navigator.pop(context);
+                                                                                              postDetailFuture = getPost();
+                                                                                            });
+                                                                                          } else {
+                                                                                            print(utf8.decode(response.bodyBytes));
+                                                                                            return;
+                                                                                          }
+                                                                                        },
+                                                                                        child: const Text('수정'))
+                                                                                  ],
+                                                                                ),
+                                                                              );
+                                                                            },
+                                                                            child:
+                                                                                const Text('수정')),
+                                                                        TextButton(
+                                                                            onPressed:
+                                                                                () async {
+                                                                              var url = Uri.http(baseUri, '/board/deleteComment/${parentComment['commentId']}');
+                                                                              var response = await http.delete(url);
+                                                                              if (response.statusCode == 200) {
+                                                                                print(utf8.decode(response.bodyBytes));
+                                                                                Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                                                Navigator.pop(context);
+                                                                              } else {
+                                                                                print(utf8.decode(response.bodyBytes));
+                                                                                print('실패');
+                                                                              }
+                                                                            },
+                                                                            child:
+                                                                                const Text('삭제'))
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .more_vert_rounded)),
+                                                          ],
+                                                        )
                                                       ],
-                                                    )
+                                                    ),
+                                                    Text(parentComment['text']),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                        '${parentComment['dateTime'].toString().substring(0, 10)} ${parentComment['dateTime'].toString().substring(11, 19)}'),
                                                   ],
                                                 ),
-                                                Text(parentComment['text']),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text(
-                                                    '${parentComment['dateTime'].toString().substring(0, 10)} ${parentComment['dateTime'].toString().substring(11, 19)}'),
-                                              ],
-                                            ),
+                                              ),
+                                              Visibility(
+                                                  visible: hasChild,
+                                                  child: Column(
+                                                    children: [
+                                                      for (int i = 0;
+                                                          i <
+                                                              childCommentList
+                                                                  .length;
+                                                          i++)
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade200),
+                                                          height: 100,
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  //대댓글
+                                                                  const Text(
+                                                                      '아이콘,이름'),
+                                                                  Text(
+                                                                      '${childCommentList[i]['commentId']}'),
+                                                                  ButtonBar(
+                                                                    children: [
+                                                                      IconButton(
+                                                                          padding: EdgeInsets
+                                                                              .zero,
+                                                                          constraints:
+                                                                              const BoxConstraints(),
+                                                                          onPressed:
+                                                                              () {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (context) {
+                                                                                var childCommentTec = TextEditingController();
+                                                                                return SimpleDialog(
+                                                                                  title: const Text('대댓글'),
+                                                                                  children: [
+                                                                                    TextField(
+                                                                                      controller: childCommentTec,
+                                                                                    ),
+                                                                                    OutlinedButton(
+                                                                                        onPressed: () async {
+                                                                                          {
+                                                                                            var url = Uri.http(baseUri, '/board/addPostComment');
+                                                                                            var response = await http.post(url,
+                                                                                                headers: {
+                                                                                                  'authorization': 'Bearer $jwtToken',
+                                                                                                  'Content-Type': 'application/json; charset=UTF-8'
+                                                                                                },
+                                                                                                body: jsonEncode({
+                                                                                                  'groupId': widget.groupId,
+                                                                                                  'parentCommentId': parentComment['commentId'],
+                                                                                                  'postId': widget.postId,
+                                                                                                  'text': childCommentTec.text,
+                                                                                                }));
+                                                                                            if (response.statusCode == 200) {
+                                                                                              print(utf8.decode(response.bodyBytes));
+                                                                                              // commentTec.clear();
+                                                                                              Navigator.pop(context);
+                                                                                              setState(() {
+                                                                                                postDetailFuture = getPost();
+                                                                                              });
+                                                                                            } else {
+                                                                                              print(utf8.decode(response.bodyBytes));
+                                                                                              return;
+                                                                                            }
+                                                                                          }
+                                                                                        },
+                                                                                        child: const Text('입력'))
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          },
+                                                                          icon:
+                                                                              const Icon(Icons.add_comment_rounded)),
+                                                                      IconButton(
+                                                                          padding: EdgeInsets
+                                                                              .zero,
+                                                                          constraints:
+                                                                              const BoxConstraints(),
+                                                                          onPressed:
+                                                                              () {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (context) => SimpleDialog(
+                                                                                children: [
+                                                                                  TextButton(
+                                                                                      onPressed: () {
+                                                                                        var updateTec = TextEditingController(text: childCommentList[i]['text']);
+                                                                                        showDialog(
+                                                                                          context: context,
+                                                                                          builder: (context) => SimpleDialog(
+                                                                                            children: [
+                                                                                              TextField(
+                                                                                                controller: updateTec,
+                                                                                                decoration: const InputDecoration(),
+                                                                                              ),
+                                                                                              OutlinedButton(
+                                                                                                  onPressed: () async {
+                                                                                                    var url = Uri.http(baseUri, '/board/updateComment');
+                                                                                                    var response = await http.put(url,
+                                                                                                        headers: {
+                                                                                                          'authorization': 'Bearer $jwtToken',
+                                                                                                          'Content-Type': 'application/json; charset=UTF-8'
+                                                                                                        },
+                                                                                                        body: jsonEncode({
+                                                                                                          'commentId': childCommentList[i]['commentId'],
+                                                                                                          'text': updateTec.text,
+                                                                                                        }));
+                                                                                                    if (response.statusCode == 200) {
+                                                                                                      setState(() {
+                                                                                                        print(utf8.decode(response.bodyBytes));
+                                                                                                        Navigator.pop(context);
+                                                                                                        Navigator.pop(context);
+                                                                                                        postDetailFuture = getPost();
+                                                                                                      });
+                                                                                                    } else {
+                                                                                                      print(utf8.decode(response.bodyBytes));
+                                                                                                      return;
+                                                                                                    }
+                                                                                                  },
+                                                                                                  child: const Text('수정'))
+                                                                                            ],
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                      child: const Text('수정')),
+                                                                                  TextButton(
+                                                                                      onPressed: () async {
+                                                                                        var url = Uri.http(baseUri, '/board/deleteComment/${childCommentList[i]['commentId']}');
+                                                                                        var response = await http.delete(url);
+                                                                                        if (response.statusCode == 200) {
+                                                                                          print(utf8.decode(response.bodyBytes));
+                                                                                          Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                                                          Navigator.pop(context);
+                                                                                        } else {
+                                                                                          print(utf8.decode(response.bodyBytes));
+                                                                                          print('실패');
+                                                                                        }
+                                                                                      },
+                                                                                      child: const Text('삭제'))
+                                                                                ],
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                          icon:
+                                                                              const Icon(Icons.more_vert_rounded)),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Text(
+                                                                  childCommentList[
+                                                                          i]
+                                                                      ['text']),
+                                                              const SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              Text(
+                                                                  '${childCommentList[i]['dateTime'].toString().substring(0, 10)} ${childCommentList[i]['dateTime'].toString().substring(11, 19)}'),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ))
+                                            ],
                                           );
                                         },
                                       )
@@ -212,7 +523,7 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
                                 'text': commentTec.text,
                               }));
                           if (response.statusCode == 200) {
-                            print('댓글');
+                            print(utf8.decode(response.bodyBytes));
                             commentTec.clear();
                             setState(() {
                               postDetailFuture = getPost();
