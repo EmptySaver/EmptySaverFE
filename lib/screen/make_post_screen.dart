@@ -43,12 +43,18 @@ class _MakePostScreenState extends ConsumerState<MakePostScreen> {
                 ),
                 controller: titleTec,
               ),
-              TextField(
-                decoration: const InputDecoration(
-                  hintText: '내용',
+              SizedBox(
+                height: 550,
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  minLines: null,
+                  expands: true,
+                  decoration: const InputDecoration(
+                    hintText: '내용',
+                  ),
+                  controller: contentTec,
                 ),
-                maxLines: 20,
-                controller: contentTec,
               ),
               const SizedBox(
                 height: 20,

@@ -218,6 +218,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                       MaterialPageRoute(
                                         builder: (context) => EachPostScreen(
                                           postId: postId,
+                                          groupId: widget.groupData!.groupId,
                                         ),
                                       ));
                                 },
