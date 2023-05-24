@@ -532,60 +532,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                   label: '강의 추가',
                   backgroundColor: Colors.blue,
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return SimpleDialog(
-                          contentPadding: const EdgeInsets.all(10),
-                          title: const Text('강의 검색'),
-                          children: [
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                  icon: Icon(Icons.search),
-                                  hintText: '검색어를 입력하세요',
-                                  labelText: '강의 검색'),
-                              controller: searchTec,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            OutlinedButton(
-                                onPressed: () async {
-                                  var url = Uri.http(
-                                    baseUri,
-                                    '/subject/search',
-                                  );
-                                  var response = await http.post(url,
-                                      headers: {
-                                        'authorization': 'Bearer $jwtToken',
-                                        'Content-Type': 'application/json'
-                                      },
-                                      body:
-                                          jsonEncode({'name': searchTec.text}));
-                                  if (response.statusCode == 200) {
-                                    var parsedJson = jsonDecode(
-                                            utf8.decode(response.bodyBytes))
-                                        as List;
-                                    List<Lecture> data = parsedJson
-                                        .map((e) => Lecture.fromJson(e))
-                                        .toList();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              LectureSearchResultScreen(
-                                                  resultList: data),
-                                        ));
-                                  } else {
-                                    print(utf8.decode(response.bodyBytes));
-                                    Fluttertoast.showToast(msg: '검색 에러');
-                                  }
-                                },
-                                child: const Text('찾기'))
-                          ],
-                        );
-                      },
-                    );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LectureSearchResultScreen(),
+                        ));
                   },
                 ),
                 SpeedDialChild(

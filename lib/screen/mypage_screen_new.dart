@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart';
-import 'package:emptysaver_fe/core/assets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class MyPageScreen extends ConsumerStatefulWidget {
@@ -26,6 +25,8 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
   var nicknameTec = TextEditingController();
   var oldPwdTec = TextEditingController();
   var newPwdTec = TextEditingController();
+
+  bool isMoreInfo = false;
 
   Future<MemberInfo> getMemberInfo() async {
     var url = Uri.http(baseUri, '/afterAuth/getMemberInfo');
@@ -85,7 +86,7 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
           fit: StackFit.expand,
           children: <Widget>[
             SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -98,25 +99,82 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                         future: memberInfoFuture,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return ListTile(
-                              onTap: () {
-                                //open edit profile
-                              },
-                              title: Text(
-                                '환영합니다, ${snapshot.data!.name!}님',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {
+                                    //open edit profile
+                                    setState(() {
+                                      isMoreInfo = !isMoreInfo;
+                                    });
+                                  },
+                                  title: Text(
+                                    '환영합니다, ${snapshot.data!.name!}님',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  // 나중에 뭐 프로필 사진 추가 기능 넣으면 여기에 프사표시
+                                  // leading: CircleAvatar(
+                                  //   backgroundImage: NetworkImage(avatars[0]),
+                                  // ),
+                                  trailing: isMoreInfo
+                                      ? const Icon(
+                                          FontAwesomeIcons.angleUp,
+                                          color: Colors.white,
+                                        )
+                                      : const Icon(
+                                          FontAwesomeIcons.angleDown,
+                                          color: Colors.white,
+                                        ),
                                 ),
-                              ),
-                              // 나중에 뭐 프로필 사진 추가 기능 넣으면 여기에 프사표시
-                              // leading: CircleAvatar(
-                              //   backgroundImage: NetworkImage(avatars[0]),
-                              // ),
-                              // trailing: const Icon(
-                              //   Icons.edit,
-                              //   color: Colors.white,
-                              // ),
+                                _buildDivider(),
+                                Visibility(
+                                    visible: isMoreInfo,
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                            leading: const Icon(
+                                              Icons.email,
+                                              color: Colors.white,
+                                            ),
+                                            title: Text(
+                                              "${snapshot.data!.email}",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            )),
+                                        _buildDivider(),
+                                        ListTile(
+                                            leading: const Icon(
+                                              Icons.school,
+                                              color: Colors.white,
+                                            ),
+                                            title: Text(
+                                              "${snapshot.data!.classOf}",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            )),
+                                        _buildDivider(),
+                                        ListTile(
+                                            leading: const Icon(
+                                              FontAwesomeIcons.personRays,
+                                              color: Colors.white,
+                                            ),
+                                            title: Text(
+                                              "${snapshot.data!.nickname}",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            )),
+                                      ],
+                                    )),
+                              ],
                             );
                           } else {
                             return const Center(
@@ -353,32 +411,32 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                 ],
               ),
             ),
-            Positioned(
-              bottom: -20,
-              left: -20,
-              child: Container(
-                width: 80,
-                height: 80,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 00,
-              left: 00,
-              child: IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.powerOff,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  //log out
-                },
-              ),
-            )
+            // Positioned(
+            //   bottom: -20,
+            //   left: -20,
+            //   child: Container(
+            //     width: 80,
+            //     height: 80,
+            //     alignment: Alignment.center,
+            //     decoration: const BoxDecoration(
+            //       color: Colors.blue,
+            //       shape: BoxShape.circle,
+            //     ),
+            //   ),
+            // ),
+            // Positioned(
+            //   bottom: 00,
+            //   left: 00,
+            //   child: IconButton(
+            //     icon: const Icon(
+            //       FontAwesomeIcons.powerOff,
+            //       color: Colors.white,
+            //     ),
+            //     onPressed: () {
+            //       //log out
+            //     },
+            //   ),
+            // )
           ],
         ),
       ),
