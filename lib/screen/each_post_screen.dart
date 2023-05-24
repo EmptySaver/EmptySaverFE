@@ -232,10 +232,15 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
                                                                             onPressed:
                                                                                 () async {
                                                                               var url = Uri.http(baseUri, '/board/deleteComment/${parentComment['commentId']}');
-                                                                              var response = await http.delete(url);
+                                                                              var response = await http.delete(url, headers: {
+                                                                                'authorization': 'Bearer $jwtToken'
+                                                                              });
                                                                               if (response.statusCode == 200) {
                                                                                 print(utf8.decode(response.bodyBytes));
                                                                                 Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                                                setState(() {
+                                                                                  postDetailFuture = getPost();
+                                                                                });
                                                                                 Navigator.pop(context);
                                                                               } else {
                                                                                 print(utf8.decode(response.bodyBytes));
@@ -274,6 +279,10 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
                                                                   .length;
                                                           i++)
                                                         Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .fromLTRB(
+                                                                  20, 0, 0, 0),
                                                           decoration:
                                                               BoxDecoration(
                                                                   color: Colors
@@ -405,11 +414,20 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
                                                                                   TextButton(
                                                                                       onPressed: () async {
                                                                                         var url = Uri.http(baseUri, '/board/deleteComment/${childCommentList[i]['commentId']}');
-                                                                                        var response = await http.delete(url);
+                                                                                        print(childCommentList[i]['commentId']);
+                                                                                        var response = await http.delete(
+                                                                                          url,
+                                                                                          headers: {
+                                                                                            'authorization': 'Bearer $jwtToken'
+                                                                                          },
+                                                                                        );
                                                                                         if (response.statusCode == 200) {
                                                                                           print(utf8.decode(response.bodyBytes));
                                                                                           Fluttertoast.showToast(msg: '삭제되었습니다');
                                                                                           Navigator.pop(context);
+                                                                                          setState(() {
+                                                                                            postDetailFuture = getPost();
+                                                                                          });
                                                                                         } else {
                                                                                           print(utf8.decode(response.bodyBytes));
                                                                                           print('실패');
