@@ -35,35 +35,45 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
+      asyncMethod();
     });
   }
 
-  _asyncMethod() async {
+  asyncMethod() async {
     userInfo = await storage.read(key: 'login');
     if (userInfo != null) {
-      Navigator.pushNamed(context, '/bar');
+      bool authSuccess = await gettokenForAutoLogin(jsonDecode(userInfo));
+      if (authSuccess) {
+        Navigator.pushNamed(context, '/bar');
+      } else {
+        print('bar로 이동은 못함');
+      }
     } else {
       print('유저정보 없음, 로그인 필요');
     }
   }
-  // void _showDialog(String text) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       Future.delayed(const Duration(seconds: 1), () {
-  //         Navigator.pop(context);
-  //       });
 
-  //       return AlertDialog(
-  //         title: const Text("공강구조대"),
-  //         shape:
-  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-  //         content: Text(text),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<bool> gettokenForAutoLogin(dynamic decodedUserInfo) async {
+    var url = Uri.parse('http://43.201.208.100:8080/auth/login');
+    var response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'email': decodedUserInfo['email'],
+          'password': decodedUserInfo['password'],
+          'fcmToken': decodedUserInfo['fcmToken'],
+        }));
+    if (response.statusCode == 200) {
+      print('자동로그인성공, jwt토큰발급');
+      await storage.write(key: 'jwtToken', value: response.body);
+      var jwtToken = await storage.read(key: 'jwtToken');
+      ref.read(tokensProvider.notifier).addToken(jwtToken);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   void postLogin() async {
     var url = Uri.parse('http://43.201.208.100:8080/auth/login');
@@ -131,14 +141,9 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const SignupScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const SignupScreen()));
                 },
-                child: const Text("Sign Up",
-                    style: TextStyle(color: Colors.blue, fontSize: 18.0)),
+                child: const Text("Sign Up", style: TextStyle(color: Colors.blue, fontSize: 18.0)),
               )
             ],
           )
@@ -182,8 +187,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                             )),
                       )),
                   Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
@@ -204,8 +208,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                             )),
                       )),
                   Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
@@ -216,8 +219,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                         width: 10,
                       ),
                       Checkbox(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                         value: isAutoLogin,
                         onChanged: (value) {
                           setState(() {
@@ -236,11 +238,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                     children: <Widget>[
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const FindPasswordScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const FindPasswordScreen()));
                         },
                         child: const Text(
                           "Forgot Password",
@@ -272,13 +270,11 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
                   backgroundColor: Colors.blue,
                 ),
                 onPressed: postLogin,
-                child: const Text("Login",
-                    style: TextStyle(color: Colors.white70)),
+                child: const Text("Login", style: TextStyle(color: Colors.white70)),
               ),
             ),
           )

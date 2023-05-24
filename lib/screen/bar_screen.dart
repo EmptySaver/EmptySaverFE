@@ -43,15 +43,13 @@ class _BarScreenState extends ConsumerState<BarScreen> {
       var url = Uri.parse('http://43.201.208.100:8080/afterAuth/logout');
       var response = await http.post(
         url,
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer $jwtToken'
-        },
+        headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'},
       );
       if (response.statusCode == 200) {
         await storage.delete(key: 'login');
         userInfo = await storage.read(key: 'login');
         if (userInfo == null) {
+          print('유저정보 삭제됐음');
           Fluttertoast.showToast(msg: '로그아웃되었습니다');
           ref.read(tokensProvider.notifier).removeToken(jwtToken);
           Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);

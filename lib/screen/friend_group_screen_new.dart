@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
-import 'package:emptysaver_fe/screen/friend_check_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/friend_check_screen_new.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
@@ -27,10 +26,10 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   late Future<List<Group>> myGroupListFuture;
   late Future<List<Friend>> friendListFuture;
   bool isGroup = true;
+
   Future<List<Group>> getMyGroup(String? jwtToken) async {
     var url = Uri.http(baseUri, '/group/getMyGroup');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     dynamic data;
     if (response.statusCode == 200) {
       print('getmygroupsuccess');
@@ -44,8 +43,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
 
   void addFriend() async {
     var url = Uri.http(baseUri, '/friend/request/${addFriendTec.text}');
-    var response =
-        await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       print('친추 성공');
       Fluttertoast.showToast(msg: '친구 추가 요청을 보냈습니다');
@@ -58,8 +56,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
 
   Future<List<Friend>> getFriendList() async {
     var url = Uri.http(baseUri, '/friend/getList');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Friend.fromJson(e)).toList();
@@ -109,7 +106,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       });
                     }
                   },
-                  icon: Icon(Icons.call_received)),
+                  icon: const Icon(Icons.call_received)),
               TextButton(
                   onPressed: () async {
                     bool? isBack = false;
@@ -125,7 +122,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       });
                     }
                   },
-                  child: Text("친구 요청 목록")),
+                  child: const Text("친구 요청 목록")),
             ],
           ),
           Row(
@@ -140,17 +137,14 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                         children: [
                           const Text(
                             "친구 요청 보내기",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 60, 60, 69),
-                                fontSize: 22),
+                            style: TextStyle(color: Color.fromARGB(255, 60, 60, 69), fontSize: 22),
                           ),
                           TextField(
                             controller: addFriendTec,
                             style: const TextStyle(color: Colors.blue),
                             decoration: InputDecoration(
                                 hintText: "친구의 Email을 입력해주세요",
-                                hintStyle:
-                                    TextStyle(color: Colors.blue.shade200),
+                                hintStyle: TextStyle(color: Colors.blue.shade200),
                                 border: InputBorder.none,
                                 icon: const Icon(
                                   Icons.email_rounded,
@@ -166,7 +160,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       btnCancelOnPress: () {},
                     ).show();
                   },
-                  icon: Icon(Icons.add_to_home_screen)),
+                  icon: const Icon(Icons.add_to_home_screen)),
               TextButton(
                   onPressed: () {
                     AwesomeDialog(
@@ -177,17 +171,14 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                         children: [
                           const Text(
                             "친구 요청 보내기",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 60, 60, 69),
-                                fontSize: 22),
+                            style: TextStyle(color: Color.fromARGB(255, 60, 60, 69), fontSize: 22),
                           ),
                           TextField(
                             controller: addFriendTec,
                             style: const TextStyle(color: Colors.blue),
                             decoration: InputDecoration(
                                 hintText: "친구의 Email을 입력해주세요",
-                                hintStyle:
-                                    TextStyle(color: Colors.blue.shade200),
+                                hintStyle: TextStyle(color: Colors.blue.shade200),
                                 border: InputBorder.none,
                                 icon: const Icon(
                                   Icons.school,
@@ -203,7 +194,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       btnCancelOnPress: () {},
                     ).show();
                   },
-                  child: Text("친구 추가"))
+                  child: const Text("친구 추가"))
             ],
           )
         ],
@@ -214,7 +205,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   friendView2() {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: FutureBuilder(
           future: friendListFuture,
           builder: (context, snapshot) {
@@ -256,19 +247,16 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             ));
       },
       child: Container(
-          padding: EdgeInsets.all(10),
-          margin: EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Color.fromARGB(255, 255, 255, 255),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
-                ),
-              ]),
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.only(bottom: 15),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ]),
           child: Column(
             children: [
               Row(
@@ -276,63 +264,50 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                 children: [
                   Expanded(
                     child: Row(children: [
-                      Container(
+                      SizedBox(
                           width: 30,
                           height: 30,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             // child: Image.asset(job.companyLogo),
-                            child: Icon(Icons.person_4),
+                            child: const Icon(Icons.person_4),
                           )),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Flexible(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(friend.friendName!,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500)),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                            ]),
+                              Text(friend.friendName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                        ]),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       IconButton(
                           onPressed: () {
                             AwesomeDialog(
                               context: context,
                               dialogType: DialogType.info,
                               title: "친구 정보",
-                              desc:
-                                  " 이름 : ${friend.friendName}\n Email: ${friend.friendEmail}",
+                              desc: " 이름 : ${friend.friendName}\n Email: ${friend.friendEmail}",
                               btnOkOnPress: () {},
                             ).show();
                           },
-                          icon: Icon(Icons.info)),
+                          icon: const Icon(Icons.info)),
                       IconButton(
                           onPressed: () {
                             AwesomeDialog(
                                     context: context,
                                     dialogType: DialogType.warning,
                                     title: "친구 삭제",
-                                    desc:
-                                        "정말 ${friend.friendName}님과 친구를 끊으시겠습니까?",
+                                    desc: "정말 ${friend.friendName}님과 친구를 끊으시겠습니까?",
                                     btnOkOnPress: () async {
-                                      var url = Uri.http(baseUri,
-                                          '/friend/delete/${friend.friendId}');
-                                      var response = await http.delete(url,
-                                          headers: {
-                                            'authorization': 'Bearer $jwtToken'
-                                          });
+                                      var url = Uri.http(baseUri, '/friend/delete/${friend.friendId}');
+                                      var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
                                       if (response.statusCode == 200) {
                                         Fluttertoast.showToast(msg: '삭제되었습니다');
                                         setState(() {
@@ -343,7 +318,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                                     btnCancelOnPress: () {})
                                 .show();
                           },
-                          icon: Icon(Icons.delete))
+                          icon: const Icon(Icons.delete))
                     ]),
                   ),
                 ],
@@ -356,7 +331,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   groupView1() {
     return Container(
         alignment: Alignment.centerLeft,
-        margin: EdgeInsets.fromLTRB(20, 10, 0, 0),
+        margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
         child: Row(
           children: [
             IconButton(
@@ -367,7 +342,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       builder: (context) => const CategorySelectScreen(),
                     ));
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.add_circle_sharp,
                 color: Color.fromARGB(108, 67, 182, 99),
               ),
@@ -380,7 +355,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                         builder: (context) => const CategorySelectScreen(),
                       ));
                 },
-                child: Text("그룹 만들기"))
+                child: const Text("그룹 만들기"))
           ],
         ));
   }
@@ -389,7 +364,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
     return Expanded(
       child: Container(
         // padding: const EdgeInsets.all(8.0),
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         // decoration: BoxDecoration(
         //     color: Colors.white,
         //     borderRadius: BorderRadius.all(Radius.circular(30))),
@@ -400,7 +375,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               if (snapshot.data!.isNotEmpty) {
                 print("data is present");
                 return ListView.builder(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return groupComponent(group: snapshot.data![index]);
@@ -437,19 +412,16 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
           });
         },
         child: Container(
-            padding: EdgeInsets.all(10),
-            margin: EdgeInsets.only(bottom: 15),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Color.fromARGB(255, 255, 255, 255),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 0,
-                    blurRadius: 2,
-                    offset: Offset(0, 1),
-                  ),
-                ]),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(bottom: 15),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 0,
+                blurRadius: 2,
+                offset: const Offset(0, 1),
+              ),
+            ]),
             child: Column(
               children: [
                 Row(
@@ -457,47 +429,35 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   children: [
                     Expanded(
                       child: Row(children: [
-                        Container(
+                        SizedBox(
                             width: 30,
                             height: 30,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               // child: Image.asset(job.companyLogo),
-                              child: Icon(Icons.group_add),
+                              child: const Icon(Icons.group_add),
                             )),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Flexible(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(group.groupName!,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500)),
-                                    Text(group.amIOwner! ? "내 그룹" : "",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500))
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(group.oneLineInfo!,
-                                    style: TextStyle(color: Colors.grey[500])),
-                              ]),
+                                Text(group.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                                Text(group.amIOwner! ? "내 그룹" : "", style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500))
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(group.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
+                          ]),
                         )
                       ]),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
@@ -507,31 +467,25 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey.shade200),
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                             child: Text(
                               group.categoryName!,
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey.shade200),
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                             child: Text(
                               group.categoryLabel!,
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                         ],
@@ -547,7 +501,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 227, 244, 248),
+      backgroundColor: const Color.fromARGB(255, 227, 244, 248),
       body: Column(
         children: [
           Row(
@@ -563,12 +517,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   height: 80,
                   // width: 200,
                   decoration: BoxDecoration(
-                      color: isGroup
-                          ? Colors.blue
-                          : Color.fromARGB(255, 176, 220, 240),
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
+                      color: isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Row(
@@ -576,10 +526,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       children: <Widget>[
                         Text(
                           "그룹",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -597,12 +544,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   height: 80,
                   // width: 200,
                   decoration: BoxDecoration(
-                      color: isGroup
-                          ? Color.fromARGB(255, 176, 220, 240)
-                          : Colors.blue,
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30))),
+                      color: isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Row(
@@ -610,10 +553,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                       children: <Widget>[
                         Text(
                           "친구",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
