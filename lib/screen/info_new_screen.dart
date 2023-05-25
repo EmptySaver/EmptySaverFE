@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
@@ -15,19 +16,18 @@ class InfoScreenNew extends ConsumerStatefulWidget {
 }
 
 class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
-  final TextStyle dropdownMenuItem =
-  const TextStyle(color: Colors.black, fontSize: 18);
-  final ScrollController _scrollController = ScrollController();  //스크롤 감지용
+  final TextStyle dropdownMenuItem = const TextStyle(color: Colors.black, fontSize: 18);
+  final ScrollController _scrollController = ScrollController(); //스크롤 감지용
 
   final primary = const Color(0xff696b9e);
   final secondary = const Color(0xfff29a94);
 
-  late var jwtToken;
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
   int nonSubjectPageNum = 0;
   int recruitingPageNum = 0;
-  late List<Info> nonSubjectLoadedList =  [];
-  late List<Info> recruitingLoadedList =  [];
+  late List<Info> nonSubjectLoadedList = [];
+  late List<Info> recruitingLoadedList = [];
   late Future<List<Info>> targetList;
   late bool recruitType;
   String infoTitle = " - ";
@@ -39,13 +39,12 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
 
   Future<List<Info>> getNonsubject() async {
     var url = Uri.http(baseUri, '/info/nonSubject/$nonSubjectPageNum');
-    var response =
-    await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Info.fromJson(e)).toList();
 
-      if(data.isNotEmpty){
+      if (data.isNotEmpty) {
         nonSubjectPageNum++;
       }
 
@@ -59,13 +58,12 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
 
   Future<List<Info>> getRecruiting() async {
     var url = Uri.http(baseUri, '/info/recruiting/$recruitingPageNum');
-    var response =
-    await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Info.fromJson(e)).toList();
 
-      if(data.isNotEmpty){
+      if (data.isNotEmpty) {
         recruitingPageNum++;
       }
 
@@ -81,23 +79,20 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
   scrollListener() async {
     // print('offset = ${_scrollController.offset}');
 
-    if (_scrollController.offset == _scrollController.position.maxScrollExtent
-        && !_scrollController.position.outOfRange) {
+    if (_scrollController.offset == _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
       print('스크롤이 맨 바닥에 위치해서, 다음을 로드함니다.');
       setState(() {
-        if(recruitType){
+        if (recruitType) {
           print('취업재로딩');
           recruitingList = getRecruiting();
           targetList = recruitingList;
-        }else{
+        } else {
           print('비교과재로딩');
           nonSubjectList = getNonsubject();
           targetList = nonSubjectList;
         }
       });
-
-    } else if (_scrollController.offset == _scrollController.position.minScrollExtent
-        && !_scrollController.position.outOfRange) {
+    } else if (_scrollController.offset == _scrollController.position.minScrollExtent && !_scrollController.position.outOfRange) {
       print('스크롤이 맨 위에 위치해 있습니다');
     }
   }
@@ -110,14 +105,13 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
       scrollListener();
     });
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     nonSubjectList = getNonsubject();
     recruitingList = getRecruiting();
 
     targetList = recruitingList;
   }
 
-  FutureBuilder getFutureBuilder(){
+  FutureBuilder getFutureBuilder() {
     return FutureBuilder(
       future: targetList,
       builder: (context, snapshot) {
@@ -134,7 +128,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
               itemCount: snapshot.data!.length,
 
               itemBuilder: (context, index) => Container(
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   maxHeight: double.infinity,
                 ),
                 decoration: BoxDecoration(
@@ -151,13 +145,11 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                     Text(
                       '${snapshot.data![index].courseName} \n',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text('신청 기간: ${snapshot.data![index].applyDate}'),
                     Text('활동 기간: ${snapshot.data![index].runDate}'),
-                    Text(
-                        '대상학과 : ${snapshot.data![index].targetDepartment}, 대상학년 : ${snapshot.data![index].targetGrade}'),
+                    Text('대상학과 : ${snapshot.data![index].targetDepartment}, 대상학년 : ${snapshot.data![index].targetGrade}'),
                     //Text('${snapshot.data![index].url}'),
                     ElevatedButton(
                       onPressed: () async {
@@ -201,11 +193,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
               Container(
                 height: 80,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30))),
+                decoration: const BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
@@ -213,7 +201,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                     children: <Widget>[
                       Text(
                         infoTitle,
-                        style: TextStyle(color: Colors.white, fontSize: 30,fontWeight: FontWeight.bold),
+                        style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -222,7 +210,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Container(
-                  margin: EdgeInsets.fromLTRB(5, 18, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(5, 18, 0, 0),
                   child: Visibility(
                     visible: !recruitType,
                     child: ElevatedButton(
@@ -235,11 +223,11 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                           recruitType = !recruitType;
                         });
                       },
-                      child: Text('<-리크루팅',
-                        style: TextStyle(fontSize: 22,color: Colors.white70,fontWeight: FontWeight.bold),
+                      style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue),
+                      child: Text(
+                        '<-리크루팅',
+                        style: TextStyle(fontSize: 22, color: Colors.white70, fontWeight: FontWeight.bold),
                       ),
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, onPrimary: Colors.white),
                     ),
                   ),
                 ),
@@ -247,27 +235,27 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
               Align(
                 alignment: Alignment.topRight,
                 child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 18, 5, 0),
-                    child: Visibility(
-                      visible: recruitType,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          setState(() {
-                            targetList = nonSubjectList;
-                            print("비교과로");
-                            infoTitle = nonSubjectTitle;
-                            //recruitType = false;
+                  margin: const EdgeInsets.fromLTRB(0, 18, 5, 0),
+                  child: Visibility(
+                    visible: recruitType,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          targetList = nonSubjectList;
+                          print("비교과로");
+                          infoTitle = nonSubjectTitle;
+                          //recruitType = false;
 
-                            recruitType = !recruitType;
-                          });
-                        },
-                        child: Text('비교과 ->',
-                          style: TextStyle(fontSize: 22,color: Colors.white70,fontWeight: FontWeight.bold),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.blue, onPrimary: Colors.white),
+                          recruitType = !recruitType;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue),
+                      child: Text(
+                        '비교과 ->',
+                        style: TextStyle(fontSize: 22, color: Colors.white70, fontWeight: FontWeight.bold),
                       ),
                     ),
+                  ),
                 ),
               ),
               //원래 여기
@@ -310,5 +298,4 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
       ),
     );
   }
-
 }

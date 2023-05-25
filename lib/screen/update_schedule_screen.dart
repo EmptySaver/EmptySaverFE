@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -24,14 +24,13 @@ class UpdateScheduleScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<UpdateScheduleScreen> createState() =>
-      _UpdateScheduleScreenState();
+  ConsumerState<UpdateScheduleScreen> createState() => _UpdateScheduleScreenState();
 }
 
 class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
   List<DateTime>? timeList;
-
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
   bool isChecked = false;
@@ -139,8 +138,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                         keyboardType: TextInputType.visiblePassword,
                       )),
                   Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
@@ -161,8 +159,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                         keyboardType: TextInputType.visiblePassword,
                       )),
                   Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
@@ -198,8 +195,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
@@ -212,9 +208,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                           icon: const Icon(Icons.calendar_month),
                           onPressed: () async {
                             DateTime currentTime = await NTP.now();
-                            currentTime = currentTime
-                                .toUtc()
-                                .add(const Duration(hours: 9));
+                            currentTime = currentTime.toUtc().add(const Duration(hours: 9));
                             timeList = await showOmniDateTimeRangePicker(
                               context: context,
                               startInitialDate: currentTime,
@@ -236,9 +230,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                             }
                             print("end time : $end");
                             setState(() {
-                              dateInfo = (start == null || end == null
-                                  ? "일정을 선택해주세요"
-                                  : '${start.split(".")[0]} ~ ${end.split(".")[0]}');
+                              dateInfo = (start == null || end == null ? "일정을 선택해주세요" : '${start.split(".")[0]} ~ ${end.split(".")[0]}');
                             });
                           },
                         ),
@@ -299,15 +291,13 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                               buttonStyleData: ButtonStyleData(
                                 height: 50,
                                 width: 120,
-                                padding:
-                                    const EdgeInsets.only(left: 14, right: 14),
+                                padding: const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.black26,
                                   ),
-                                  color:
-                                      const Color.fromARGB(255, 73, 190, 244),
+                                  color: const Color.fromARGB(255, 73, 190, 244),
                                 ),
                                 elevation: 2,
                               ),
@@ -316,8 +306,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor:
-                                    Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
@@ -333,8 +322,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                                   scrollbarTheme: ScrollbarThemeData(
                                     radius: const Radius.circular(40),
                                     thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility:
-                                        MaterialStateProperty.all(true),
+                                    thumbVisibility: MaterialStateProperty.all(true),
                                   )),
                               menuItemStyleData: const MenuItemStyleData(
                                 height: 40,
@@ -343,16 +331,14 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                             ),
                           ),
                           Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
                               width: 100,
                               child: TextField(
                                 controller: nameTec,
                                 style: const TextStyle(color: Colors.blue),
                                 decoration: InputDecoration(
                                     hintText: "이름",
-                                    hintStyle:
-                                        TextStyle(color: Colors.blue.shade200),
+                                    hintStyle: TextStyle(color: Colors.blue.shade200),
                                     border: InputBorder.none,
                                     icon: const Icon(
                                       Icons.person,
@@ -362,9 +348,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                               )),
                           TextButton(
                             onPressed: () async {
-                              TimeRange result = await showTimeRangePicker(
-                                  context: context,
-                                  interval: const Duration(minutes: 30));
+                              TimeRange result = await showTimeRangePicker(context: context, interval: const Duration(minutes: 30));
                               print("result $result");
                             },
                             child: const Text("시간 선택"),
@@ -455,8 +439,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                               scrollbarTheme: ScrollbarThemeData(
                                 radius: const Radius.circular(40),
                                 thickness: MaterialStateProperty.all(6),
-                                thumbVisibility:
-                                    MaterialStateProperty.all(true),
+                                thumbVisibility: MaterialStateProperty.all(true),
                               )),
                           menuItemStyleData: const MenuItemStyleData(
                             height: 40,
@@ -468,23 +451,18 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                   Visibility(
                     visible: isPeriodic,
                     child: TextButton(
-                        style: const ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.lightBlue)),
+                        style: const ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.lightBlue)),
                         onPressed: () {
                           isAdded = !isAdded;
                           setState(() {});
                         },
-                        child: isAdded
-                            ? const Text('날짜 및 시간 제거')
-                            : const Text('날짜 및 시간 추가')),
+                        child: isAdded ? const Text('날짜 및 시간 제거') : const Text('날짜 및 시간 추가')),
                   ),
                   const SizedBox(
                     height: 30,
                   ),
                   Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
@@ -512,26 +490,18 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(60.0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(60.0)),
                   backgroundColor: Colors.blue,
                 ),
                 onPressed: () async {
-                  var jwtToken = ref.read(tokensProvider.notifier).state[0];
                   if (!isChecked) {
                     Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
                     return;
                   }
 
                   var periodicTimeStringList = [
-                    if ((daysTec1.text != '') &&
-                        (timeTec1.text != '') &&
-                        (timeTec2.text != ''))
-                      "${daysTec1.text},${timeTec1.text}-${timeTec2.text}",
-                    if (((daysTec2.text != '') &&
-                        (timeTec3.text != '') &&
-                        (timeTec4.text != '')))
-                      "${daysTec2.text},${timeTec3.text}-${timeTec4.text}",
+                    if ((daysTec1.text != '') && (timeTec1.text != '') && (timeTec2.text != '')) "${daysTec1.text},${timeTec1.text}-${timeTec2.text}",
+                    if (((daysTec2.text != '') && (timeTec3.text != '') && (timeTec4.text != ''))) "${daysTec2.text},${timeTec3.text}-${timeTec4.text}",
                   ];
                   print('pSL : $periodicTimeStringList');
                   var postBody = isPeriodic
@@ -548,14 +518,8 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                           'startTime': startTime,
                           'endTime': endTime,
                         };
-                  var url = Uri.http(baseUri, '/timetable/updateSchedule',
-                      {'scheduleId': '${widget.scheduleId}'});
-                  var response = await http.put(url,
-                      headers: <String, String>{
-                        'Content-Type': 'application/json',
-                        'authorization': 'Bearer $jwtToken'
-                      },
-                      body: jsonEncode(postBody));
+                  var url = Uri.http(baseUri, '/timetable/updateSchedule', {'scheduleId': '${widget.scheduleId}'});
+                  var response = await http.put(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
                   if (response.statusCode == 200) {
                     print('success!');
                     Fluttertoast.showToast(msg: '변경되었습니다');
@@ -565,8 +529,7 @@ class _UpdateScheduleScreenState extends ConsumerState<UpdateScheduleScreen> {
                     Fluttertoast.showToast(msg: '변경 실패, 입력을 확인하세요');
                   }
                 },
-                child:
-                    const Text("변경하기", style: TextStyle(color: Colors.white70)),
+                child: const Text("변경하기", style: TextStyle(color: Colors.white70)),
               ),
             ),
           )

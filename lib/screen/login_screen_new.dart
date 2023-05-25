@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
@@ -68,7 +68,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
       print('자동로그인성공, jwt토큰발급');
       await storage.write(key: 'jwtToken', value: response.body);
       var jwtToken = await storage.read(key: 'jwtToken');
-      ref.read(tokensProvider.notifier).addToken(jwtToken);
+      AutoLoginController.to.addToken(jwtToken!);
       return true;
     } else {
       return false;
@@ -105,7 +105,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
       }
       await storage.write(key: 'jwtToken', value: response.body);
       var jwtToken = await storage.read(key: 'jwtToken');
-      ref.read(tokensProvider.notifier).addToken(jwtToken);
+      AutoLoginController.to.addToken(jwtToken!);
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -238,6 +238,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                     children: <Widget>[
                       TextButton(
                         onPressed: () {
+                          print('Getjwt : ${AutoLoginController.to.state}');
                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const FindPasswordScreen()));
                         },
                         child: const Text(

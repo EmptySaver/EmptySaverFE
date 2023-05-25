@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +12,15 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 class LectureSearchResultScreen extends ConsumerStatefulWidget {
-  LectureSearchResultScreen({super.key});
+  const LectureSearchResultScreen({super.key});
 
   @override
-  ConsumerState<LectureSearchResultScreen> createState() =>
-      _LectureSearchResultScreenState();
+  ConsumerState<LectureSearchResultScreen> createState() => _LectureSearchResultScreenState();
 }
 
-class _LectureSearchResultScreenState
-    extends ConsumerState<LectureSearchResultScreen> {
+class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultScreen> {
   var baseUri = '43.201.208.100:8080';
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<List<Lecture>> initialLectureList;
   late Future<List<Lecture>> lectureList;
   List<bool>? isTapList;
@@ -38,12 +37,7 @@ class _LectureSearchResultScreenState
       baseUri,
       '/subject/search',
     );
-    var response = await http.post(url,
-        headers: {
-          'authorization': 'Bearer $jwtToken',
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode({'name': word}));
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json'}, body: jsonEncode({'name': word}));
     dynamic data;
     if (response.statusCode == 200) {
       var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
@@ -56,27 +50,21 @@ class _LectureSearchResultScreenState
   }
 
   saveToSchedule(var id) async {
-    var url = Uri.http(
-        baseUri, '/subject/saveSubjectToMember', {'subjectId': '${id}'});
-    var response =
-        await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var url = Uri.http(baseUri, '/subject/saveSubjectToMember', {'subjectId': '$id'});
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '추가되었습니다');
     } else {
       print(utf8.decode(response.bodyBytes));
     }
-    ;
   }
 
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     initialLectureList = getLectureList("");
-    var listLength;
-    initialLectureList
-        .then((value) => listLength = value.length)
-        .then((value) => isTapList = List.filled(listLength, false));
+    var listLength = 0; // then에서 처리하는 변수라 저장할때 안쓰는 변수라고 사라지길래 0으로 초기화했음
+    initialLectureList.then((value) => listLength = value.length).then((value) => isTapList = List.filled(listLength, false));
     lectureList = initialLectureList;
     classInfo = "전체";
     classKindList.add("1학년");
@@ -95,19 +83,16 @@ class _LectureSearchResultScreenState
         });
       },
       child: Container(
-          padding: EdgeInsets.all(10),
-          margin: EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Color.fromARGB(255, 255, 255, 255),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
-                ),
-              ]),
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.only(bottom: 15),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ]),
           child: Column(
             children: [
               Row(
@@ -116,34 +101,27 @@ class _LectureSearchResultScreenState
                   Expanded(
                     child: Row(
                       children: [
-                        Container(
+                        SizedBox(
                             width: 30,
                             height: 30,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               // child: Image.asset(job.companyLogo),
-                              child: Icon(FontAwesomeIcons.book),
+                              child: const Icon(FontAwesomeIcons.book),
                             )),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Flexible(
                             child: Column(
                           children: [
-                            Text('${lecture.subjectname}',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
-                            SizedBox(
+                            Text('${lecture.subjectname}', style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                            const SizedBox(
                               height: 5,
                             ),
                             Text(
                               '${lecture.prof_nm}',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500),
+                              style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             Text(
@@ -157,7 +135,7 @@ class _LectureSearchResultScreenState
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -166,42 +144,33 @@ class _LectureSearchResultScreenState
                   Row(
                     children: [
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade200),
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                         child: Text(
                           '${lecture.shyr}학년',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade200),
-                        child: Text(
-                          '${lecture.subject_div}',
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                       const SizedBox(
                         width: 10,
                       ),
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade200),
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                        child: Text(
+                          '${lecture.subject_div}',
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                         child: Text(
                           '${lecture.dept}',
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
@@ -212,24 +181,22 @@ class _LectureSearchResultScreenState
                   visible: isTapList![num],
                   child: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       OutlinedButton(
                         onPressed: () {
                           saveToSchedule(lecture.id);
                         },
-                        child: Text(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 82, 195, 248)),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ))),
+                        child: const Text(
                           "강의 추가",
                           style: TextStyle(color: Colors.white),
                         ),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 82, 195, 248)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ))),
                       )
                     ],
                   ))
@@ -241,40 +208,37 @@ class _LectureSearchResultScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 227, 244, 248),
+      backgroundColor: const Color.fromARGB(255, 227, 244, 248),
       appBar: AppBar(),
       body: Column(
         children: [
           Row(
             children: [
               IconButton(
-                  padding: EdgeInsets.only(left: 20),
+                  padding: const EdgeInsets.only(left: 20),
                   onPressed: () {
                     setState(() {
                       isSearch = !isSearch;
                     });
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.filter_list,
                     color: Color.fromARGB(255, 25, 141, 230),
                   )),
               Container(
                 height: 45,
                 width: 300,
-                margin: EdgeInsets.only(left: 20),
+                margin: const EdgeInsets.only(left: 20),
                 child: TextField(
                   cursorColor: Colors.grey,
                   decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                     filled: true,
                     fillColor: Colors.grey.shade200,
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide.none),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
                     hintText: "과목 이름을 입력해주세요",
-                    hintStyle: TextStyle(fontSize: 14),
+                    hintStyle: const TextStyle(fontSize: 14),
                   ),
                   onSubmitted: (value) {
                     setState(() {
@@ -288,7 +252,7 @@ class _LectureSearchResultScreenState
           Visibility(
             visible: isSearch,
             child: (Row(children: [
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               OutlinedButton(
@@ -302,15 +266,14 @@ class _LectureSearchResultScreenState
                         width: 250,
                         alignment: Alignment.center,
                         child: ListView.builder(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             itemCount: classKindList.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     print("clicked. gesture");
-                                    isClassTabList[index] =
-                                        !isClassTabList[index];
+                                    isClassTabList[index] = !isClassTabList[index];
                                   });
                                 },
                                 child: Row(
@@ -322,7 +285,7 @@ class _LectureSearchResultScreenState
                                             isClassTabList[index] = value!;
                                           });
                                         }),
-                                    Text("${classKindList[index]}")
+                                    Text(classKindList[index])
                                   ],
                                 ),
                               );
@@ -334,12 +297,12 @@ class _LectureSearchResultScreenState
                       btnCancelOnPress: () {},
                     ).show();
                   },
-                  child: Text("학년:${classInfo}"),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
-                  )))),
-              SizedBox(
+                  ))),
+                  child: Text("학년:$classInfo")),
+              const SizedBox(
                 width: 20,
               ),
               OutlinedButton(
@@ -353,15 +316,14 @@ class _LectureSearchResultScreenState
                       width: 250,
                       alignment: Alignment.center,
                       child: ListView.builder(
-                          padding: EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
                           itemCount: classKindList.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
                                   print("clicked. gesture");
-                                  isClassTabList[index] =
-                                      !isClassTabList[index];
+                                  isClassTabList[index] = !isClassTabList[index];
                                 });
                               },
                               child: Row(
@@ -373,7 +335,7 @@ class _LectureSearchResultScreenState
                                           isClassTabList[index] = value!;
                                         });
                                       }),
-                                  Text("${classKindList[index]}")
+                                  Text(classKindList[index])
                                 ],
                               ),
                             );
@@ -385,13 +347,13 @@ class _LectureSearchResultScreenState
                     btnCancelOnPress: () {},
                   ).show();
                 },
-                child: Text("구분:${discriminateInfo}"),
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ))),
+                child: Text("구분:$discriminateInfo"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               OutlinedButton(
@@ -405,15 +367,14 @@ class _LectureSearchResultScreenState
                         width: 250,
                         alignment: Alignment.center,
                         child: ListView.builder(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             itemCount: classKindList.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     print("clicked. gesture");
-                                    isClassTabList[index] =
-                                        !isClassTabList[index];
+                                    isClassTabList[index] = !isClassTabList[index];
                                   });
                                 },
                                 child: Row(
@@ -425,7 +386,7 @@ class _LectureSearchResultScreenState
                                             isClassTabList[index] = value!;
                                           });
                                         }),
-                                    Text("${classKindList[index]}")
+                                    Text(classKindList[index])
                                   ],
                                 ),
                               );
@@ -437,11 +398,11 @@ class _LectureSearchResultScreenState
                       btnCancelOnPress: () {},
                     ).show();
                   },
-                  child: Text("학과:${deptInfo}"),
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
-                  )))),
+                  ))),
+                  child: Text("학과:$deptInfo")),
             ])),
           ),
           Expanded(
@@ -450,11 +411,10 @@ class _LectureSearchResultScreenState
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      return lectureComponent(
-                          lecture: snapshot.data![index], num: index);
+                      return lectureComponent(lecture: snapshot.data![index], num: index);
                     });
               } else {
                 print("No data..!!");

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // import 'package:emptysaver_fe/screen/friend_group_screen_legacy.dart';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/screen/friend_group_screen_new.dart';
 // import 'package:emptysaver_fe/screen/group_finder_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/group_finder_screen_new.dart';
@@ -12,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:emptysaver_fe/main.dart';
 
 class BarScreen extends ConsumerStatefulWidget {
   // String? firebaseToken;
@@ -31,10 +32,9 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     TimeTableScreen(),
     const FriendGroupScreen(),
     const GroupFinderScreen(),
-    //const InfoScreen(),
     const InfoScreenNew(),
   ];
-  String? jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   static const storage = FlutterSecureStorage();
   late dynamic userInfo;
 
@@ -51,7 +51,10 @@ class _BarScreenState extends ConsumerState<BarScreen> {
         if (userInfo == null) {
           print('유저정보 삭제됐음');
           Fluttertoast.showToast(msg: '로그아웃되었습니다');
-          ref.read(tokensProvider.notifier).removeToken(jwtToken);
+          // ref.read(tokensProvider.notifier).removeToken(jwtToken);
+          Get.find<AutoLoginController>().removeToken(jwtToken);
+          print('Getjwt : ${Get.find<AutoLoginController>().state}');
+          // print('riverpodjwt : ${ref.read(tokensProvider.notifier).state}');
           Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
         } else {
           print('유저정보 남아있음');
@@ -67,7 +70,6 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   void initState() {
     super.initState();
     print('barinit');
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/lecture_search_result_screen.dart';
@@ -30,7 +30,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   var baseUri = '43.201.208.100:8080';
   final ScrollController controller = ScrollController();
   final ScrollController controller2 = ScrollController();
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<ScheduleList> memberScheduleFuture;
   late Future<GroupScheduleList> groupScheduleFuture;
   // ScheduleList? memberSchedule = ScheduleList();
@@ -54,26 +54,20 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
       memberBodyListsTotal = [];
       memberIdListsTotal = [];
       late ScheduleList memberSchedule;
-      var startDate = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
-      var endDate = DateFormat('yyyy-MM-dd').format(
-          DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
+      var startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
+      var endDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
       Uri url;
       (widget.friendMemberId == null)
           ? (widget.groupMemberId == null)
               ? url = Uri.http(baseUri, '/timetable/getTimeTable')
-              : url = Uri.http(baseUri, '/group/getMemberTimeTable',
-                  {'groupMemberId': '${widget.groupMemberId}'})
+              : url = Uri.http(baseUri, '/group/getMemberTimeTable', {'groupMemberId': '${widget.groupMemberId}'})
           : url = Uri.http(baseUri, '/friend/getFriendTimeTable', {
               'friendMemberId': '${widget.friendMemberId}',
             });
       http.Response response;
       response = await http.post(
         url,
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer $jwtToken'
-        },
+        headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'},
         body: jsonEncode({"startDate": startDate, "endDate": endDate}),
       );
 
@@ -125,25 +119,19 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
       groupIdListsTotal = [];
       late GroupScheduleList groupSchedule;
       ScheduleList? timeTableInfo;
-      var startDate = DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
-      var endDate = DateFormat('yyyy-MM-dd').format(
-          DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
+      var startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
+      var endDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
       var url = Uri.http(baseUri, '/timetable/getMemberAndGroupTimeTable');
       var response = await http.post(
         url,
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer $jwtToken'
-        },
+        headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'},
         body: jsonEncode({"startDate": startDate, "endDate": endDate}),
       );
       if (response.statusCode == 200) {
         print('getsuccess');
         print('$startDate  $endDate');
         var parsedJson = jsonDecode(utf8.decode(response.bodyBytes));
-        groupSchedule =
-            GroupScheduleList.fromJson(parsedJson["groupTimeTableList"]);
+        groupSchedule = GroupScheduleList.fromJson(parsedJson["groupTimeTableList"]);
         timeTableInfo = groupSchedule.timeTableInfo;
         for (int h = 0; h < timeTableInfo!.scheduleListPerDays!.length; h++) {
           var trueIndexLists = [];
@@ -182,7 +170,6 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
   }
 
   @override
@@ -205,9 +192,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               //   print(value);
               // },
               onPageChanged: (index, reason) {
-                pageIndex = (index > 499)
-                    ? index - 999
-                    : index; //pageIndex(위젯 전체) == realIndex(빌더 안)
+                pageIndex = (index > 499) ? index - 999 : index; //pageIndex(위젯 전체) == realIndex(빌더 안)
                 print(pageIndex);
                 setState(() {});
               },
@@ -230,8 +215,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                           width: 20,
                           height: 20,
                         ),
-                        for (int i = 1; i < 17; i++)
-                          TimeHeaderBox(timeText: i + 7),
+                        for (int i = 1; i < 17; i++) TimeHeaderBox(timeText: i + 7),
                       ]),
                       Column(
                         children: [
@@ -256,25 +240,16 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                               if (snapshot.hasData) {
                                 // print(snapshot.data!.scheduleListPerDays!);
                                 print(memberTrueIndexListsTotal);
-                                if (snapshot
-                                    .data!.scheduleListPerDays!.isEmpty) {
+                                if (snapshot.data!.scheduleListPerDays!.isEmpty) {
                                   return const defaultTimeTableFrame();
                                 } else {
                                   return Stack(
                                     children: [
                                       const defaultTimeTableFrame(),
-                                      for (int h = 0;
-                                          h < memberTrueIndexListsTotal.length;
-                                          h++)
-                                        for (int i = 0;
-                                            i <
-                                                memberTrueIndexListsTotal[h]
-                                                    .length;
-                                            i++)
+                                      for (int h = 0; h < memberTrueIndexListsTotal.length; h++)
+                                        for (int i = 0; i < memberTrueIndexListsTotal[h].length; i++)
                                           Positioned(
-                                            top: defaultBoxHeight *
-                                                memberTrueIndexListsTotal[h][i]
-                                                    [0],
+                                            top: defaultBoxHeight * memberTrueIndexListsTotal[h][i][0],
                                             left: defaultBoxWidth * h,
                                             child: GestureDetector(
                                               onLongPress: () {
@@ -282,114 +257,59 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                 showDialog(
                                                   context: context,
                                                   builder: (context) {
-                                                    var lectureInfo = snapshot
-                                                            .data!
-                                                            .scheduleListPerDays![
-                                                        h][i];
+                                                    var lectureInfo = snapshot.data!.scheduleListPerDays![h][i];
                                                     return SimpleDialog(
-                                                      title:
-                                                          const Text('스케줄 변경'),
+                                                      title: const Text('스케줄 변경'),
                                                       children: [
-                                                        !(lectureInfo[
-                                                                    'groupType'] ==
-                                                                true)
+                                                        !(lectureInfo['groupType'] == true)
                                                             ? TextButton(
                                                                 onPressed: () {
                                                                   Navigator.push(
                                                                       context,
                                                                       MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                UpdateScheduleScreen(
-                                                                          scheduleId:
-                                                                              memberIdListsTotal[h][i],
-                                                                          groupId:
-                                                                              lectureInfo['groupId'],
+                                                                        builder: (context) => UpdateScheduleScreen(
+                                                                          scheduleId: memberIdListsTotal[h][i],
+                                                                          groupId: lectureInfo['groupId'],
                                                                         ),
                                                                       ));
                                                                 },
-                                                                child:
-                                                                    const Text(
-                                                                        '변경'))
+                                                                child: const Text('변경'))
                                                             : const Center(
                                                                 child: Text(
                                                                   '그룹스케줄은 변경이 불가능합니다',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .grey),
+                                                                  style: TextStyle(color: Colors.grey),
                                                                 ),
                                                               ),
                                                         TextButton(
-                                                            onPressed:
-                                                                () async {
-                                                              var url = Uri.http(
-                                                                  baseUri,
-                                                                  '/timetable/deleteSchedule',
-                                                                  {
-                                                                    'scheduleId':
-                                                                        '${memberIdListsTotal[h][i]}'
-                                                                  });
-                                                              var response =
-                                                                  await http.delete(
-                                                                      url,
-                                                                      headers: {
-                                                                    'authorization':
-                                                                        'Bearer $jwtToken'
-                                                                  });
-                                                              if (response
-                                                                      .statusCode ==
-                                                                  200) {
-                                                                Fluttertoast
-                                                                    .showToast(
-                                                                        msg:
-                                                                            '삭제되었습니다');
+                                                            onPressed: () async {
+                                                              var url = Uri.http(baseUri, '/timetable/deleteSchedule', {'scheduleId': '${memberIdListsTotal[h][i]}'});
+                                                              var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                              if (response.statusCode == 200) {
+                                                                Fluttertoast.showToast(msg: '삭제되었습니다');
                                                                 setState(() {});
-                                                                Navigator.pop(
-                                                                    context);
+                                                                Navigator.pop(context);
                                                               } else {
-                                                                Fluttertoast
-                                                                    .showToast(
-                                                                        msg:
-                                                                            'error!');
-                                                                print(utf8.decode(
-                                                                    response
-                                                                        .bodyBytes));
+                                                                Fluttertoast.showToast(msg: 'error!');
+                                                                print(utf8.decode(response.bodyBytes));
                                                               }
                                                             },
-                                                            child: !(lectureInfo[
-                                                                        'groupType'] ==
-                                                                    true)
-                                                                ? const Text(
-                                                                    '삭제')
-                                                                : const Text(
-                                                                    '나에게서만 삭제')),
+                                                            child: !(lectureInfo['groupType'] == true) ? const Text('삭제') : const Text('나에게서만 삭제')),
                                                       ],
                                                     );
                                                   },
                                                 );
                                               },
                                               child: Container(
-                                                height: defaultBoxHeight *
-                                                    (memberTrueIndexListsTotal[
-                                                            h][i]
-                                                        .length),
+                                                height: defaultBoxHeight * (memberTrueIndexListsTotal[h][i].length),
                                                 width: defaultBoxWidth,
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Colors.black),
-                                                  color: ((h + i) > 17)
-                                                      ? Colors.primaries[
-                                                          (h + i) % 17]
-                                                      : Colors
-                                                          .primaries[(h + i)],
+                                                  border: Border.all(width: 1, color: Colors.black),
+                                                  color: ((h + i) > 17) ? Colors.primaries[(h + i) % 17] : Colors.primaries[(h + i)],
                                                 ),
                                                 child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    Text(memberNameListsTotal[h]
-                                                        [i]),
+                                                    Text(memberNameListsTotal[h][i]),
                                                     // Text(bodyListsTotal[h][i])
                                                   ],
                                                 ),
@@ -596,9 +516,7 @@ class defaultBox extends StatelessWidget {
         border: Border(
           left: const BorderSide(color: Colors.blueGrey, width: 0.2),
           right: const BorderSide(color: Colors.blueGrey, width: 0.2),
-          bottom: (tag % 2 == 1)
-              ? const BorderSide(color: Colors.blueGrey, width: 0.2)
-              : BorderSide.none,
+          bottom: (tag % 2 == 1) ? const BorderSide(color: Colors.blueGrey, width: 0.2) : BorderSide.none,
         ),
       ),
     );

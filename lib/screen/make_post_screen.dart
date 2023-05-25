@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,7 +17,7 @@ class MakePostScreen extends ConsumerStatefulWidget {
 }
 
 class _MakePostScreenState extends ConsumerState<MakePostScreen> {
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   var baseUri = '43.201.208.100:8080';
   var titleTec = TextEditingController();
   var contentTec = TextEditingController();
@@ -25,7 +25,6 @@ class _MakePostScreenState extends ConsumerState<MakePostScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
   }
 
   @override
@@ -63,15 +62,8 @@ class _MakePostScreenState extends ConsumerState<MakePostScreen> {
                   onPressed: () async {
                     var url = Uri.http(baseUri, '/board/makePost');
                     var response = await http.post(url,
-                        headers: {
-                          'authorization': 'Bearer $jwtToken',
-                          'Content-Type': 'application/json; charset=UTF-8'
-                        },
-                        body: jsonEncode({
-                          'title': titleTec.text,
-                          'content': contentTec.text,
-                          'groupId': widget.groupdata!.groupId
-                        }));
+                        headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                        body: jsonEncode({'title': titleTec.text, 'content': contentTec.text, 'groupId': widget.groupdata!.groupId}));
                     print(widget.groupdata!.groupId);
                     if (response.statusCode == 200) {
                       Fluttertoast.showToast(msg: '작성되었습니다');

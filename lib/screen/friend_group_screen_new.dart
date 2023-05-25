@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
@@ -9,6 +10,7 @@ import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:awesome_dialog/awesome_dialog.dart';
 
@@ -22,7 +24,7 @@ class FriendGroupScreen extends ConsumerStatefulWidget {
 class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   var addFriendTec = TextEditingController();
   var baseUri = '43.201.208.100:8080';
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<List<Group>> myGroupListFuture;
   late Future<List<Friend>> friendListFuture;
   bool isGroup = true;
@@ -71,7 +73,10 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
+    // jwtToken = ref.read(tokensProvider.notifier).state[0];
+    jwtToken = Get.find<AutoLoginController>().state[0];
+    print('Getjwt : ${Get.find<AutoLoginController>().state}');
+    print('riverpodjwt : ${ref.read(tokensProvider.notifier).state}');
     myGroupListFuture = getMyGroup(jwtToken);
     friendListFuture = getFriendList();
     // setState(() {

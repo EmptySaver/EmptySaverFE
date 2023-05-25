@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class MyPageScreen extends ConsumerStatefulWidget {
 class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
   late bool _dark;
   var baseUri = '43.201.208.100:8080';
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<MemberInfo> memberInfoFuture;
 
   var nicknameTec = TextEditingController();
@@ -31,8 +32,7 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
 
   Future<MemberInfo> getMemberInfo() async {
     var url = Uri.http(baseUri, '/afterAuth/getMemberInfo');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     var data = MemberInfo.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     return data;
   }
@@ -40,7 +40,6 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     memberInfoFuture = getMemberInfo();
     _dark = false;
   }
@@ -61,11 +60,10 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
         brightness: _getBrightness(),
       ),
       child: Scaffold(
-        backgroundColor: _dark ? null : Color.fromARGB(255, 220, 241, 248),
+        backgroundColor: _dark ? null : const Color.fromARGB(255, 220, 241, 248),
         appBar: AppBar(
           elevation: 0,
-          systemOverlayStyle:
-              _dark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+          systemOverlayStyle: _dark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
           iconTheme: IconThemeData(color: _dark ? Colors.white : Colors.black),
           backgroundColor: Colors.transparent,
           title: Text(
@@ -93,9 +91,8 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                 children: <Widget>[
                   Card(
                       elevation: 8.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      color: Color.fromARGB(255, 63, 118, 185),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                      color: const Color.fromARGB(255, 63, 118, 185),
                       child: FutureBuilder(
                         future: memberInfoFuture,
                         builder: (context, snapshot) {
@@ -188,8 +185,7 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                   Card(
                     elevation: 4.0,
                     margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 16.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                     child: Column(
                       children: <Widget>[
                         ListTile(
@@ -208,29 +204,20 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                 children: [
                                   const Text(
                                     "비밀번호 변경",
-                                    style: TextStyle(
-                                        color: Color.fromARGB(255, 60, 60, 69),
-                                        fontSize: 22),
+                                    style: TextStyle(color: Color.fromARGB(255, 60, 60, 69), fontSize: 22),
                                   ),
                                   const SizedBox(
                                     height: 10,
                                   ),
                                   TextFormField(
-                                    decoration: const InputDecoration(
-                                        icon: Icon(Icons.lock),
-                                        hintText: '기존 비밀번호를 입력하세요',
-                                        labelText: '기존 비밀번호'),
+                                    decoration: const InputDecoration(icon: Icon(Icons.lock), hintText: '기존 비밀번호를 입력하세요', labelText: '기존 비밀번호'),
                                     controller: oldPwdTec,
                                   ),
                                   const SizedBox(
                                     height: 10,
                                   ),
                                   TextFormField(
-                                    decoration: const InputDecoration(
-                                        icon: Icon(Icons.lock,
-                                            color: Colors.cyan),
-                                        hintText: '변경할 비밀번호를 입력하세요',
-                                        labelText: '새 비밀번호'),
+                                    decoration: const InputDecoration(icon: Icon(Icons.lock, color: Colors.cyan), hintText: '변경할 비밀번호를 입력하세요', labelText: '새 비밀번호'),
                                     controller: newPwdTec,
                                   ),
                                   const SizedBox(
@@ -243,14 +230,9 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                   Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
                                   return;
                                 }
-                                var url = Uri.http(
-                                    baseUri, '/afterAuth/changePassword');
+                                var url = Uri.http(baseUri, '/afterAuth/changePassword');
                                 var response = await http.put(url,
-                                    headers: {
-                                      'authorization': 'Bearer $jwtToken',
-                                      'Content-Type':
-                                          'application/json; charset=UTF-8'
-                                    },
+                                    headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
                                     body: jsonEncode({
                                       'oldPassword': oldPwdTec.text,
                                       'newPassword': newPwdTec.text,
@@ -258,11 +240,9 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                 if (response.statusCode == 200) {
                                   Fluttertoast.showToast(msg: '변경되었습니다');
                                 } else {
-                                  var result = jsonDecode(
-                                      utf8.decode(response.bodyBytes));
+                                  var result = jsonDecode(utf8.decode(response.bodyBytes));
                                   print(result['message']);
-                                  Fluttertoast.showToast(
-                                      msg: '${result['message']}');
+                                  Fluttertoast.showToast(msg: '${result['message']}');
                                 }
                               },
                               btnCancelOnPress: () {},
@@ -280,16 +260,14 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                     color: Colors.cyan,
                                   ),
                                   title: const Text("닉네임 변경"),
-                                  trailing:
-                                      const Icon(Icons.keyboard_arrow_right),
+                                  trailing: const Icon(Icons.keyboard_arrow_right),
                                   onTap: () {
                                     AwesomeDialog(
                                       context: context,
                                       dialogType: DialogType.question,
                                       body: Column(
                                         children: [
-                                          Text(
-                                              "현재 닉네임 : ${snapshot.data!.nickname!}"),
+                                          Text("현재 닉네임 : ${snapshot.data!.nickname!}"),
                                           const SizedBox(
                                             height: 10,
                                           ),
@@ -310,26 +288,19 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                       ),
                                       btnOkOnPress: () async {
                                         if (!_checkSpace(nicknameTec.text)) {
-                                          Fluttertoast.showToast(
-                                              msg: '공백은 허용되지 않습니다');
+                                          Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
                                           return;
                                         }
-                                        var url = Uri.http(baseUri,
-                                            '/afterAuth/changeNickName/${nicknameTec.text}');
-                                        var response = await http
-                                            .put(url, headers: {
-                                          'authorization': 'Bearer $jwtToken'
-                                        });
+                                        var url = Uri.http(baseUri, '/afterAuth/changeNickName/${nicknameTec.text}');
+                                        var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
                                         if (response.statusCode == 200) {
-                                          Fluttertoast.showToast(
-                                              msg: '변경되었습니다');
+                                          Fluttertoast.showToast(msg: '변경되었습니다');
                                           setState(() {
                                             memberInfoFuture = getMemberInfo();
                                             nicknameTec.text = "";
                                           });
                                         } else {
-                                          print(
-                                              utf8.decode(response.bodyBytes));
+                                          print(utf8.decode(response.bodyBytes));
                                           Fluttertoast.showToast(msg: '변경 에러');
                                         }
                                       },
@@ -358,15 +329,11 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                               title: "회원 탈퇴",
                               desc: "정말 탈퇴하시겠습니까?",
                               btnOkOnPress: () async {
-                                var url =
-                                    Uri.http(baseUri, '/afterAuth/deleteme');
-                                var response = await http.delete(url, headers: {
-                                  'authorization': 'Bearer $jwtToken'
-                                });
+                                var url = Uri.http(baseUri, '/afterAuth/deleteme');
+                                var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
                                 if (response.statusCode == 200) {
                                   Fluttertoast.showToast(msg: '회원탈퇴되었습니다');
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/', (route) => false);
+                                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                                 }
                               },
                               btnCancelOnPress: () {},

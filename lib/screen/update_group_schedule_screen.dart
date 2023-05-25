@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -16,13 +16,12 @@ class UpdateGroupScheduleScreen extends ConsumerStatefulWidget {
   UpdateGroupScheduleScreen({super.key, this.groupData, this.scheduleId});
 
   @override
-  ConsumerState<UpdateGroupScheduleScreen> createState() =>
-      _UpdateGroupScheduleScreenState();
+  ConsumerState<UpdateGroupScheduleScreen> createState() => _UpdateGroupScheduleScreenState();
 }
 
-class _UpdateGroupScheduleScreenState
-    extends ConsumerState<UpdateGroupScheduleScreen> {
+class _UpdateGroupScheduleScreenState extends ConsumerState<UpdateGroupScheduleScreen> {
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
 
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
@@ -50,8 +49,6 @@ class _UpdateGroupScheduleScreenState
 
   @override
   Widget build(BuildContext context) {
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('그룹 일정 추가'),
@@ -102,16 +99,11 @@ class _UpdateGroupScheduleScreenState
                         ),
                         onTap: () async {
                           {
-                            DateTime? pickeddate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2024));
+                            DateTime? pickeddate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2024));
 
                             if (pickeddate != null) {
                               setState(() {
-                                dateTec.text =
-                                    DateFormat('yyyy-MM-dd').format(pickeddate);
+                                dateTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
                               });
                             }
                           }
@@ -160,8 +152,7 @@ class _UpdateGroupScheduleScreenState
                                     isForce2Digits: true,
                                     isShowSeconds: false,
                                     onTimeChange: (time) {
-                                      var pickedTime =
-                                          DateFormat('HH:mm').format(time);
+                                      var pickedTime = DateFormat('HH:mm').format(time);
                                       timeTec1.text = pickedTime;
                                       setState(() {});
                                     },
@@ -194,18 +185,12 @@ class _UpdateGroupScheduleScreenState
                           child: TextField(
                             textAlign: TextAlign.center,
                             onTap: () async {
-                              TimeOfDay? pickedTime =
-                                  await showIntervalTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                      interval: 30,
-                                      visibleStep: VisibleStep.thirtieths);
+                              TimeOfDay? pickedTime = await showIntervalTimePicker(context: context, initialTime: TimeOfDay.now(), interval: 30, visibleStep: VisibleStep.thirtieths);
                               if (pickedTime != null) {
                                 setState(() {
                                   var df = DateFormat("a h:mm", "ko");
                                   var dt = df.parse(pickedTime.format(context));
-                                  var finaltime =
-                                      DateFormat("HH:mm").format(dt);
+                                  var finaltime = DateFormat("HH:mm").format(dt);
                                   timeTec2.text = finaltime;
                                 });
                               }
@@ -234,19 +219,12 @@ class _UpdateGroupScheduleScreenState
                             child: TextField(
                               textAlign: TextAlign.center,
                               onTap: () async {
-                                TimeOfDay? pickedTime =
-                                    await showIntervalTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                        interval: 30,
-                                        visibleStep: VisibleStep.thirtieths);
+                                TimeOfDay? pickedTime = await showIntervalTimePicker(context: context, initialTime: TimeOfDay.now(), interval: 30, visibleStep: VisibleStep.thirtieths);
                                 if (pickedTime != null) {
                                   setState(() {
                                     var df = DateFormat("a h:mm", "ko");
-                                    var dt =
-                                        df.parse(pickedTime.format(context));
-                                    var finaltime =
-                                        DateFormat("HH:mm").format(dt);
+                                    var dt = df.parse(pickedTime.format(context));
+                                    var finaltime = DateFormat("HH:mm").format(dt);
                                     timeTec3.text = finaltime;
                                   });
                                 }
@@ -261,8 +239,7 @@ class _UpdateGroupScheduleScreenState
                             child: TextField(
                               textAlign: TextAlign.center,
                               onTap: () async {
-                                TimeOfDay? pickedTime =
-                                    await showIntervalTimePicker(
+                                TimeOfDay? pickedTime = await showIntervalTimePicker(
                                   context: context,
                                   initialTime: TimeOfDay.now(),
                                   interval: 30,
@@ -271,10 +248,8 @@ class _UpdateGroupScheduleScreenState
                                 if (pickedTime != null) {
                                   setState(() {
                                     var df = DateFormat("a h:mm", "ko");
-                                    var dt =
-                                        df.parse(pickedTime.format(context));
-                                    var finaltime =
-                                        DateFormat("HH:mm").format(dt);
+                                    var dt = df.parse(pickedTime.format(context));
+                                    var finaltime = DateFormat("HH:mm").format(dt);
                                     timeTec4.text = finaltime;
                                   });
                                 }
@@ -288,16 +263,12 @@ class _UpdateGroupScheduleScreenState
                   Visibility(
                     visible: isPeriodic,
                     child: TextButton(
-                        style: const ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.lightBlue)),
+                        style: const ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.lightBlue)),
                         onPressed: () {
                           isAdded = !isAdded;
                           setState(() {});
                         },
-                        child: isAdded
-                            ? const Text('날짜 및 시간 제거')
-                            : const Text('날짜 및 시간 추가')),
+                        child: isAdded ? const Text('날짜 및 시간 제거') : const Text('날짜 및 시간 추가')),
                   ),
                   const SizedBox(
                     height: 30,
@@ -315,10 +286,8 @@ class _UpdateGroupScheduleScreenState
                             isShowSeconds: false,
                             onTimeChange: (time) {
                               if (dateTec != '') {
-                                var pickedTime =
-                                    DateFormat('HH:mm:ss').format(time);
-                                startTime = ('${dateTec.text}T$pickedTime')
-                                    .split(' ')[0];
+                                var pickedTime = DateFormat('HH:mm:ss').format(time);
+                                startTime = ('${dateTec.text}T$pickedTime').split(' ')[0];
                               }
                             },
                           ),
@@ -331,10 +300,8 @@ class _UpdateGroupScheduleScreenState
                             isShowSeconds: false,
                             onTimeChange: (time) {
                               if (dateTec != '') {
-                                var pickedTime =
-                                    DateFormat('HH:mm:ss').format(time);
-                                endTime = ('${dateTec.text}T$pickedTime')
-                                    .split(' ')[0];
+                                var pickedTime = DateFormat('HH:mm:ss').format(time);
+                                endTime = ('${dateTec.text}T$pickedTime').split(' ')[0];
                               }
                               print('Start : $startTime');
                               print('End : $endTime');
@@ -350,47 +317,30 @@ class _UpdateGroupScheduleScreenState
                   OutlinedButton(
                       onPressed: () async {
                         var periodicTimeStringList = [
-                          if ((daysTec1.text != '') &&
-                              (timeTec1.text != '') &&
-                              (timeTec2.text != ''))
-                            "${daysTec1.text},${timeTec1.text}-${timeTec2.text}",
-                          if (((daysTec2.text != '') &&
-                              (timeTec3.text != '') &&
-                              (timeTec4.text != '')))
-                            "${daysTec2.text},${timeTec3.text}-${timeTec4.text}",
+                          if ((daysTec1.text != '') && (timeTec1.text != '') && (timeTec2.text != '')) "${daysTec1.text},${timeTec1.text}-${timeTec2.text}",
+                          if (((daysTec2.text != '') && (timeTec3.text != '') && (timeTec4.text != ''))) "${daysTec2.text},${timeTec3.text}-${timeTec4.text}",
                         ];
                         print('pSL : $periodicTimeStringList');
                         var postBody = isPeriodic
                             ? {
-                                'name':
-                                    (nameTec.text == '') ? '제목' : nameTec.text,
-                                'body':
-                                    (bodyTec.text == '') ? '내용' : bodyTec.text,
+                                'name': (nameTec.text == '') ? '제목' : nameTec.text,
+                                'body': (bodyTec.text == '') ? '내용' : bodyTec.text,
                                 'periodicType': isPeriodic,
-                                'periodicTimeStringList':
-                                    periodicTimeStringList,
+                                'periodicTimeStringList': periodicTimeStringList,
                               }
                             : {
-                                'name':
-                                    (nameTec.text == '') ? '제목' : nameTec.text,
-                                'body':
-                                    (bodyTec.text == '') ? '내용' : bodyTec.text,
+                                'name': (nameTec.text == '') ? '제목' : nameTec.text,
+                                'body': (bodyTec.text == '') ? '내용' : bodyTec.text,
                                 'periodicType': isPeriodic,
                                 'startTime': startTime,
                                 'endTime': endTime,
                               };
-                        var url = Uri.http(
-                            baseUri, '/timetable/team/updateSchedule', {
+                        var url = Uri.http(baseUri, '/timetable/team/updateSchedule', {
                           'groupId': '${widget.groupData!.groupId}',
                           'scheduleId': '${widget.scheduleId}',
                         });
                         print(url);
-                        var response = await http.put(url,
-                            headers: <String, String>{
-                              'Content-Type': 'application/json',
-                              'authorization': 'Bearer $jwtToken'
-                            },
-                            body: jsonEncode(postBody));
+                        var response = await http.put(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
                         if (response.statusCode == 200) {
                           print('success!');
                           print(response.body);

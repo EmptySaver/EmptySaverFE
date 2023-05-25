@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +34,7 @@ class Item {
 
 class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
   bool isChecked = false;
@@ -611,7 +613,6 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                   backgroundColor: Colors.blue,
                 ),
                 onPressed: () async {
-                  var jwtToken = ref.read(tokensProvider.notifier).state[0];
                   if (!isChecked) {
                     Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
                     return;

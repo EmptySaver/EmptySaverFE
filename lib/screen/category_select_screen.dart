@@ -1,8 +1,7 @@
-import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/screen/add_group_screen_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'add_group_screen_legacy.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
@@ -11,16 +10,20 @@ class CategorySelectScreen extends ConsumerStatefulWidget {
   const CategorySelectScreen({super.key});
 
   @override
-  ConsumerState<CategorySelectScreen> createState() =>
-      _CategorySelectScreenState();
+  ConsumerState<CategorySelectScreen> createState() => _CategorySelectScreenState();
 }
 
 class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var jwtToken = ref.read(tokensProvider.notifier).state[0];
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -35,8 +38,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
               OutlinedButton(
                 onPressed: () async {
                   var url = Uri.http(baseUri, '/category/getCategoryList');
-                  var response = await http
-                      .get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                  var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                   print(jsonDecode(utf8.decode(response.bodyBytes)));
                   var parsedJson = jsonDecode(utf8.decode(response.bodyBytes));
                   Category category = Category.fromJson(parsedJson);
@@ -90,11 +92,9 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) => Container(
                                   height: 90,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(width: 1)),
+                                  decoration: BoxDecoration(border: Border.all(width: 1)),
                                 ),
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
+                            separatorBuilder: (context, index) => const SizedBox(
                                   height: 5,
                                 ),
                             itemCount: 6)

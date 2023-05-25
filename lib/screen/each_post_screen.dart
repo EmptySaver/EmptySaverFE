@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:emptysaver_fe/main.dart';
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,7 +18,7 @@ class EachPostScreen extends ConsumerStatefulWidget {
 }
 
 class _EachPostScreenState extends ConsumerState<EachPostScreen> {
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   var baseUri = '43.201.208.100:8080';
   late Future<Map<String, dynamic>> postDetailFuture;
   var commentTec = TextEditingController();
@@ -27,7 +27,6 @@ class _EachPostScreenState extends ConsumerState<EachPostScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     postDetailFuture = getPost();
   }
 

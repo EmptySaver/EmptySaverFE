@@ -1,3 +1,4 @@
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +45,7 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
+    jwtToken = AutoLoginController.to.state[0];
     tagList = getTag(jwtToken);
   }
 

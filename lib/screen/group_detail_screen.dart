@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
 import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
@@ -23,23 +23,19 @@ class GroupDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
-  late var jwtToken;
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<List<Map<String, dynamic>>> groupMemberFuture;
   late Future<List<ScheduleText>> groupScheduleTextListFuture;
   late Future<List<dynamic>> groupPostListFuture;
   var memberIdTec = TextEditingController();
 
   Future<List<Map<String, dynamic>>> getGroupMember() async {
-    var url =
-        Uri.http(baseUri, '/group/getGroupMember/${widget.groupData!.groupId}');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var url = Uri.http(baseUri, '/group/getGroupMember/${widget.groupData!.groupId}');
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
-      var data = rawData
-          .map((e) => {'memberId': e['memberId'], 'name': e['name']})
-          .toList();
+      var data = rawData.map((e) => {'memberId': e['memberId'], 'name': e['name']}).toList();
       return data;
     } else {
       print(utf8.decode(response.bodyBytes));
@@ -48,10 +44,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   Future<List<ScheduleText>> getGroupScheduleTextList() async {
-    var url = Uri.http(baseUri, '/timetable/team/getScheduleList',
-        {'groupId': '${widget.groupData!.groupId}'});
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var url = Uri.http(baseUri, '/timetable/team/getScheduleList', {'groupId': '${widget.groupData!.groupId}'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = parsedJson.map((e) => ScheduleText.fromJson(e)).toList();
@@ -65,14 +59,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   void sendInvite() async {
     var url = Uri.http(baseUri, '/group/sendInvite');
     var response = await http.post(url,
-        headers: {
-          'authorization': 'Bearer $jwtToken',
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode({
-          'memberId': memberIdTec.text,
-          'groupId': widget.groupData!.groupId
-        }));
+        headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'memberId': memberIdTec.text, 'groupId': widget.groupData!.groupId}));
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '초대를 보냈습니다');
       Navigator.pop(context);
@@ -82,10 +69,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   Future<List<dynamic>> getPostList() async {
-    var url =
-        Uri.http(baseUri, '/board/getPostList/${widget.groupData!.groupId}');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var url = Uri.http(baseUri, '/board/getPostList/${widget.groupData!.groupId}');
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var data = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
       return data;
@@ -98,7 +83,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     groupMemberFuture = getGroupMember();
     groupScheduleTextListFuture = getGroupScheduleTextList();
     groupPostListFuture = getPostList();
@@ -113,8 +97,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                var url = Uri.http(
-                    baseUri, '/group/deleteMe/${widget.groupData!.groupId}');
+                var url = Uri.http(baseUri, '/group/deleteMe/${widget.groupData!.groupId}');
                 var response = await http.delete(url, headers: {
                   'authorization': 'Bearer $jwtToken',
                 });
@@ -127,8 +110,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               icon: const Icon(Icons.outbond_outlined)),
           IconButton(
               onPressed: () async {
-                var url = Uri.http(
-                    baseUri, '/group/delete/${widget.groupData!.groupId}');
+                var url = Uri.http(baseUri, '/group/delete/${widget.groupData!.groupId}');
                 var response = await http.delete(url, headers: {
                   'authorization': 'Bearer $jwtToken',
                 });
@@ -166,8 +148,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => GroupCheckScreen(
-                                  groupId: widget.groupData!.groupId),
+                              builder: (context) => GroupCheckScreen(groupId: widget.groupData!.groupId),
                             ));
                       },
                       child: const Text('조회'),
@@ -234,42 +215,29 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          EachPostScreen(
+                                                      builder: (context) => EachPostScreen(
                                                         mode: 'write',
-                                                        postId: snapshot
-                                                                .data![index]
-                                                            ['postId'],
+                                                        postId: snapshot.data![index]['postId'],
                                                       ),
                                                     )).then((value) => setState(
                                                       () {
-                                                        groupPostListFuture =
-                                                            getPostList();
+                                                        groupPostListFuture = getPostList();
                                                       },
                                                     ));
                                               },
                                               child: const Text('수정')),
                                           TextButton(
                                               onPressed: () async {
-                                                var url = Uri.http(baseUri,
-                                                    '/board/deletePost/${snapshot.data![index]['postId']}');
-                                                var response = await http
-                                                    .delete(url, headers: {
-                                                  'authorization':
-                                                      'Bearer $jwtToken'
-                                                });
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  Fluttertoast.showToast(
-                                                      msg: '삭제되었습니다');
+                                                var url = Uri.http(baseUri, '/board/deletePost/${snapshot.data![index]['postId']}');
+                                                var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                if (response.statusCode == 200) {
+                                                  Fluttertoast.showToast(msg: '삭제되었습니다');
                                                   setState(() {
-                                                    groupPostListFuture =
-                                                        getPostList();
+                                                    groupPostListFuture = getPostList();
                                                   });
                                                   Navigator.pop(context);
                                                 } else {
-                                                  print(utf8.decode(
-                                                      response.bodyBytes));
+                                                  print(utf8.decode(response.bodyBytes));
                                                   return;
                                                 }
                                               },
@@ -281,10 +249,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                 },
                                 child: Container(
                                   height: 40,
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
-                                  child:
-                                      Text('${snapshot.data![index]['title']}'),
+                                  decoration: BoxDecoration(border: Border.all()),
+                                  child: Text('${snapshot.data![index]['title']}'),
                                 ),
                               );
                             },
@@ -314,12 +280,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddGroupScheduleScreen(
-                                  groupData: widget.groupData),
+                              builder: (context) => AddGroupScheduleScreen(groupData: widget.groupData),
                             )).then((value) => setState(
                               () {
-                                groupScheduleTextListFuture =
-                                    getGroupScheduleTextList();
+                                groupScheduleTextListFuture = getGroupScheduleTextList();
                               },
                             ));
                         //                     if (isBack) {
@@ -364,49 +328,29 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          UpdateGroupScheduleScreen(
-                                                        groupData:
-                                                            widget.groupData,
-                                                        scheduleId: snapshot
-                                                            .data![index].id,
+                                                      builder: (context) => UpdateGroupScheduleScreen(
+                                                        groupData: widget.groupData,
+                                                        scheduleId: snapshot.data![index].id,
                                                       ),
                                                     )).then((value) => setState(
                                                       () {
-                                                        groupScheduleTextListFuture =
-                                                            getGroupScheduleTextList();
+                                                        groupScheduleTextListFuture = getGroupScheduleTextList();
                                                       },
                                                     ));
                                               },
                                               child: const Text('변경')),
                                           TextButton(
                                               onPressed: () async {
-                                                var url = Uri.http(
-                                                    baseUri,
-                                                    '/timetable/team/deleteSchedule',
-                                                    {
-                                                      'groupId':
-                                                          '${widget.groupData!.groupId}',
-                                                      'scheduleId':
-                                                          '${snapshot.data![index].id}'
-                                                    });
-                                                var response = await http
-                                                    .delete(url, headers: {
-                                                  'authorization':
-                                                      'Bearer $jwtToken'
-                                                });
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  Fluttertoast.showToast(
-                                                      msg: '삭제되었습니다');
+                                                var url = Uri.http(baseUri, '/timetable/team/deleteSchedule', {'groupId': '${widget.groupData!.groupId}', 'scheduleId': '${snapshot.data![index].id}'});
+                                                var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                if (response.statusCode == 200) {
+                                                  Fluttertoast.showToast(msg: '삭제되었습니다');
                                                   Navigator.pop(context);
                                                   setState(() {
-                                                    groupScheduleTextListFuture =
-                                                        getGroupScheduleTextList();
+                                                    groupScheduleTextListFuture = getGroupScheduleTextList();
                                                   });
                                                 } else {
-                                                  print(utf8.decode(
-                                                      response.bodyBytes));
+                                                  print(utf8.decode(response.bodyBytes));
                                                 }
                                               },
                                               child: const Text('삭제')),
@@ -417,8 +361,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                 },
                                 child: Container(
                                   height: 60,
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
+                                  decoration: BoxDecoration(border: Border.all()),
                                   child: Column(
                                     children: [
                                       Text('${snapshot.data![index].name}'),
@@ -459,18 +402,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               title: const Text('그룹에 초대'),
                               children: [
                                 TextFormField(
-                                  decoration: const InputDecoration(
-                                      icon: Icon(Icons.person),
-                                      hintText: '멤버 id를 입력하세요',
-                                      labelText: 'Member ID'),
+                                  decoration: const InputDecoration(icon: Icon(Icons.person), hintText: '멤버 id를 입력하세요', labelText: 'Member ID'),
                                   controller: memberIdTec,
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                OutlinedButton(
-                                    onPressed: sendInvite,
-                                    child: const Text('초대하기'))
+                                OutlinedButton(onPressed: sendInvite, child: const Text('초대하기'))
                               ],
                             );
                           },
@@ -496,17 +434,14 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           return ListView.separated(
                               itemBuilder: (context, index) => Container(
                                     height: 40,
-                                    decoration:
-                                        BoxDecoration(border: Border.all()),
+                                    decoration: BoxDecoration(border: Border.all()),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                            'id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}'),
+                                        Text('id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}'),
                                         Row(
                                           children: [
                                             IconButton(
@@ -514,63 +449,37 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Scaffold(
+                                                        builder: (context) => Scaffold(
                                                           appBar: AppBar(
-                                                            title: Text(
-                                                                '${snapshot.data![index]['name']} 시간표 조회'),
+                                                            title: Text('${snapshot.data![index]['name']} 시간표 조회'),
                                                           ),
                                                           body: TimeTableScreen(
-                                                            groupMemberId:
-                                                                snapshot.data![
-                                                                        index][
-                                                                    'memberId'],
+                                                            groupMemberId: snapshot.data![index]['memberId'],
                                                           ),
                                                         ),
                                                       ));
                                                 },
-                                                icon: const Icon(
-                                                    Icons.remove_red_eye)),
+                                                icon: const Icon(Icons.remove_red_eye)),
                                             IconButton(
                                                 onPressed: () async {
-                                                  var url = Uri.http(baseUri,
-                                                      '/group/deleteMember');
-                                                  var response =
-                                                      await http.delete(url,
-                                                          headers: {
-                                                            'authorization':
-                                                                'Bearer $jwtToken',
-                                                            'Content-Type':
-                                                                'application/json; charset=UTF-8'
-                                                          },
-                                                          body: jsonEncode({
-                                                            'memberId': snapshot
-                                                                        .data![
-                                                                    index]
-                                                                ['memberId'],
-                                                            'groupId': widget
-                                                                .groupData!
-                                                                .groupId
-                                                          }));
-                                                  if (response.statusCode ==
-                                                      200) {
-                                                    Fluttertoast.showToast(
-                                                        msg: '삭제되었습니다');
+                                                  var url = Uri.http(baseUri, '/group/deleteMember');
+                                                  var response = await http.delete(url,
+                                                      headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                                                      body: jsonEncode({'memberId': snapshot.data![index]['memberId'], 'groupId': widget.groupData!.groupId}));
+                                                  if (response.statusCode == 200) {
+                                                    Fluttertoast.showToast(msg: '삭제되었습니다');
                                                     setState(() {
-                                                      groupMemberFuture =
-                                                          getGroupMember();
+                                                      groupMemberFuture = getGroupMember();
                                                     });
                                                   }
                                                 },
-                                                icon: const Icon(Icons
-                                                    .remove_circle_outline)),
+                                                icon: const Icon(Icons.remove_circle_outline)),
                                           ],
                                         ),
                                       ],
                                     ),
                                   ),
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(
+                              separatorBuilder: (context, index) => const SizedBox(
                                     height: 5,
                                   ),
                               itemCount: snapshot.data!.length);

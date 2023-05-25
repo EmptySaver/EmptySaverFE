@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,8 +17,8 @@ class GroupFinderDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScreen> {
-  late var jwtToken;
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<Group> groupDetailFuture;
   var commentTec = TextEditingController();
 
@@ -37,7 +37,6 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     groupDetailFuture = getGroupDetail();
   }
 

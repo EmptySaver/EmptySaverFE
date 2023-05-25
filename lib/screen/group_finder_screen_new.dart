@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/invitation_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +17,8 @@ class GroupFinderScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
-  String? jwtToken;
   var baseUri = '43.201.208.100:8080';
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<List<Group>> groupData;
   bool isSearch = false;
   bool isCategorySelected = false;
@@ -60,7 +60,6 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     groupData = getAllGroup();
     allCategoryFuture = getAllCategory();
   }

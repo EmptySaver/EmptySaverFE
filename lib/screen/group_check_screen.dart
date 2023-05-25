@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,14 +18,13 @@ class GroupCheckScreen extends ConsumerStatefulWidget {
 
 class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
   var baseUri = '43.201.208.100:8080';
-  late var jwtToken;
+  var jwtToken = AutoLoginController.to.state[0];
   late Future<List<Ticket>> inviteListFuture;
   late Future<List<Ticket>> receiveListFuture;
 
   Future<List<Ticket>> getInviteList() async {
     var url = Uri.http(baseUri, '/group/getInviteList/${widget.groupId}');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Ticket.fromJson(e)).toList();
@@ -38,8 +37,7 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
 
   Future<List<Ticket>> getReceiveList() async {
     var url = Uri.http(baseUri, '/group/getReceiveList/${widget.groupId}');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Ticket.fromJson(e)).toList();
@@ -53,7 +51,6 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
   @override
   void initState() {
     super.initState();
-    jwtToken = ref.read(tokensProvider.notifier).state[0];
     inviteListFuture = getInviteList();
     receiveListFuture = getReceiveList();
   }
@@ -104,11 +101,9 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                                           Container(
                                             height: 40,
                                             width: 200,
-                                            decoration: BoxDecoration(
-                                                border: Border.all()),
+                                            decoration: BoxDecoration(border: Border.all()),
                                             child: Center(
-                                              child: Text(
-                                                  '${snapshot.data![index].memberName}'),
+                                              child: Text('${snapshot.data![index].memberName}'),
                                             ),
                                           ),
                                           const SizedBox(
@@ -116,34 +111,23 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                                           ),
                                           OutlinedButton(
                                               onPressed: () async {
-                                                var url = Uri.http(baseUri,
-                                                    '/group/addMember');
-                                                var response =
-                                                    await http.put(url,
-                                                        headers: {
-                                                          'authorization':
-                                                              'Bearer $jwtToken',
-                                                          'Content-Type':
-                                                              'application/json; charset=UTF-8',
-                                                        },
-                                                        body: jsonEncode({
-                                                          'memberId': snapshot
-                                                              .data![index]
-                                                              .memberId,
-                                                          'groupId':
-                                                              widget.groupId,
-                                                        }));
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  Fluttertoast.showToast(
-                                                      msg: '수락되었습니다');
+                                                var url = Uri.http(baseUri, '/group/addMember');
+                                                var response = await http.put(url,
+                                                    headers: {
+                                                      'authorization': 'Bearer $jwtToken',
+                                                      'Content-Type': 'application/json; charset=UTF-8',
+                                                    },
+                                                    body: jsonEncode({
+                                                      'memberId': snapshot.data![index].memberId,
+                                                      'groupId': widget.groupId,
+                                                    }));
+                                                if (response.statusCode == 200) {
+                                                  Fluttertoast.showToast(msg: '수락되었습니다');
                                                   setState(() {
-                                                    receiveListFuture =
-                                                        getReceiveList();
+                                                    receiveListFuture = getReceiveList();
                                                   });
                                                 } else {
-                                                  print(utf8.decode(
-                                                      response.bodyBytes));
+                                                  print(utf8.decode(response.bodyBytes));
                                                 }
                                               },
                                               child: const Text('수락')),
@@ -170,8 +154,7 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                                               child: const Text('거절')),
                                         ],
                                       ),
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(
+                                  separatorBuilder: (context, index) => const SizedBox(
                                         height: 5,
                                       ),
                                   itemCount: snapshot.data!.length);
@@ -212,17 +195,14 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                             } else {
                               return ListView.separated(
                                   itemBuilder: (context, index) => Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Container(
                                             height: 40,
                                             width: 250,
-                                            decoration: BoxDecoration(
-                                                border: Border.all()),
+                                            decoration: BoxDecoration(border: Border.all()),
                                             child: Center(
-                                              child: Text(
-                                                  '${snapshot.data![index].memberName}'),
+                                              child: Text('${snapshot.data![index].memberName}'),
                                             ),
                                           ),
                                           const SizedBox(
@@ -230,39 +210,21 @@ class _GroupCheckScreenState extends ConsumerState<GroupCheckScreen> {
                                           ),
                                           OutlinedButton(
                                               onPressed: () async {
-                                                var url = Uri.http(baseUri,
-                                                    '/group/deleteMember');
-                                                var response =
-                                                    await http.delete(url,
-                                                        headers: {
-                                                          'authorization':
-                                                              'Bearer $jwtToken',
-                                                          'Content-Type':
-                                                              'application/json; charset=UTF-8'
-                                                        },
-                                                        body: jsonEncode({
-                                                          'memberId': snapshot
-                                                              .data![index]
-                                                              .memberId,
-                                                          'groupId': snapshot
-                                                              .data![index]
-                                                              .groupId
-                                                        }));
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  Fluttertoast.showToast(
-                                                      msg: '삭제되었습니다');
+                                                var url = Uri.http(baseUri, '/group/deleteMember');
+                                                var response = await http.delete(url,
+                                                    headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                                                    body: jsonEncode({'memberId': snapshot.data![index].memberId, 'groupId': snapshot.data![index].groupId}));
+                                                if (response.statusCode == 200) {
+                                                  Fluttertoast.showToast(msg: '삭제되었습니다');
                                                   setState(() {
-                                                    inviteListFuture =
-                                                        getInviteList();
+                                                    inviteListFuture = getInviteList();
                                                   });
                                                 }
                                               },
                                               child: const Text('취소')),
                                         ],
                                       ),
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(
+                                  separatorBuilder: (context, index) => const SizedBox(
                                         height: 5,
                                       ),
                                   itemCount: snapshot.data!.length);
