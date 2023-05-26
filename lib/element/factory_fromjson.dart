@@ -268,3 +268,14 @@ class Lecture {
     );
   }
 }
+
+class Dept {
+  String? upperName;
+  List<dynamic>? deptNameList;
+  Dept({this.upperName, this.deptNameList});
+  factory Dept.fromJson(Map<String, dynamic> parsedJson) {
+    return Dept(
+        upperName: parsedJson['upperDivName'],
+        deptNameList: parsedJson['deptNameList']);
+  }
+}
