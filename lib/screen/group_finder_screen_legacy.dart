@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
-import 'package:emptysaver_fe/screen/invitation_screen.dart';
+import 'package:emptysaver_fe/screen/invitation_screen_legacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -86,7 +86,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreenOld> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const InvitationScreen(),
+                              builder: (context) => const InvitationScreenOld(),
                             ));
                       },
                       child: const Text('조회'),
