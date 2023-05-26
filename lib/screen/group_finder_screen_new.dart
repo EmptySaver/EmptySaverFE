@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
-import 'package:emptysaver_fe/screen/invitation_screen.dart';
+import 'package:emptysaver_fe/screen/invitation_screen_legacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +19,8 @@ class GroupFinderScreen extends ConsumerStatefulWidget {
 class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
-  late Future<List<Group>> groupData;
+  List<Group> initialGroupData = [];
+  List<Group> groupData = [];
   bool isSearch = false;
   bool isCategorySelected = false;
   Future<List<Map<String, dynamic>>>? allCategoryFuture;
@@ -27,14 +28,16 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   String? initialCategory;
   String? initialTag;
   String? categoryForTagApi;
+  var searchTec = TextEditingController(text: '');
 
-  Future<List<Group>> getAllGroup() async {
+  getAllGroup() async {
     var url = Uri.http(baseUri, '/group/getAllGroup');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       print("raw: $rawData");
-      var data = rawData.map((e) => Group.fromJson(e)).toList();
+      dynamic data = rawData.map((e) => Group.fromJson(e)).toList();
       print("got::${data[0]}");
       return data;
     } else {
@@ -45,9 +48,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   Future<List<Map<String, dynamic>>> getAllCategory() async {
     var url = Uri.http(baseUri, '/category/getCategoryList');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
+      var parsedJson =
+          jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
       var data = parsedJson.map((e) => e as Map<String, dynamic>).toList();
       print(data);
       return data;
@@ -60,13 +65,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   @override
   void initState() {
     super.initState();
-    groupData = getAllGroup();
+    getAllGroup().then((value) => setState(
+          () {
+            initialGroupData = value;
+            groupData = value;
+          },
+        ));
     allCategoryFuture = getAllCategory();
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<List<Group>>? searchCategoryTeam;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 179, 186, 224),
       body: Container(
@@ -83,8 +92,12 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                         onPressed: () {
                           isSearch = !isSearch;
                           setState(() {
-                            // groupData = getAllGroup();
+                            if (isSearch) {
+                              searchTec.text = "";
+                            }
+
                             isCategorySelected = false;
+                            groupData = initialGroupData;
                           });
                         },
                         icon: const Icon(
@@ -93,34 +106,40 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                         )),
                     Container(
                       height: 45,
-                      width: 250,
+                      width: 300,
                       margin: const EdgeInsets.only(left: 20),
                       child: TextField(
                         cursorColor: Colors.grey,
+                        controller: searchTec,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 0),
                           filled: true,
                           fillColor: Colors.grey.shade200,
-                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
-                          hintText: "검색기능 구현 ..?",
+                          prefixIcon:
+                              const Icon(Icons.search, color: Colors.grey),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide.none),
+                          hintText: "검색할 그룹 이름을 입력해주세요",
                           hintStyle: const TextStyle(fontSize: 14),
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            print("Empty? :${value.isEmpty}");
+                            print("Keyword :${value}");
+                            List<Group> tmpList = [];
+                            tmpList.addAll(initialGroupData);
+                            tmpList.retainWhere((element) => value.isEmpty
+                                ? true
+                                : element.groupName!.contains(value));
+                            groupData = tmpList;
+                            isSearch = false;
+                            isCategorySelected = false;
+                            initialTag = initialCategory = null;
+                          });
+                        },
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(backgroundColor: Colors.white60),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const InvitationScreen(),
-                            ));
-                      },
-                      child: const Text('조회'),
                     ),
                   ],
                 ),
@@ -137,14 +156,23 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       future: allCategoryFuture,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['name']!];
+                          var items = [
+                            '전체',
+                            for (int i = 0; i < snapshot.data!.length; i++)
+                              snapshot.data![i]['name']!
+                          ];
                           var dropItems = items
-                              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e),
-                                  ))
+                              .map<DropdownMenuItem<String>>(
+                                  (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(e),
+                                      ))
                               .toList();
-                          var types = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['type']];
+                          var types = [
+                            '전체',
+                            for (int i = 0; i < snapshot.data!.length; i++)
+                              snapshot.data![i]['type']
+                          ];
                           return DropdownButtonHideUnderline(
                             child: DropdownButton2(
                               isExpanded: true,
@@ -190,14 +218,20 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 var query = items.indexOf(value);
                                 var url, response;
                                 if (!(value == '전체')) {
-                                  url = Uri.http(baseUri, '/group/getCategoryTeam/${types[query]}');
-                                  response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                  url = Uri.http(baseUri,
+                                      '/group/getCategoryTeam/${types[query]}');
+                                  response = await http.get(url, headers: {
+                                    'authorization': 'Bearer $jwtToken'
+                                  });
                                   if (response.statusCode == 200) {
-                                    var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-                                    var data = rawData.map((e) => Group.fromJson(e)).toList();
-                                    searchCategoryTeam = Future(() => data);
+                                    var rawData = jsonDecode(
+                                            utf8.decode(response.bodyBytes))
+                                        as List;
+                                    var data = rawData
+                                        .map((e) => Group.fromJson(e))
+                                        .toList();
                                     setState(() {
-                                      groupData = searchCategoryTeam!;
+                                      groupData = data;
                                     });
                                   } else {
                                     print(utf8.decode(response.bodyBytes));
@@ -206,17 +240,25 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 } else {
                                   setState(() {
                                     initialCategory = "전체";
-                                    groupData = getAllGroup();
+                                    groupData = initialGroupData;
                                     isCategorySelected = false;
                                   });
                                 }
                                 var tags = [];
-                                tags.isEmpty ? initialTag = null : initialTag = tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
-                                url = Uri.http(baseUri, '/category/getLabels/${types[query]}');
-                                response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                tags.isEmpty
+                                    ? initialTag = null
+                                    : initialTag =
+                                        tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
+                                url = Uri.http(baseUri,
+                                    '/category/getLabels/${types[query]}');
+                                response = await http.get(url, headers: {
+                                  'authorization': 'Bearer $jwtToken'
+                                });
                                 if (response.statusCode == 200) {
-                                  categoryForTagApi = jsonDecode(utf8.decode(response.bodyBytes))['type'];
-                                  tags = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
+                                  categoryForTagApi = jsonDecode(
+                                      utf8.decode(response.bodyBytes))['type'];
+                                  tags = jsonDecode(utf8.decode(
+                                      response.bodyBytes))['result'] as List;
                                   allTagFuture = Future(() => tags);
                                   // print(allTagFuture);
                                   setState(() {
@@ -229,13 +271,15 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               buttonStyleData: ButtonStyleData(
                                 height: 50,
                                 width: 120,
-                                padding: const EdgeInsets.only(left: 14, right: 14),
+                                padding:
+                                    const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.black26,
                                   ),
-                                  color: const Color.fromARGB(255, 210, 132, 243),
+                                  color:
+                                      const Color.fromARGB(255, 210, 132, 243),
                                 ),
                                 elevation: 2,
                               ),
@@ -244,7 +288,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor:
+                                    Color.fromARGB(255, 255, 255, 255),
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
@@ -260,7 +305,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   scrollbarTheme: ScrollbarThemeData(
                                     radius: const Radius.circular(40),
                                     thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility: MaterialStateProperty.all(true),
+                                    thumbVisibility:
+                                        MaterialStateProperty.all(true),
                                   )),
                               menuItemStyleData: const MenuItemStyleData(
                                 height: 40,
@@ -296,18 +342,19 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                             ),
                           ));
                           itemList.addAll(snapshot.data!
-                              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(
-                                      e,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ))
+                              .map<DropdownMenuItem<String>>(
+                                  (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(
+                                          e,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ))
                               .toList());
                           return DropdownButtonHideUnderline(
                             child: DropdownButton2(
@@ -341,13 +388,22 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 initialTag = value!;
                                 print(categoryForTagApi);
                                 print(value);
-                                var url = Uri.http(baseUri, '/group/getLabelTeam', {'categoryName': categoryForTagApi, 'label': utf8.decode(utf8.encode(value))});
-                                var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                var url = Uri.http(
+                                    baseUri, '/group/getLabelTeam', {
+                                  'categoryName': categoryForTagApi,
+                                  'label': utf8.decode(utf8.encode(value))
+                                });
+                                var response = await http.get(url, headers: {
+                                  'authorization': 'Bearer $jwtToken'
+                                });
                                 if (response.statusCode == 200) {
-                                  var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-                                  var data = rawData.map((e) => Group.fromJson(e)).toList();
+                                  var rawData = jsonDecode(
+                                      utf8.decode(response.bodyBytes)) as List;
+                                  var data = rawData
+                                      .map((e) => Group.fromJson(e))
+                                      .toList();
                                   setState(() {
-                                    groupData = Future(() => data);
+                                    groupData = data;
                                     initialTag = value;
                                   });
                                 } else {
@@ -357,13 +413,15 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               buttonStyleData: ButtonStyleData(
                                 height: 50,
                                 width: 120,
-                                padding: const EdgeInsets.only(left: 14, right: 14),
+                                padding:
+                                    const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.black26,
                                   ),
-                                  color: const Color.fromARGB(255, 210, 132, 243),
+                                  color:
+                                      const Color.fromARGB(255, 210, 132, 243),
                                 ),
                                 elevation: 2,
                               ),
@@ -372,7 +430,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor:
+                                    Color.fromARGB(255, 255, 255, 255),
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
@@ -388,7 +447,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   scrollbarTheme: ScrollbarThemeData(
                                     radius: const Radius.circular(40),
                                     thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility: MaterialStateProperty.all(true),
+                                    thumbVisibility:
+                                        MaterialStateProperty.all(true),
                                   )),
                               menuItemStyleData: const MenuItemStyleData(
                                 height: 40,
@@ -405,37 +465,27 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
             ],
           ),
           Expanded(
-            child: Container(
-              child: FutureBuilder(
-                future: groupData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                        padding: const EdgeInsets.all(20),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => GroupFinderDetailScreen(
-                                      id: snapshot.data![index].groupId,
-                                    ),
-                                  ));
-                            },
-                            child: jobComponent(job: snapshot.data![index]),
-                          );
-                        });
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            ),
-          )
+              child: groupData.length > 0
+                  ? ListView.builder(
+                      padding: const EdgeInsets.all(20),
+                      itemCount: groupData.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GroupFinderDetailScreen(
+                                    id: groupData[index].groupId,
+                                  ),
+                                ));
+                          },
+                          child: jobComponent(job: groupData[index]),
+                        );
+                      })
+                  : Center(
+                      child: Text("조회된 그룹이 없습니다"),
+                    ))
         ],
       )),
     );
@@ -445,14 +495,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 251, 246, 255), boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.2),
-          spreadRadius: 0,
-          blurRadius: 2,
-          offset: const Offset(0, 1),
-        ),
-      ]),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: const Color.fromARGB(255, 251, 246, 255),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ]),
       child: Column(
         children: [
           Row(
@@ -470,44 +523,23 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       )),
                   const SizedBox(width: 10),
                   Flexible(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(job.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(job.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(job.groupName!,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500)),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(job.oneLineInfo!,
+                              style: TextStyle(color: Colors.grey[500])),
+                        ]),
                   )
                 ]),
               ),
-              // GestureDetector(
-              //   onTap: () {
-              //     setState(() {
-              //       job.isMyFav = !job.isMyFav;
-              //     });
-              //   },
-              //   child: AnimatedContainer(
-              //       height: 35,
-              //       padding: EdgeInsets.all(5),
-              //       duration: Duration(milliseconds: 300),
-              //       decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.circular(12),
-              //           border: Border.all(
-              //             color: job.isMyFav
-              //                 ? Colors.red.shade100
-              //                 : Colors.grey.shade300,
-              //           )),
-              //       child: Center(
-              //           child: job.isMyFav
-              //               ? Icon(
-              //                   Icons.favorite,
-              //                   color: Colors.red,
-              //                 )
-              //               : Icon(
-              //                   Icons.favorite_outline,
-              //                   color: Colors.grey.shade600,
-              //                 ))),
-              // )
             ],
           ),
           const SizedBox(
@@ -520,8 +552,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey.shade200),
                       child: Text(
                         job.categoryName!,
                         style: const TextStyle(color: Colors.black),
@@ -531,8 +566,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       width: 10,
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey.shade200),
                       child: Text(
                         job.categoryLabel!,
                         style: const TextStyle(color: Colors.black),
@@ -541,27 +579,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                     const SizedBox(
                       width: 10,
                     ),
-                    // Container(
-                    //   padding:
-                    //       EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(12),
-                    //       color: Color(
-                    //               int.parse("0xff${job.experienceLevelColor}"))
-                    //           .withAlpha(20)),
-                    //   child: Text(
-                    //     job.experienceLevel,
-                    //     style: TextStyle(
-                    //         color: Color(
-                    //             int.parse("0xff${job.experienceLevelColor}"))),
-                    //   ),
-                    // )
                   ],
                 ),
-                // Text(
-                //   job.timeAgo,
-                //   style: TextStyle(color: Colors.grey.shade800, fontSize: 12),
-                // )
                 Text('${job.nowMember!} / ${job.maxMember!}'),
               ],
             ),
@@ -571,48 +590,3 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
     );
   }
 }
-
-
-
-// SizedBox(
-//   height: 100,
-//   child: Row(
-//     children: [
-//       IconButton(
-//           onPressed: () {
-//             isSearch = !isSearch;
-//             setState(() {
-//               groupData = getAllGroup();
-//               isCategorySelected = false;
-//             });
-//           },
-//           icon: const Icon(Icons.filter)),
-//       Container(
-//         height: 45,
-//         margin: EdgeInsets.all(30),
-//         // padding: EdgeInsets.all(10),
-//         child: TextField(
-//           cursorColor: Colors.grey,
-//           decoration: InputDecoration(
-//             contentPadding:
-//                 EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-//             filled: true,
-//             fillColor: Colors.grey.shade200,
-//             prefixIcon: Icon(Icons.search, color: Colors.grey),
-//             border: OutlineInputBorder(
-//                 borderRadius: BorderRadius.circular(50),
-//                 borderSide: BorderSide.none),
-//             hintText: "Search e.g Software Developer",
-//             hintStyle: TextStyle(fontSize: 14),
-//           ),
-//         ),
-//       ),
-//     ],
-//   ),
-// ),
-
-// Visibility(
-//     visible: isSearch,
-//     child: Row(
-//       children: [Text("point")],
-//     )),

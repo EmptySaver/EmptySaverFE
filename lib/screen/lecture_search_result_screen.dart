@@ -15,16 +15,18 @@ class LectureSearchResultScreen extends ConsumerStatefulWidget {
   const LectureSearchResultScreen({super.key});
 
   @override
-  ConsumerState<LectureSearchResultScreen> createState() => _LectureSearchResultScreenState();
+  ConsumerState<LectureSearchResultScreen> createState() =>
+      _LectureSearchResultScreenState();
 }
 
-class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultScreen> {
+class _LectureSearchResultScreenState
+    extends ConsumerState<LectureSearchResultScreen> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
   List<Lecture> initialLectureList = [];
   List<Lecture> lectureList = [];
   List<bool>? isTapList;
-  bool isSearch = false;
+  bool isFilter = false;
   Future<List<dynamic>>? allSubjectKindFuture;
   String? initSubjectKind;
   String? classInfo = "전체";
@@ -37,12 +39,18 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
   List<Dept> deptList = [];
   bool isUpper = true;
   int deptSubIndex = -1;
+  var searchTec = TextEditingController(text: '');
   getLectureList(String? word) async {
     var url = Uri.http(
       baseUri,
       '/subject/search',
     );
-    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json'}, body: jsonEncode({'name': word}));
+    var response = await http.post(url,
+        headers: {
+          'authorization': 'Bearer $jwtToken',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode({'name': word}));
     dynamic data;
     if (response.statusCode == 200) {
       var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
@@ -80,8 +88,10 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
   }
 
   saveToSchedule(var id) async {
-    var url = Uri.http(baseUri, '/subject/saveSubjectToMember', {'subjectId': '$id'});
-    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var url =
+        Uri.http(baseUri, '/subject/saveSubjectToMember', {'subjectId': '$id'});
+    var response =
+        await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '추가되었습니다');
     } else {
@@ -156,14 +166,17 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
       child: Container(
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ]),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 0,
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ]),
           child: Column(
             children: [
               Row(
@@ -184,13 +197,20 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                         Flexible(
                             child: Column(
                           children: [
-                            Text('${lecture.subjectname}', style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                            Text('${lecture.subjectname}',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500)),
                             const SizedBox(
                               height: 5,
                             ),
                             Text(
                               '${lecture.prof_nm}',
-                              style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500),
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(
                               height: 5,
@@ -215,8 +235,11 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 15),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey.shade200),
                         child: Text(
                           '${lecture.shyr}학년',
                           style: const TextStyle(color: Colors.black),
@@ -226,8 +249,11 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                         width: 10,
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 15),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey.shade200),
                         child: Text(
                           '${lecture.subject_div}',
                           style: const TextStyle(color: Colors.black),
@@ -237,8 +263,11 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                         width: 10,
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 15),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey.shade200),
                         child: Text(
                           '${lecture.dept}',
                           style: const TextStyle(color: Colors.black),
@@ -260,8 +289,10 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                           saveToSchedule(lecture.id);
                         },
                         style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 82, 195, 248)),
-                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                const Color.fromARGB(255, 82, 195, 248)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),
                             ))),
                         child: const Text(
@@ -737,7 +768,11 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                   padding: const EdgeInsets.only(left: 20),
                   onPressed: () {
                     setState(() {
-                      isSearch = !isSearch;
+                      isFilter = !isFilter;
+                      lectureList = initialLectureList;
+                      if (isFilter) {
+                        searchTec.text = "";
+                      }
                     });
                   },
                   icon: const Icon(
@@ -751,17 +786,27 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
                 child: TextField(
                   cursorColor: Colors.grey,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                     filled: true,
                     fillColor: Colors.grey.shade200,
                     prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide.none),
                     hintText: "과목 이름을 입력해주세요",
                     hintStyle: const TextStyle(fontSize: 14),
                   ),
-                  onSubmitted: (value) {
-                    setState(() async {
-                      lectureList = await getLectureList(value);
+                  controller: searchTec,
+                  onChanged: (value) {
+                    setState(() {
+                      isFilter = false;
+                      List<Lecture> tmpList = [];
+                      tmpList.addAll(initialLectureList);
+                      tmpList.retainWhere((element) => value.isEmpty
+                          ? true
+                          : element.subjectname!.contains(value));
+                      lectureList = tmpList;
                     });
                   },
                 ),
@@ -769,7 +814,7 @@ class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultS
             ],
           ),
           Visibility(
-              visible: isSearch,
+              visible: isFilter,
               child: Container(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
