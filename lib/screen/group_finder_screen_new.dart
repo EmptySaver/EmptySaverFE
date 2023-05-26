@@ -35,7 +35,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       print("raw: $rawData");
       var data = rawData.map((e) => Group.fromJson(e)).toList();
-      print("got::${data[0]}");
+      // print("got::${data[0]}");
       return data;
     } else {
       print(utf8.decode(response.bodyBytes));

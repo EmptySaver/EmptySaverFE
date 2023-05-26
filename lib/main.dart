@@ -3,7 +3,12 @@
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/firebase_options.dart';
 import 'package:emptysaver_fe/screen/bar_screen.dart';
+import 'package:emptysaver_fe/screen/each_post_screen.dart';
+import 'package:emptysaver_fe/screen/friend_check_screen_new.dart';
 import 'package:emptysaver_fe/screen/friend_group_screen_new.dart';
+import 'package:emptysaver_fe/screen/group_check_screen.dart';
+import 'package:emptysaver_fe/screen/group_detail_screen.dart';
+import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen_new.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
@@ -135,7 +140,6 @@ void showFlutterNotification(RemoteMessage message) {
 }
 
 void _handleMessage(RemoteMessage message, FlutterSecureStorage storage, dynamic userInfo) async {
-  // String route = message.data["route"];
   userInfo = await storage.read(key: 'login');
   if (userInfo != null) {
     // var decodedUserInfo = jsonDecode(userInfo);
@@ -163,7 +167,8 @@ void _handleMessage(RemoteMessage message, FlutterSecureStorage storage, dynamic
     //     Get.find<AutoLoginController>().updateToken(jwtToken!);
     //   }
     //   print('Getjwt : ${Get.find<AutoLoginController>().state}');
-    Get.toNamed('/fg');
+    String routeValue = message.data["routeValue"];
+    routeSwitching(routeValue);
     // }
   }
   print('백그라운드 클릭');
@@ -175,6 +180,44 @@ void terminatedHandler() async {
   RemoteMessage? initialMessage = await fbMsg.getInitialMessage();
   if (initialMessage != null) {
     _handleMessage(initialMessage, storage, userInfo);
+  }
+}
+
+void routeSwitching(String routeValue, {String? idType, String? idType2, int? idValue, int? idValue2}) {
+  switch (routeValue) {
+    case 'notification':
+      switch (idType) {
+        case 'x':
+          break;
+        case 'Schedule': // 스케줄 수락하는거 만들어야됨
+          break;
+        case 'friend':
+          Get.to(const FriendCheckScreen());
+          break;
+        case 'group':
+          Get.to(GroupCheckScreen(
+            groupId: idValue,
+          ));
+      }
+      break;
+    case 'groupDetail':
+      Get.to(GroupFinderDetailScreen(
+        id: idValue,
+      ));
+    case 'post':
+      Get.to(EachPostScreen(
+        groupId: idValue,
+        postId: idValue2,
+      ));
+      break;
+    case 'friend':
+      Get.to(FriendGroupScreen(
+        isGroup: false,
+      ));
+    case 'group':
+      Get.to(GroupDetailScreen(
+        groupId: idValue,
+      ));
   }
 }
 
@@ -205,10 +248,10 @@ class _MyAppState extends ConsumerState<MyApp> {
           // foreground 알림 클릭시 실행
           onDidReceiveNotificationResponse: (NotificationResponse details) async {
             print('onDidReceiveNotificationResponse - payload: ${details.payload}');
-            // String route = message.data["route"];
+            String routeValue = message.data["routeValue"];
             userInfo = await storage.read(key: 'login');
             if (userInfo != null) {
-              Get.toNamed('/fg');
+              routeSwitching(routeValue);
             } else {
               print('포그라운드에서 알림 눌렀지만 유저정보 없음');
               Get.toNamed('/');
@@ -248,7 +291,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       routes: {
         '/bar': (context) => const BarScreen(),
         '/timetable': (context) => TimeTableScreen(),
-        '/fg': (context) => const FriendGroupScreen(),
+        '/fg': (context) => FriendGroupScreen(),
         '/noti': (context) => const NotificationsScreen(),
         '/info': (context) => const InfoScreenNew(),
       },

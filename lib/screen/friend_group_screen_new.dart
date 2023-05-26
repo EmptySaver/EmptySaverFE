@@ -15,7 +15,9 @@ import 'package:http/http.dart' as http;
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 class FriendGroupScreen extends ConsumerStatefulWidget {
-  const FriendGroupScreen({super.key});
+  bool isGroup = true;
+
+  FriendGroupScreen({super.key, this.isGroup = true});
 
   @override
   ConsumerState<FriendGroupScreen> createState() => _FriendGroupScreenState();
@@ -27,7 +29,6 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   var jwtToken = AutoLoginController.to.state[0];
   late Future<List<Group>> myGroupListFuture;
   late Future<List<Friend>> friendListFuture;
-  bool isGroup = true;
 
   Future<List<Group>> getMyGroup(String? jwtToken) async {
     var url = Uri.http(baseUri, '/group/getMyGroup');
@@ -408,7 +409,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => GroupDetailScreen(
-                  groupData: group,
+                  groupId: group.groupId,
                 ),
               )).then((value) {
             setState(() {
@@ -505,6 +506,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('친구그룹');
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 227, 244, 248),
       body: Column(
@@ -515,14 +517,14 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    isGroup = true;
+                    widget.isGroup = true;
                   });
                 },
                 child: Container(
                   height: 80,
                   // width: 200,
                   decoration: BoxDecoration(
-                      color: isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
+                      color: widget.isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
                       borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
@@ -542,14 +544,14 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    isGroup = false;
+                    widget.isGroup = false;
                   });
                 },
                 child: Container(
                   height: 80,
                   // width: 200,
                   decoration: BoxDecoration(
-                      color: isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                      color: widget.isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
                       borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
@@ -567,8 +569,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               ))
             ],
           ),
-          isGroup ? groupView1() : friendView1(),
-          isGroup ? groupView2() : friendView2(),
+          widget.isGroup ? groupView1() : friendView1(),
+          widget.isGroup ? groupView2() : friendView2(),
         ],
       ),
     );
