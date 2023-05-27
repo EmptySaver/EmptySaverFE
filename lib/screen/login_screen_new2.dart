@@ -111,7 +111,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           MaterialPageRoute(
             builder: (context) => const BarScreen(),
           ),
-              (route) => false);
+          (route) => false);
     } else {
       var result = utf8.decode(response.bodyBytes);
       print(result);
@@ -127,9 +127,10 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           const SizedBox(
             height: 60.0,
           ),
-          Image(image: AssetImage('assets/logoVer2.png')
-              ,width: 250
-              ,height: 150),
+          Image(
+              image: AssetImage('assets/logoVer2.png'),
+              width: 250,
+              height: 150),
           /*
           const CircleAvatar(
             maxRadius: 50,
@@ -147,9 +148,15 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const SignupScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => SignupScreen(
+                                firebaseToken: widget.firebaseToken,
+                              )));
                 },
-                child: const Text("Sign Up", style: TextStyle(color: Colors.blue, fontSize: 18.0)),
+                child: const Text("Sign Up",
+                    style: TextStyle(color: Colors.blue, fontSize: 18.0)),
               )
             ],
           )
@@ -194,7 +201,8 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                           )),
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -215,7 +223,8 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                           )),
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -226,7 +235,8 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                       width: 10,
                     ),
                     Checkbox(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
                       value: isAutoLogin,
                       onChanged: (value) {
                         setState(() {
@@ -246,7 +256,11 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                     TextButton(
                       onPressed: () {
                         print('Getjwt : ${AutoLoginController.to.state}');
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const FindPasswordScreen()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const FindPasswordScreen()));
                       },
                       child: const Text(
                         "Forgot Password",
@@ -280,11 +294,13 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0)),
                   backgroundColor: Colors.blue,
                 ),
                 onPressed: postLogin,
-                child: const Text("Login", style: TextStyle(color: Colors.white70)),
+                child: const Text("Login",
+                    style: TextStyle(color: Colors.white70)),
               ),
             ),
           )
