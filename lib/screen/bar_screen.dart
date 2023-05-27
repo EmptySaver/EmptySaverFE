@@ -30,7 +30,7 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   int selectedIndex = 0;
   var bodyWidgets = [
     TimeTableScreen(),
-    const FriendGroupScreen(),
+    FriendGroupScreen(),
     const GroupFinderScreen(),
     const InfoScreenNew(),
   ];

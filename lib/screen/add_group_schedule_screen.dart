@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -55,6 +54,7 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
 
   @override
   Widget build(BuildContext context) {
+    print('그룹일정추가');
     return Scaffold(
       appBar: AppBar(
         title: const Text('그룹 일정 추가'),
@@ -69,8 +69,14 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 30,
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // Navigator.push(context, route)
+                      },
+                      child: const Text('빈시간 찾기'), // 그룹장이 아니면 안보이게
+                    ),
                   ),
                   ToggleButtons(
                     isSelected: _selections,
@@ -369,5 +375,10 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
         ),
       ),
     );
+  }
+
+  void findEmptyTime() async {
+    var url = Uri.http(baseUri, '/timetable/team/findEmptyTime', {'groupId': '${widget.groupData!.groupId}'});
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'}, body: {});
   }
 }
