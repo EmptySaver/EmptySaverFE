@@ -279,3 +279,18 @@ class Dept {
         deptNameList: parsedJson['deptNameList']);
   }
 }
+
+class FullCategoryInfo {
+  String? type;
+  String? typeName;
+  List<dynamic>? tagList;
+  FullCategoryInfo({this.type, this.typeName, this.tagList});
+  factory FullCategoryInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return FullCategoryInfo(
+        type: parsedJson['type'],
+        typeName: parsedJson['typeName'],
+        tagList: parsedJson['result']);
+  }
+  Map<String, dynamic> toJson() =>
+      {'type': type, 'typeName': typeName, 'tagList': tagList};
+}
