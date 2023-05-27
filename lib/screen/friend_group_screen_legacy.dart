@@ -277,7 +277,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => GroupDetailScreen(
-                                          groupData: snapshot.data![index],
+                                          //groupData: snapshot.data![index],
                                         ),
                                       )).then((value) {
                                     setState(() {
