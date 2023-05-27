@@ -172,7 +172,9 @@ class _LoginScreenState extends ConsumerState<LoginScreenLegacy> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const SignupScreen(),
+                                    builder: (context) => SignupScreen(
+                                      firebaseToken: widget.firebaseToken,
+                                    ),
                                   ));
                             },
                             child: const Text('회원가입'),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:emptysaver_fe/screen/member_interest_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,7 +10,8 @@ import 'package:emptysaver_fe/core//assets.dart';
 import 'package:emptysaver_fe/widgets/network_image.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  String? firebaseToken;
+  SignupScreen({super.key, required this.firebaseToken});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -144,8 +146,16 @@ class _SignupScreenState extends State<SignupScreen> {
       },
     );
     if (response.statusCode == 200) {
-      Fluttertoast.showToast(msg: '가입되었습니다');
-      Navigator.pop(context);
+      // Fluttertoast.showToast(msg: '가입되었습니다');
+      // Navigator.pop(context);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InterestScreen(
+              firebaseToken: widget.firebaseToken,
+              userEmail: addrTec.text,
+            ),
+          )); //group 디테일 페이지로 라우팅바꿀것
     } else {
       var result = jsonDecode(utf8.decode(response.bodyBytes));
       Fluttertoast.showToast(msg: '${result['message']}');
