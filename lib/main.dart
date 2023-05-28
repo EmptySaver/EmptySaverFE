@@ -200,7 +200,7 @@ void routeSwitching(String? routeValue, {String? idType, String? idType2, int? i
           print('스케줄아이디 : $idValue');
           Get.to(() => GroupDetailScreen(
                 // groupId 필요
-                groupId: idValue,
+                groupId: idValue2,
               ));
           break;
         case 'friend':

@@ -30,7 +30,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   late Future<List<ScheduleText>> groupScheduleTextListFuture;
   late Future<List<dynamic>> groupPostListFuture;
   var memberIdTec = TextEditingController();
-
+  bool amIOwner = false;
   // void waitForGroupData() async {
   //   groupData = await getGroupDetail();
   //   setState(() {});
@@ -41,6 +41,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     super.initState();
     getGroupDetail().then((value) {
       groupData = value;
+      amIOwner = groupData.amIOwner!;
       setState(() {});
     });
     // waitForGroupData();
@@ -105,15 +106,18 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           fontSize: 25,
                         ),
                       ),
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => GroupCheckScreen(groupId: widget.groupId),
-                              ));
-                        },
-                        child: const Text('조회'),
+                      Visibility(
+                        visible: amIOwner,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GroupCheckScreen(groupId: widget.groupId),
+                                ));
+                          },
+                          child: const Text('조회'),
+                        ),
                       )
                     ],
                   ),
@@ -124,21 +128,24 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('공지사항'),
-                      OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MakePostScreen(
-                                    groupdata: groupData,
-                                  ),
-                                )).then((value) => setState(
-                                  () {
-                                    groupPostListFuture = getPostList();
-                                  },
-                                ));
-                          },
-                          child: const Text('글쓰기')),
+                      Visibility(
+                        visible: amIOwner,
+                        child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MakePostScreen(
+                                      groupdata: groupData,
+                                    ),
+                                  )).then((value) => setState(
+                                    () {
+                                      groupPostListFuture = getPostList();
+                                    },
+                                  ));
+                            },
+                            child: const Text('글쓰기')),
+                      ),
                     ],
                   ),
                   Container(
@@ -237,9 +244,12 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('일정 목록'),
-                      OutlinedButton(
-                        onPressed: addGroupSchedule,
-                        child: const Text('추가'), // 그룹장이 아니면 안보이게
+                      Visibility(
+                        visible: amIOwner,
+                        child: OutlinedButton(
+                          onPressed: addGroupSchedule,
+                          child: const Text('추가'), // 그룹장이 아니면 안보이게
+                        ),
                       )
                     ],
                   ),
@@ -338,29 +348,32 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       const SizedBox(
                         width: 10,
                       ),
-                      OutlinedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return SimpleDialog(
-                                contentPadding: const EdgeInsets.all(10),
-                                title: const Text('그룹에 초대'),
-                                children: [
-                                  TextFormField(
-                                    decoration: const InputDecoration(icon: Icon(Icons.person), hintText: '멤버 id를 입력하세요', labelText: 'Member ID'),
-                                    controller: memberIdTec,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  OutlinedButton(onPressed: sendInvite, child: const Text('초대하기'))
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: const Text('초대'),
+                      Visibility(
+                        visible: amIOwner,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return SimpleDialog(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  title: const Text('그룹에 초대'),
+                                  children: [
+                                    TextFormField(
+                                      decoration: const InputDecoration(icon: Icon(Icons.person), hintText: '멤버 id를 입력하세요', labelText: 'Member ID'),
+                                      controller: memberIdTec,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    OutlinedButton(onPressed: sendInvite, child: const Text('초대하기'))
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text('초대'),
+                        ),
                       )
                     ],
                   ),
@@ -390,6 +403,14 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                           Text('id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}'),
                                           Row(
                                             children: [
+                                              Visibility(
+                                                visible: amIOwner,
+                                                child: IconButton(
+                                                    onPressed: () {
+                                                      changeOwner(snapshot.data![index]['memberId']);
+                                                    },
+                                                    icon: const Icon(Icons.upgrade)),
+                                              ),
                                               IconButton(
                                                   onPressed: () {
                                                     Navigator.push(
@@ -519,5 +540,37 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             groupScheduleTextListFuture = getGroupScheduleTextList();
           },
         ));
+  }
+
+  void changeOwner(int? id) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('그룹장을 변경하시겠습니까?'),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                var url = Uri.http(baseUri, '/group/changeOwner');
+                var response = await http.put(url,
+                    headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'memberId': id, 'groupId': widget.groupId}));
+                if (response.statusCode == 200) {
+                  print(utf8.decode(response.bodyBytes));
+                  setState(() {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  });
+                } else {
+                  print(utf8.decode(response.bodyBytes));
+                }
+              },
+              child: const Text('확인')),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('취소'))
+        ],
+      ),
+    );
   }
 }
