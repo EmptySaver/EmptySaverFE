@@ -709,6 +709,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  scroll_date_picker:
+    dependency: "direct main"
+    description:
+      name: scroll_date_picker
+      sha256: "65b4e0223f561a9475e156ff93fbe0712d2e995d399b40352b2f2f44540909d9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.1"
   shared_preferences:
     dependency: transitive
     description:

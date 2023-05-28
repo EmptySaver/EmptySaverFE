@@ -72,9 +72,7 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
                   Align(
                     alignment: Alignment.topRight,
                     child: OutlinedButton(
-                      onPressed: () {
-                        // Navigator.push(context, route)
-                      },
+                      onPressed: findEmptyTime,
                       child: const Text('빈시간 찾기'), // 그룹장이 아니면 안보이게
                     ),
                   ),
@@ -111,7 +109,7 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
                         ),
                         onTap: () async {
                           {
-                            DateTime? pickeddate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2024));
+                            DateTime? pickeddate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2030));
 
                             if (pickeddate != null) {
                               setState(() {
@@ -377,8 +375,99 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
     );
   }
 
+  var findEmptyStartTec = TextEditingController();
+  var findEmptyEndTec = TextEditingController();
+  bool isFinded = false;
+  var findedEmptyTimeList = [];
   void findEmptyTime() async {
-    var url = Uri.http(baseUri, '/timetable/team/findEmptyTime', {'groupId': '${widget.groupData!.groupId}'});
-    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'}, body: {});
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SimpleDialog(
+              contentPadding: const EdgeInsets.all(8),
+              children: [
+                TextField(
+                    controller: findEmptyStartTec,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_month_outlined),
+                      labelText: '시작일자',
+                    ),
+                    keyboardType: TextInputType.none,
+                    onTap: () async {
+                      {
+                        DateTime? pickeddate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2030),
+                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        );
+                        if (pickeddate != null) {
+                          setState(() {
+                            findEmptyStartTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                          });
+                        }
+                      }
+                    }),
+                TextField(
+                    controller: findEmptyEndTec,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_month_outlined),
+                      labelText: '종료일자',
+                    ),
+                    keyboardType: TextInputType.none,
+                    onTap: () async {
+                      {
+                        DateTime? pickeddate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2030),
+                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        );
+                        if (pickeddate != null) {
+                          setState(() {
+                            findEmptyEndTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                          });
+                        }
+                      }
+                    }),
+                OutlinedButton(
+                    onPressed: () async {
+                      var url = Uri.http(baseUri, '/timetable/team/findEmptyTime', {'groupId': '${widget.groupData!.groupId}'});
+                      var response = await http.post(url,
+                          headers: {
+                            'authorization': 'Bearer $jwtToken',
+                            'Content-Type': 'application/json',
+                          },
+                          body: jsonEncode({
+                            'startTime': '${findEmptyStartTec.text}T00:00:00',
+                            'endTime': '${findEmptyEndTec.text}T00:00:00',
+                          }));
+                      if (response.statusCode == 200) {
+                        isFinded = true;
+                        findedEmptyTimeList = jsonDecode(response.body);
+                      } else {
+                        print(utf8.decode(response.bodyBytes));
+                      }
+                      setState(
+                        () {},
+                      );
+                    },
+                    child: const Text('빈 시간 찾기')),
+                Visibility(
+                  visible: isFinded,
+                  child: Column(
+                    children: [for (int i = 0; i < findedEmptyTimeList.length; i++) Text(findedEmptyTimeList[i])],
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

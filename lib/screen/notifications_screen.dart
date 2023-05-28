@@ -52,8 +52,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           return GestureDetector(
                             onTap: () async {
                               routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
-                              var url = Uri.http(baseUri, '/notification/check');
-                              var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'}, body: jsonEncode('${notiList[index].id}'));
+                              var url = Uri.http(baseUri, '/notification/check/${notiList[index].id}');
+                              var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
                               if (response.statusCode == 200) {
                                 print('알림 읽음');
                               } else {
