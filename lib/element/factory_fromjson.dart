@@ -31,8 +31,7 @@ class ScheduleText {
   bool? periodicType;
   String? timeData;
 
-  ScheduleText(
-      {this.id, this.name, this.body, this.periodicType, this.timeData});
+  ScheduleText({this.id, this.name, this.body, this.periodicType, this.timeData});
 
   factory ScheduleText.fromJson(Map<String, dynamic> parsedJson) {
     return ScheduleText(
@@ -147,13 +146,7 @@ class Info {
   String? targetGrade;
   String? url;
 
-  Info(
-      {this.courseName,
-      this.applyDate,
-      this.runDate,
-      this.targetDepartment,
-      this.targetGrade,
-      this.url});
+  Info({this.courseName, this.applyDate, this.runDate, this.targetDepartment, this.targetGrade, this.url});
 
   factory Info.fromJson(Map<String, dynamic> parsedJson) {
     return Info(
@@ -188,13 +181,7 @@ class Ticket {
   String? memberName;
   String? inviteDate;
 
-  Ticket(
-      {this.memberTeamId,
-      this.memberId,
-      this.groupId,
-      this.groupName,
-      this.memberName,
-      this.inviteDate});
+  Ticket({this.memberTeamId, this.memberId, this.groupId, this.groupName, this.memberName, this.inviteDate});
 
   factory Ticket.fromJson(Map<String, dynamic> parsedJson) {
     return Ticket(
@@ -239,18 +226,7 @@ class Lecture {
   String? class_type;
   String? class_nm;
 
-  Lecture(
-      {this.id,
-      this.dept,
-      this.subject_div,
-      this.subject_div2,
-      this.class_div,
-      this.subjectname,
-      this.shyr,
-      this.credit,
-      this.prof_nm,
-      this.class_type,
-      this.class_nm});
+  Lecture({this.id, this.dept, this.subject_div, this.subject_div2, this.class_div, this.subjectname, this.shyr, this.credit, this.prof_nm, this.class_type, this.class_nm});
 
   factory Lecture.fromJson(Map<String, dynamic> parsedJson) {
     return Lecture(
@@ -274,9 +250,48 @@ class Dept {
   List<dynamic>? deptNameList;
   Dept({this.upperName, this.deptNameList});
   factory Dept.fromJson(Map<String, dynamic> parsedJson) {
-    return Dept(
-        upperName: parsedJson['upperDivName'],
-        deptNameList: parsedJson['deptNameList']);
+    return Dept(upperName: parsedJson['upperDivName'], deptNameList: parsedJson['deptNameList']);
+  }
+}
+
+class Noti {
+  int? id;
+  String? title;
+  String? body;
+  String? routeValue;
+  String? idType;
+  String? idType2;
+  int? idValue;
+  int? idValue2;
+  String? receiveTime;
+  bool? isRead;
+
+  Noti({this.id, this.title, this.body, this.routeValue, this.idType, this.idValue, this.receiveTime, this.isRead});
+
+  Noti.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    title = json["title"];
+    body = json["body"];
+    routeValue = json["routeValue"];
+    idType = json["idType"];
+    idType2 = json["idType2"];
+    idValue = int.parse(json["idValue"]);
+    idValue2 = int.parse(json["idValue2"]);
+    receiveTime = json["receiveTime"];
+    isRead = json["isRead"];
+  }
+  
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
+    data["title"] = title;
+    data["body"] = body;
+    data["routeValue"] = routeValue;
+    data["idType"] = idType;
+    data["idValue"] = idValue;
+    data["receiveTime"] = receiveTime;
+    data["isRead"] = isRead;
+    return data;
   }
 }
 

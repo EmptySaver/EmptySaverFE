@@ -15,8 +15,7 @@ class FriendGroupScreenOld extends ConsumerStatefulWidget {
   const FriendGroupScreenOld({super.key});
 
   @override
-  ConsumerState<FriendGroupScreenOld> createState() =>
-      _FriendGroupScreenState();
+  ConsumerState<FriendGroupScreenOld> createState() => _FriendGroupScreenState();
 }
 
 class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
@@ -28,8 +27,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
 
   Future<List<Group>> getMyGroup(String? jwtToken) async {
     var url = Uri.http(baseUri, '/group/getMyGroup');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     dynamic data;
     if (response.statusCode == 200) {
       print('getmygroupsuccess');
@@ -43,8 +41,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
 
   void addFriend() async {
     var url = Uri.http(baseUri, '/friend/request/${addFriendTec.text}');
-    var response =
-        await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       print('친추 성공');
       Fluttertoast.showToast(msg: '친구 추가 요청을 보냈습니다');
@@ -56,8 +53,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
 
   Future<List<Friend>> getFriendList() async {
     var url = Uri.http(baseUri, '/friend/getList');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Friend.fromJson(e)).toList();
@@ -99,8 +95,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                             isBack = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const FriendCheckScreenOld(),
+                                  builder: (context) => const FriendCheckScreenOld(),
                                 ));
                             print(isBack);
                             if (isBack!) {
@@ -123,18 +118,13 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                   title: const Text('친구 추가'),
                                   children: [
                                     TextFormField(
-                                      decoration: const InputDecoration(
-                                          icon: Icon(Icons.person),
-                                          hintText: '이메일 입력',
-                                          labelText: 'e-mail'),
+                                      decoration: const InputDecoration(icon: Icon(Icons.person), hintText: '이메일 입력', labelText: 'e-mail'),
                                       controller: addFriendTec,
                                     ),
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    OutlinedButton(
-                                        onPressed: addFriend,
-                                        child: const Text('추가하기'))
+                                    OutlinedButton(onPressed: addFriend, child: const Text('추가하기'))
                                   ],
                                 );
                               },
@@ -175,15 +165,12 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                 height: 40,
                                 decoration: BoxDecoration(border: Border.all()),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    Center(
-                                        child: Text(
-                                            'id:${friendList[index].friendMemberId} ${friendList[index].friendName}')),
+                                    Center(child: Text('id:${friendList[index].friendMemberId} ${friendList[index].friendName}')),
                                     Row(
                                       children: [
                                         IconButton(
@@ -191,49 +178,34 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Scaffold(
+                                                    builder: (context) => Scaffold(
                                                       appBar: AppBar(
-                                                        title: Text(
-                                                            '${friendList[index].friendName} 시간표'),
+                                                        title: Text('${friendList[index].friendName} 시간표'),
                                                       ),
-                                                      body: TimeTableScreen(
-                                                          friendMemberId:
-                                                              friendList[index]
-                                                                  .friendMemberId),
+                                                      body: TimeTableScreen(friendMemberId: friendList[index].friendMemberId),
                                                     ),
                                                   ));
                                             },
-                                            icon: const Icon(
-                                                Icons.remove_red_eye)),
+                                            icon: const Icon(Icons.remove_red_eye)),
                                         IconButton(
                                             onPressed: () async {
-                                              var url = Uri.http(baseUri,
-                                                  '/friend/delete/${friendList[index].friendId}');
-                                              var response = await http
-                                                  .delete(url, headers: {
-                                                'authorization':
-                                                    'Bearer $jwtToken'
-                                              });
+                                              var url = Uri.http(baseUri, '/friend/delete/${friendList[index].friendId}');
+                                              var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
                                               if (response.statusCode == 200) {
-                                                Fluttertoast.showToast(
-                                                    msg: '삭제되었습니다');
+                                                Fluttertoast.showToast(msg: '삭제되었습니다');
                                                 setState(() {
-                                                  friendListFuture =
-                                                      getFriendList();
+                                                  friendListFuture = getFriendList();
                                                 });
                                               }
                                             },
-                                            icon: const Icon(
-                                                Icons.remove_circle_outline)),
+                                            icon: const Icon(Icons.remove_circle_outline)),
                                       ],
                                     )
                                   ],
                                 ),
                               );
                             },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
+                            separatorBuilder: (context, index) => const SizedBox(
                                   height: 5,
                                 ),
                             itemCount: friendList.length);
@@ -289,12 +261,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onLongPress: () async {
-                                  var url = Uri.http(baseUri,
-                                      '/group/delete/${snapshot.data![index].groupId}');
-                                  var response = await http.delete(url,
-                                      headers: {
-                                        'authorization': 'Bearer $jwtToken'
-                                      });
+                                  var url = Uri.http(baseUri, '/group/delete/${snapshot.data![index].groupId}');
+                                  var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
                                   if (response.statusCode == 200) {
                                     Fluttertoast.showToast(msg: '삭제되었습니다');
                                     setState(() {
@@ -309,9 +277,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => GroupDetailScreen(
-                                          groupId:
-                                              snapshot.data![index].groupId,
-                                        ),
+                                            // groupData: snapshot.data![index],
+                                            ),
                                       )).then((value) {
                                     setState(() {
                                       myGroupListFuture = getMyGroup(jwtToken);
@@ -321,8 +288,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                 child: Container(
                                   height: 40,
                                   width: double.infinity,
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
+                                  decoration: BoxDecoration(border: Border.all()),
                                   child: Center(
                                       child: Text(
                                     snapshot.data![index].groupName!,
@@ -331,8 +297,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreenOld> {
                                 ),
                               );
                             },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
+                            separatorBuilder: (context, index) => const SizedBox(
                                   height: 5,
                                 ),
                             itemCount: snapshot.data!.length);

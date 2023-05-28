@@ -6,11 +6,12 @@ import 'package:emptysaver_fe/screen/bar_screen.dart';
 import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/friend_check_screen_new.dart';
 import 'package:emptysaver_fe/screen/friend_group_screen_new.dart';
-import 'package:emptysaver_fe/screen/group_check_screen.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
 import 'package:emptysaver_fe/screen/login_screen_new_style.dart';
+import 'package:emptysaver_fe/screen/invitation_screen_new.dart';
+//import 'package:emptysaver_fe/screen/login_screen_new.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -26,7 +27,6 @@ import 'package:logger/logger.dart';
 
 final tokensProvider = StateNotifierProvider((ref) => TokenStateNotifier(ref));
 var logger = Logger();
-
 var storage = const FlutterSecureStorage();
 dynamic userInfo;
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -168,7 +168,11 @@ void _handleMessage(RemoteMessage message, FlutterSecureStorage storage, dynamic
     //   }
     //   print('Getjwt : ${Get.find<AutoLoginController>().state}');
     String routeValue = message.data["routeValue"];
-    routeSwitching(routeValue);
+    String? idType = message.data["idType"];
+    String? idType2 = message.data["idType2"] ?? 'x';
+    int? idValue = int.parse(message.data['idValue']);
+    int? idValue2 = message.data['idValue2'] != null ? int.parse(message.data['idValue2']) : -1;
+    routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
     // }
   }
   print('백그라운드 클릭');
@@ -183,41 +187,48 @@ void terminatedHandler() async {
   }
 }
 
-void routeSwitching(String routeValue, {String? idType, String? idType2, int? idValue, int? idValue2}) {
+void routeSwitching(String? routeValue, {String? idType, String? idType2, int? idValue, int? idValue2}) {
   switch (routeValue) {
     case 'notification':
       switch (idType) {
-        case 'x':
+        case 'x': // 공지사항 등록시 알림인데 따로 이동해야하나? postId, groupId 필요
+          Get.to(() => GroupDetailScreen(
+                // groupId 필요
+                groupId: idValue,
+              ));
           break;
-        case 'Schedule': // 스케줄 수락하는거 만들어야됨
+        case 'Schedule':
+          print('스케줄아이디 : $idValue');
+          Get.to(() => GroupDetailScreen(
+                // groupId 필요
+                groupId: idValue,
+              ));
           break;
         case 'friend':
-          Get.to(const FriendCheckScreen());
+          Get.to(() => const FriendCheckScreen());
           break;
         case 'group':
-          Get.to(GroupCheckScreen(
-            groupId: idValue,
-          ));
+          Get.to(() => const InvitationScreen());
       }
       break;
     case 'groupDetail':
-      Get.to(GroupFinderDetailScreen(
-        id: idValue,
-      ));
+      Get.to(() => GroupFinderDetailScreen(
+            id: idValue,
+          ));
     case 'post':
-      Get.to(EachPostScreen(
-        groupId: idValue,
-        postId: idValue2,
-      ));
+      Get.to(() => EachPostScreen(
+            groupId: idValue,
+            postId: idValue2,
+          ));
       break;
     case 'friend':
-      Get.to(FriendGroupScreen(
-        isGroup: false,
-      ));
+      Get.to(() => FriendGroupScreen(
+            isGroup: false,
+          ));
     case 'group':
-      Get.to(GroupDetailScreen(
-        groupId: idValue,
-      ));
+      Get.to(() => GroupDetailScreen(
+            groupId: idValue,
+          ));
   }
 }
 
@@ -248,10 +259,14 @@ class _MyAppState extends ConsumerState<MyApp> {
           // foreground 알림 클릭시 실행
           onDidReceiveNotificationResponse: (NotificationResponse details) async {
             print('onDidReceiveNotificationResponse - payload: ${details.payload}');
-            String routeValue = message.data["routeValue"];
             userInfo = await storage.read(key: 'login');
             if (userInfo != null) {
-              routeSwitching(routeValue);
+              String? routeValue = message.data["routeValue"];
+              String? idType = message.data["idType"];
+              String? idType2 = message.data["idType2"] ?? 'x';
+              int? idValue = int.parse(message.data['idValue']);
+              int? idValue2 = message.data['idValue2'] != null ? int.parse(message.data['idValue2']) : -1;
+              routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
             } else {
               print('포그라운드에서 알림 눌렀지만 유저정보 없음');
               Get.toNamed('/');
