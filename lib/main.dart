@@ -168,9 +168,9 @@ void _handleMessage(RemoteMessage message, FlutterSecureStorage storage, dynamic
     //   print('Getjwt : ${Get.find<AutoLoginController>().state}');
     String routeValue = message.data["routeValue"];
     String? idType = message.data["idType"];
-    String? idType2 = message.data["idType2"];
-    int idValue = int.parse(message.data['idValue']);
-    int idValue2 = int.parse(message.data['idValue2']);
+    String? idType2 = message.data["idType2"] ?? 'x';
+    int? idValue = int.parse(message.data['idValue']);
+    int? idValue2 = message.data['idValue2'] != null ? int.parse(message.data['idValue2']) : -1;
     routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
     // }
   }
