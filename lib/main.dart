@@ -10,7 +10,7 @@ import 'package:emptysaver_fe/screen/group_check_screen.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/info_new_screen.dart';
-import 'package:emptysaver_fe/screen/login_screen_new.dart';
+import 'package:emptysaver_fe/screen/login_screen_new_style.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/foundation.dart';
