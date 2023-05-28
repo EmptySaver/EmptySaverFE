@@ -80,7 +80,7 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   tutorialActive() async{
 
     String? isRead = await storage.read(key: isTutorialRead);
-    if(isRead == null){
+    if(isRead != "true"){
       storage.write(key: isTutorialRead, value: "true");  //다시 실행 안되도록 값 저장
       Navigator.push(context,MaterialPageRoute(builder: (context) => TutorialScreen()));
     }
