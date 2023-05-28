@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/element/controller.dart';
+import 'package:emptysaver_fe/screen/member_interest_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
@@ -111,7 +112,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           MaterialPageRoute(
             builder: (context) => const BarScreen(),
           ),
-          (route) => false);
+              (route) => false);
     } else {
       var result = utf8.decode(response.bodyBytes);
       print(result);
@@ -131,17 +132,6 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
               image: AssetImage('assets/logoVer2.png'),
               width: 250,
               height: 150),
-          /*
-          const CircleAvatar(
-            maxRadius: 50,
-            backgroundColor: Colors.transparent,
-            child: Image(image: AssetImage('assets/logoVer2.png')
-              ,width: 360
-              ,height: 600), //PNetworkImage(origami),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),*/
           _buildLoginForm(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -152,12 +142,12 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) => SignupScreen(
-                                firebaseToken: widget.firebaseToken,
-                              )));
+                            firebaseToken: widget.firebaseToken,
+                          )));
                 },
                 child: const Text("Sign Up",
                     style: TextStyle(color: Colors.blue, fontSize: 18.0)),
-              )
+              ),
             ],
           )
         ],
@@ -171,123 +161,111 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
       child: Stack(
         children: <Widget>[
           //ClipPath(
-          //clipper: RoundedDiagonalPathClipper(),
-          //child: Container(
-          Container(
-            //height: 400,
-            padding: const EdgeInsets.all(10.0),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(40.0)),
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(
-                  height: 60.0,
-                ),
-                Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: TextField(
-                      controller: addrTecLogin,
-                      style: const TextStyle(color: Colors.blue),
-                      decoration: InputDecoration(
-                          hintText: "@uos.ac.kr",
-                          hintStyle: TextStyle(color: Colors.blue.shade200),
-                          border: InputBorder.none,
-                          icon: const Icon(
-                            Icons.email,
-                            color: Colors.blue,
-                          )),
-                    )),
-                Container(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 10.0),
-                  child: Divider(
-                    color: Colors.blue.shade400,
-                  ),
-                ),
-                Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: TextField(
-                      controller: pwdTecLogin,
-                      style: const TextStyle(color: Colors.blue),
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          hintText: "Password",
-                          hintStyle: TextStyle(color: Colors.blue.shade200),
-                          border: InputBorder.none,
-                          icon: const Icon(
-                            Icons.lock,
-                            color: Colors.blue,
-                          )),
-                    )),
-                Container(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 10.0),
-                  child: Divider(
-                    color: Colors.blue.shade400,
-                  ),
-                ),
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Checkbox(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      value: isAutoLogin,
-                      onChanged: (value) {
-                        setState(() {
-                          isAutoLogin = value!;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    const Text('자동 로그인'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        print('Getjwt : ${AutoLoginController.to.state}');
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const FindPasswordScreen()));
-                      },
-                      child: const Text(
-                        "Forgot Password",
-                        style: TextStyle(color: Colors.black45),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-              ],
-            ),
-          ),
-          //),
-/*
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(
-                radius: 40.0,
-                backgroundColor: Colors.blue.shade600,
-                child: const Icon(Icons.person),
+            //clipper: RoundedDiagonalPathClipper(),
+            //child:
+            Container(
+              //height: 400,
+              padding: const EdgeInsets.all(10.0),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                color: Colors.white,
               ),
-            ],
-          ),
-          */
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 60.0,
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: addrTecLogin,
+                        style: const TextStyle(color: Colors.blue),
+                        decoration: InputDecoration(
+                            hintText: "@uos.ac.kr",
+                            hintStyle: TextStyle(color: Colors.blue.shade200),
+                            border: InputBorder.none,
+                            icon: const Icon(
+                              Icons.email,
+                              color: Colors.blue,
+                            )),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: 20.0, right: 20.0, bottom: 10.0),
+                    child: Divider(
+                      color: Colors.blue.shade400,
+                    ),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: pwdTecLogin,
+                        style: const TextStyle(color: Colors.blue),
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: "Password",
+                            hintStyle: TextStyle(color: Colors.blue.shade200),
+                            border: InputBorder.none,
+                            icon: const Icon(
+                              Icons.lock,
+                              color: Colors.blue,
+                            )),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: 20.0, right: 20.0, bottom: 10.0),
+                    child: Divider(
+                      color: Colors.blue.shade400,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Checkbox(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        value: isAutoLogin,
+                        onChanged: (value) {
+                          setState(() {
+                            isAutoLogin = value!;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      const Text('자동 로그인'),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          print('Getjwt : ${AutoLoginController.to.state}');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                  const FindPasswordScreen()));
+                        },
+                        child: const Text(
+                          "Forgot Password",
+                          style: TextStyle(color: Colors.black45),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                ],
+              ),
+            ),
+
           SizedBox(
             height: 420,
             child: Align(
