@@ -9,6 +9,7 @@ import 'package:emptysaver_fe/screen/info_new_screen.dart';
 import 'package:emptysaver_fe/screen/mypage_screen_new.dart';
 import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
+import 'package:emptysaver_fe/screen/tutorial_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,6 +28,7 @@ class BarScreen extends ConsumerStatefulWidget {
 }
 
 class _BarScreenState extends ConsumerState<BarScreen> {
+  static const String isTutorialRead = "tutorialRead";
   int selectedIndex = 0;
   var bodyWidgets = [
     TimeTableScreen(),
@@ -70,6 +72,18 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   void initState() {
     super.initState();
     print('barinit');
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      tutorialActive();
+    });
+  }
+
+  tutorialActive() async{
+
+    String? isRead = await storage.read(key: isTutorialRead);
+    if(isRead == null){
+      storage.write(key: isTutorialRead, value: "true");  //다시 실행 안되도록 값 저장
+      Navigator.push(context,MaterialPageRoute(builder: (context) => TutorialScreen()));
+    }
   }
 
   @override
