@@ -270,7 +270,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                   ),
                 ),
               ),
-              
+
             ],
           ),
         ),
