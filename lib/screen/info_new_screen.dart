@@ -210,24 +210,30 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(5, 18, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(10, 18, 0, 0),
                   child: Visibility(
                     visible: !recruitType,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        setState(() {
-                          targetList = recruitingList;
-                          print("취업으로");
-                          infoTitle = recruitTitle; //recruitType = true;
+                    child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          const Icon( Icons.arrow_back_outlined
+                            ,color: Colors.white70,),
+                          TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              targetList = recruitingList;
+                              print("취업으로");
+                              infoTitle = recruitTitle; //recruitType = true;
 
-                          recruitType = !recruitType;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue),
-                      child: Text(
-                        '<-리크루팅',
-                        style: TextStyle(fontSize: 22, color: Colors.white70, fontWeight: FontWeight.bold),
-                      ),
+                              recruitType = !recruitType;
+                            });
+                          },
+                          // style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue),
+                          child: const Text(
+                            '리크루팅',
+                            style: TextStyle(fontSize: 22, color: Colors.white70, fontWeight: FontWeight.bold),
+                          ),
+                        ),]
                     ),
                   ),
                 ),
@@ -235,63 +241,36 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
               Align(
                 alignment: Alignment.topRight,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 18, 5, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 18, 10, 0),
                   child: Visibility(
                     visible: recruitType,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        setState(() {
-                          targetList = nonSubjectList;
-                          print("비교과로");
-                          infoTitle = nonSubjectTitle;
-                          //recruitType = false;
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[TextButton(
+                        onPressed: () async {
+                          setState(() {
+                            targetList = nonSubjectList;
+                            print("비교과로");
+                            infoTitle = nonSubjectTitle;
+                            //recruitType = false;
 
-                          recruitType = !recruitType;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue),
-                      child: Text(
-                        '비교과 ->',
-                        style: TextStyle(fontSize: 22, color: Colors.white70, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                            recruitType = !recruitType;
+                          });
+                        },
+                        //style: ElevatedButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.blue),
+                        child: const Text(
+                          '비교과',
+                          style: TextStyle(fontSize: 22, color: Colors.white70, fontWeight: FontWeight.bold),
+                        ),
+                      ), const Icon( Icons.arrow_forward_outlined
+                        ,color: Colors.white70,)
+                        ,],
+                    )
+
                   ),
                 ),
               ),
-              //원래 여기
-              /*
-              Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 65,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Material(
-                      elevation: 5.0,
-                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                      child: TextField(
-                        // controller: TextEditingController(text: locations[0]),
-                        cursorColor: Theme.of(context).primaryColor,
-                        style: dropdownMenuItem,
-                        decoration: const InputDecoration(
-                            hintText: "비교과 찾기",
-                            hintStyle: TextStyle(
-                                color: Colors.black38, fontSize: 16),
-                            prefixIcon: Material(
-                              elevation: 0.0,
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(30)),
-                              child: Icon(Icons.search),
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 13)),
-                      ),
-                    ),
-                  ),
-                ],
-              )*/
+              
             ],
           ),
         ),
