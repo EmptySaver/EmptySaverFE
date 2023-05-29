@@ -378,7 +378,53 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                             builder: (context) => const CategorySelectScreen(),
                           ));
                     }),
-                SpeedDialChild(child: const Icon(Icons.search), label: '스케줄 찾기', backgroundColor: Colors.yellow, onTap: findSchedule),
+                SpeedDialChild(
+                  child: const Icon(Icons.search),
+                  label: '스케줄 찾기',
+                  backgroundColor: Colors.yellow,
+                  onTap: findSchedule,
+                ),
+                SpeedDialChild(
+                  child: const Icon(Icons.movie_creation_outlined),
+                  label: '오늘 영화',
+                  backgroundColor: Colors.deepPurple.shade100,
+                  onTap: () {
+                    getTodayMovie();
+                    showDialog(
+                      context: context,
+                      builder: (context) => SimpleDialog(
+                        children: [
+                          FutureBuilder(
+                            future: todayMovieListFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                var todayMovieList = snapshot.data!;
+                                return SizedBox(
+                                  height: 500,
+                                  width: 400,
+                                  child: ListView.builder(
+                                    itemCount: todayMovieList.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        child: Column(
+                                          children: [Text('${todayMovieList[index].name}'), Text('${todayMovieList[index].timeData}')],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -512,6 +558,20 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         );
       },
     );
+  }
+
+  Future<List<ScheduleText>> todayMovieListFuture = Future(() => []);
+  Future<List<ScheduleText>> getTodayMovie() async {
+    var url = Uri.http(baseUri, '/timetable/getMovieScheduleList');
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      var data = (jsonDecode(utf8.decode(response.bodyBytes)) as List).map((e) => ScheduleText.fromJson(e)).toList();
+      print(data);
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('오늘 영화 불러오기 실패');
+    }
   }
 }
 
