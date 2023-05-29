@@ -333,17 +333,25 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
                         print('pSL : $periodicTimeStringList');
                         var postBody = isPeriodic
                             ? {
+                                //주기 리퀘스트 바디
                                 'name': (nameTec.text == '') ? '제목' : nameTec.text,
                                 'body': (bodyTec.text == '') ? '내용' : bodyTec.text,
                                 'periodicType': isPeriodic,
                                 'periodicTimeStringList': periodicTimeStringList,
+                                'groupType': true,
+                                'groupId': widget.groupData!.groupId,
+                                'groupName': widget.groupData!.groupName
                               }
                             : {
+                                //비주기 리퀘스트 바디
                                 'name': (nameTec.text == '') ? '제목' : nameTec.text,
                                 'body': (bodyTec.text == '') ? '내용' : bodyTec.text,
                                 'periodicType': isPeriodic,
                                 'startTime': startTime,
                                 'endTime': endTime,
+                                'groupType': true,
+                                'groupId': widget.groupData!.groupId,
+                                'groupName': widget.groupData!.groupName
                               };
                         var url = Uri.http(baseUri, '/timetable/team/saveSchedule', {'groupId': '${widget.groupData!.groupId}', 'isPublicTypeSchedule': 'true'});
                         print(url);

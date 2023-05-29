@@ -17,18 +17,19 @@ class CategorySelectScreen extends ConsumerStatefulWidget {
 class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
+  bool isChecked = false;
 
   @override
   void initState() {
     super.initState();
-    recommendedScheduleListFuture = getRecommendedSchedule();
+    recommendedScheduleListFuture = getRecommendedSchedule(isChecked);
   }
 
   var startDate = '${DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(hours: 9)))}T00:00:00';
   var endDate = '${DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 7, hours: 9)))}T00:00:00';
   late Future<List<ScheduleInfo>> recommendedScheduleListFuture;
-  Future<List<ScheduleInfo>> getRecommendedSchedule() async {
-    var url = Uri.http(baseUri, '/timetable/recommendSchedule', {'interestFilterOn': 'false'});
+  Future<List<ScheduleInfo>> getRecommendedSchedule(bool interest) async {
+    var url = Uri.http(baseUri, '/timetable/recommendSchedule', {'interestFilterOn': '$isChecked'});
     var response = await http.post(url,
         headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(
@@ -46,6 +47,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('re');
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -101,14 +103,35 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
               Container(
                 decoration: BoxDecoration(border: Border.all(width: 1)),
                 child: Padding(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(10),
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         const Text('추천목록'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxHeight: 24),
+                              child: Checkbox(
+                                value: isChecked,
+                                onChanged: (value) {
+                                  isChecked = !isChecked;
+                                  setState(() {
+                                    recommendedScheduleListFuture = getRecommendedSchedule(isChecked);
+                                  });
+                                },
+                              ),
+                            ),
+                            const Text('관심사 적용'),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                          ],
+                        ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         FutureBuilder(
                           future: recommendedScheduleListFuture,

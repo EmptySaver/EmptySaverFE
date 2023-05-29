@@ -30,9 +30,9 @@ class ScheduleText {
   String? body;
   bool? periodicType;
   String? timeData;
-  bool read;
+  bool? read;
 
-  ScheduleText({this.id, this.name, this.body, this.periodicType, this.timeData, this.read = false});
+  ScheduleText({this.id, this.name, this.body, this.periodicType, this.timeData, this.read});
 
   factory ScheduleText.fromJson(Map<String, dynamic> parsedJson) {
     return ScheduleText(

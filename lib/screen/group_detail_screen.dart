@@ -319,7 +319,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                     height: 60,
                                     decoration: BoxDecoration(
                                       border: Border.all(),
-                                      color: (snapshot.data![index].read) ? Colors.grey.shade300 : null,
+                                      color: (snapshot.data![index].read!) ? Colors.grey.shade300 : null,
                                     ),
                                     child: Column(
                                       children: [
@@ -335,15 +335,16 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                             Visibility(
                                               visible: !amIOwner,
                                               child: Visibility(
-                                                visible: !snapshot.data![index].read,
+                                                visible: !snapshot.data![index].read!,
                                                 child: ButtonBar(
                                                   buttonPadding: EdgeInsets.zero,
                                                   children: [
                                                     IconButton(
                                                       padding: EdgeInsets.zero,
                                                       constraints: const BoxConstraints(),
-                                                      onPressed: () {
-                                                        okSchedule(snapshot.data![index].id, true);
+                                                      onPressed: () async {
+                                                        await okSchedule(snapshot.data![index].id, true);
+                                                        print(snapshot.data![index].read);
                                                         setState(() {});
                                                       },
                                                       icon: const Icon(Icons.check),
@@ -623,6 +624,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '스케줄을 처리했습니다');
+      print(utf8.decode(response.bodyBytes));
       return true;
     } else {
       print(utf8.decode(response.bodyBytes));
