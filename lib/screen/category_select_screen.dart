@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
+import 'package:intl/intl.dart';
 
 class CategorySelectScreen extends ConsumerStatefulWidget {
   const CategorySelectScreen({super.key});
@@ -20,6 +21,27 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
   @override
   void initState() {
     super.initState();
+    recommendedScheduleListFuture = getRecommendedSchedule();
+  }
+
+  var startDate = '${DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(hours: 9)))}T00:00:00';
+  var endDate = '${DateFormat('yyyy-MM-dd').format(DateTime.now().add(const Duration(days: 7, hours: 9)))}T00:00:00';
+  late Future<List<ScheduleInfo>> recommendedScheduleListFuture;
+  Future<List<ScheduleInfo>> getRecommendedSchedule() async {
+    var url = Uri.http(baseUri, '/timetable/recommendSchedule', {'interestFilterOn': 'false'});
+    var response = await http.post(url,
+        headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode(
+          {'startTime': startDate, 'endTime': endDate},
+        ));
+    if (response.statusCode == 200) {
+      var decodedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+      var data = decodedJson.map((e) => ScheduleInfo.fromJson(e)).toList();
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('추천스케줄 불러오기 실패');
+    }
   }
 
   @override
@@ -88,16 +110,28 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) => Container(
-                                  height: 90,
-                                  decoration: BoxDecoration(border: Border.all(width: 1)),
-                                ),
-                            separatorBuilder: (context, index) => const SizedBox(
-                                  height: 5,
-                                ),
-                            itemCount: 6)
+                        FutureBuilder(
+                          future: recommendedScheduleListFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.separated(
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) => Container(
+                                        height: 90,
+                                        decoration: BoxDecoration(border: Border.all(width: 1)),
+                                        child: Column(children: [Text('${snapshot.data![index].name}'), Text('${snapshot.data![index].body}')]),
+                                      ),
+                                  separatorBuilder: (context, index) => const SizedBox(
+                                        height: 5,
+                                      ),
+                                  itemCount: snapshot.data!.length);
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        )
                       ],
                     ),
                   ),

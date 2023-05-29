@@ -3,6 +3,7 @@ import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
+import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/lecture_search_result_screen.dart';
 import 'package:emptysaver_fe/screen/update_schedule_screen.dart';
 import 'package:flutter/material.dart';
@@ -310,7 +311,6 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Text(memberNameListsTotal[h][i]),
-                                                    // Text(bodyListsTotal[h][i])
                                                   ],
                                                 ),
                                               ),
@@ -326,98 +326,6 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                               }
                             },
                           ),
-                          // FutureBuilder(
-                          //   future: groupScheduleFuture,
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.hasData) {
-                          //       print(snapshot
-                          //           .data!.timeTableInfo!.scheduleListPerDays!);
-                          //       print('그룹:$groupTrueIndexListsTotal');
-                          //       if (snapshot.data!.timeTableInfo!
-                          //           .scheduleListPerDays!.isEmpty) {
-                          //         return const defaultTimeTableFrame();
-                          //       } else {
-                          //         return Stack(
-                          //           children: [
-                          //             const defaultTimeTableFrame(),
-                          //             for (int h = 0;
-                          //                 h < groupTrueIndexListsTotal.length;
-                          //                 h++)
-                          //               for (int i = 0;
-                          //                   i <
-                          //                       groupTrueIndexListsTotal[h]
-                          //                           .length;
-                          //                   i++)
-                          //                 Positioned(
-                          //                   top: defaultBoxHeight *
-                          //                       groupTrueIndexListsTotal[h][i]
-                          //                           [0],
-                          //                   left: defaultBoxWidth * h,
-                          //                   child: GestureDetector(
-                          //                     onLongPress: () async {
-                          //                       print(groupIdListsTotal[h][i]);
-                          //                       var url = Uri.http(
-                          //                           baseUri,
-                          //                           '/timetable/deleteSchedule',
-                          //                           {
-                          //                             'scheduleId':
-                          //                                 '${groupIdListsTotal[h][i]}'
-                          //                           });
-                          //                       var response = await http
-                          //                           .delete(url, headers: {
-                          //                         'authorization':
-                          //                             'Bearer $jwtToken'
-                          //                       });
-                          //                       if (response.statusCode ==
-                          //                           200) {
-                          //                         Fluttertoast.showToast(
-                          //                             msg: '삭제되었습니다');
-                          //                         setState(() {});
-                          //                       } else {
-                          //                         Fluttertoast.showToast(
-                          //                             msg: 'error!');
-                          //                         print(utf8.decode(
-                          //                             response.bodyBytes));
-                          //                       }
-                          //                     },
-                          //                     child: Container(
-                          //                       height: defaultBoxHeight *
-                          //                           (groupTrueIndexListsTotal[h]
-                          //                                   [i]
-                          //                               .length),
-                          //                       width: defaultBoxWidth,
-                          //                       decoration: BoxDecoration(
-                          //                         border: Border.all(
-                          //                             width: 1,
-                          //                             color: Colors.black),
-                          //                         color: ((h + i) > 17)
-                          //                             ? Colors.primaries[
-                          //                                 (h + i) % 17]
-                          //                             : Colors
-                          //                                 .primaries[(h + i)],
-                          //                       ),
-                          //                       child: Column(
-                          //                         mainAxisAlignment:
-                          //                             MainAxisAlignment.center,
-                          //                         children: [
-                          //                           Text(groupNameListsTotal[h]
-                          //                               [i]),
-                          //                           // Text(bodyListsTotal[h][i])
-                          //                         ],
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                 )
-                          //           ],
-                          //         );
-                          //       }
-                          //     } else {
-                          //       return const Center(
-                          //         child: CircularProgressIndicator(),
-                          //       );
-                          //     }
-                          //   },
-                          // ),
                         ],
                       )
                     ]),
@@ -455,7 +363,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LectureSearchResultScreen(),
+                          builder: (context) => const LectureSearchResultScreen(),
                         ));
                   },
                 ),
@@ -470,11 +378,139 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                             builder: (context) => const CategorySelectScreen(),
                           ));
                     }),
+                SpeedDialChild(child: const Icon(Icons.search), label: '스케줄 찾기', backgroundColor: Colors.yellow, onTap: findSchedule),
               ],
             ),
           ),
         )
       ],
+    );
+  }
+
+  var findScheduleStartTec = TextEditingController();
+  var findScheduleEndTec = TextEditingController();
+  bool isSearched = false;
+  late List<ScheduleInfo> scheduleInfoList;
+
+  void findSchedule() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SimpleDialog(
+              contentPadding: const EdgeInsets.all(8),
+              children: [
+                TextField(
+                    controller: findScheduleStartTec,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_month_outlined),
+                      labelText: '시작일자',
+                    ),
+                    keyboardType: TextInputType.none,
+                    onTap: () async {
+                      {
+                        DateTime? pickeddate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2030),
+                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        );
+                        if (pickeddate != null) {
+                          setState(() {
+                            findScheduleStartTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                          });
+                        }
+                      }
+                    }),
+                TextField(
+                    controller: findScheduleEndTec,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_month_outlined),
+                      labelText: '종료일자',
+                    ),
+                    keyboardType: TextInputType.none,
+                    onTap: () async {
+                      {
+                        DateTime? pickeddate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2030),
+                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        );
+                        if (pickeddate != null) {
+                          setState(() {
+                            findScheduleEndTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                          });
+                        }
+                      }
+                    }),
+                OutlinedButton(
+                    onPressed: () async {
+                      var url = Uri.http(baseUri, '/timetable/findSchedule');
+                      var response = await http.post(url,
+                          headers: {
+                            'authorization': 'Bearer $jwtToken',
+                            'Content-Type': 'application/json',
+                          },
+                          body: jsonEncode({
+                            'startTime': '${findScheduleStartTec.text}T00:00:00',
+                            'endTime': '${findScheduleEndTec.text}T00:00:00',
+                          }));
+                      if (response.statusCode == 200) {
+                        isSearched = true;
+                        setState(
+                          () {
+                            var decodedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                            scheduleInfoList = decodedJson.map((e) => ScheduleInfo.fromJson(e)).toList();
+                          },
+                        );
+                      } else {
+                        print(utf8.decode(response.bodyBytes));
+                      }
+                    },
+                    child: const Text('공개 스케줄 검색')),
+                if (isSearched)
+                  SizedBox(
+                    height: 500,
+                    width: 400,
+                    child: ListView.builder(
+                      itemCount: scheduleInfoList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GroupFinderDetailScreen(id: scheduleInfoList[index].groupInfo!.groupId),
+                                ));
+                          },
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: Column(
+                                  children: [
+                                    Text(scheduleInfoList[index].name!),
+                                    Text(scheduleInfoList[index].body!),
+                                    // Text(scheduleInfoList[index].category!),
+                                  ],
+                                ),
+                              ),
+                              const Divider()
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -72,17 +72,17 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   void initState() {
     super.initState();
     print('barinit');
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       tutorialActive();
     });
   }
 
-  tutorialActive() async{
-
+  tutorialActive() async {
+    // await storage.delete(key: isTutorialRead);
     String? isRead = await storage.read(key: isTutorialRead);
-    if(isRead != "true"){
-      storage.write(key: isTutorialRead, value: "true");  //다시 실행 안되도록 값 저장
-      Navigator.push(context,MaterialPageRoute(builder: (context) => TutorialScreen()));
+    if (isRead != "true") {
+      storage.write(key: isTutorialRead, value: "true"); //다시 실행 안되도록 값 저장
+      Navigator.push(context, MaterialPageRoute(builder: (context) => TutorialScreen()));
     }
   }
 

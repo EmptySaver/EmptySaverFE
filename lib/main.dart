@@ -269,7 +269,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
             } else {
               print('포그라운드에서 알림 눌렀지만 유저정보 없음');
-              Get.toNamed('/');
+              // Get.toNamed('/');
               return;
             }
             // Navigator.pushNamed(context, routeName)

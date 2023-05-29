@@ -248,7 +248,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         visible: amIOwner,
                         child: OutlinedButton(
                           onPressed: addGroupSchedule,
-                          child: const Text('추가'), // 그룹장이 아니면 안보이게
+                          child: const Text('추가'),
                         ),
                       )
                     ],
@@ -317,11 +317,55 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                   },
                                   child: Container(
                                     height: 60,
-                                    decoration: BoxDecoration(border: Border.all()),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      color: (snapshot.data![index].read) ? Colors.grey.shade300 : null,
+                                    ),
                                     child: Column(
                                       children: [
-                                        Text('${snapshot.data![index].name}'),
-                                        Text('${snapshot.data![index].body}'),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Text('${snapshot.data![index].name}'),
+                                                Text('${snapshot.data![index].body}'),
+                                              ],
+                                            ),
+                                            Visibility(
+                                              visible: !amIOwner,
+                                              child: Visibility(
+                                                visible: !snapshot.data![index].read,
+                                                child: ButtonBar(
+                                                  buttonPadding: EdgeInsets.zero,
+                                                  children: [
+                                                    IconButton(
+                                                      padding: EdgeInsets.zero,
+                                                      constraints: const BoxConstraints(),
+                                                      onPressed: () {
+                                                        okSchedule(snapshot.data![index].id, true);
+                                                        setState(() {});
+                                                      },
+                                                      icon: const Icon(Icons.check),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    IconButton(
+                                                      padding: EdgeInsets.zero,
+                                                      constraints: const BoxConstraints(),
+                                                      onPressed: () {
+                                                        okSchedule(snapshot.data![index].id, false);
+                                                        setState(() {});
+                                                      },
+                                                      icon: const Icon(Icons.remove),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                         Text('${snapshot.data![index].timeData}'),
                                       ],
                                     ),
@@ -572,5 +616,17 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         ],
       ),
     );
+  }
+
+  Future<bool> okSchedule(int? memberId, bool? accept) async {
+    var url = Uri.http(baseUri, '/timetable/team/readSchedule', {'scheduleId': '$memberId', 'accept': '$accept'});
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: '스케줄을 처리했습니다');
+      return true;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      return false;
+    }
   }
 }
