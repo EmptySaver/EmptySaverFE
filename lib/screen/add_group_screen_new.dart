@@ -79,21 +79,29 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14.0, vertical: 12.0),
+                            horizontal: 14.0, vertical: 10.0),
                         margin: const EdgeInsets.only(right: 8.0, bottom: 8.0),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(30.0),
                           border: Border.all(
+                            width: 1.5,
                             color: activeIndex == currentIndex
-                                ? Colors.cyanAccent
-                                : const Color.fromRGBO(195, 228, 243, 1),
+                                ? Colors.blue
+                                : Colors.blue//const Color.fromRGBO(195, 228, 243, 1),
                           ),
                           color: activeIndex == currentIndex
-                              ? Colors.lightBlue
-                              : const Color.fromRGBO(196, 220, 227, 1),
+                              ? Colors.blue
+                              : Colors.white//const Color.fromRGBO(196, 220, 227, 1),
                         ),
-                        child: Text(item),
-                      ),
+                        child: Text(item,
+                          style: TextStyle(
+                            color: activeIndex == currentIndex
+                                ? Colors.white
+                                : Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
                     );
                   }).toList(),
                 ),
@@ -146,10 +154,8 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
       padding: const EdgeInsets.all(20.0),
       child: Stack(
         children: <Widget>[
-          ClipPath(
-            clipper: RoundedDiagonalPathClipper(),
-            child: Container(
-              height: 750,
+          Container(
+              //height: 800,
               padding: const EdgeInsets.all(10.0),
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(40.0)),
@@ -159,24 +165,15 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(
-                    height: 90.0,
+                    height: 50.0,
                   ),
-                  Container(
-                    width: 250,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(16),
-                      ),
+                  Text(
+                    widget.name! + " 그룹 생성",
+                    style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
                     ),
-                    child: Text(
-                      widget.name!,
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(
                     height: 30,
@@ -202,6 +199,9 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                     child: Divider(
                       color: Colors.blue.shade400,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -231,7 +231,7 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                         style: const TextStyle(color: Colors.blue),
                         maxLines: 4,
                         decoration: InputDecoration(
-                            hintText: "그룹 설명",
+                            hintText: "\n그룹 설명",
                             hintStyle: TextStyle(color: Colors.blue.shade200),
                             border: InputBorder.none,
                             icon: const Icon(
@@ -316,19 +316,21 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                 ],
               ),
             ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircleAvatar(
-                radius: 40.0,
-                backgroundColor: Colors.blue.shade600,
-                child: const Icon(Icons.group_add),
-              ),
+              Transform.translate(
+                offset: const Offset(0.0, -30),
+                child:  CircleAvatar(
+                  radius: 40.0,
+                  backgroundColor: Colors.blue.shade600,
+                  child: const Icon(Icons.group_add),
+                ),
+              )
             ],
           ),
           SizedBox(
-            height: 770,
+            height: 700,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
