@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:emptysaver_fe/models/job.dart';
+import 'package:emptysaver_fe/garbage/job.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

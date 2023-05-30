@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:emptysaver_fe/main.dart';
-import 'package:emptysaver_fe/fcm_setting.dart';
+import 'package:emptysaver_fe/garbage/fcm_setting.dart';
 
 void main() async {
   String? firebaseToken = await fcmSetting();
