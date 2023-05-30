@@ -51,15 +51,15 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
           const SizedBox(
             height: 30.0,
           ),
-          const CircleAvatar(
-            maxRadius: 50,
-            backgroundColor: Colors.transparent,
-            child: PNetworkImage(origami),
-          ),
+          const Image(
+              image: AssetImage('assets/logoVer2.png'),
+              width: 250,
+              height: 150),
+          _buildLoginForm(),
           const SizedBox(
             height: 20.0,
           ),
-          _buildLoginForm(),
+          //_buildLoginForm(),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.start,
           //   children: <Widget>[
@@ -83,10 +83,8 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
       padding: const EdgeInsets.all(20.0),
       child: Stack(
         children: <Widget>[
-          ClipPath(
-            clipper: RoundedDiagonalPathClipper(),
-            child: Container(
-              height: 400,
+            Container(
+              height: 300,
               padding: const EdgeInsets.all(10.0),
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(40.0)),
@@ -96,7 +94,7 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(
-                    height: 90.0,
+                    height: 40.0,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -140,25 +138,30 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
                       color: Colors.blue.shade400,
                     ),
                   ),
+                  const SizedBox(
+                    height: 40.0,
+                  ),
                 ],
               ),
             ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircleAvatar(
-                radius: 40.0,
-                backgroundColor: Colors.blue.shade600,
-                child: const Icon(
-                  Icons.lock_reset_sharp,
-                  size: 45,
+              Transform.translate(
+                offset: const Offset(0.0, -30),
+                child: CircleAvatar(
+                  radius: 40.0,
+                  backgroundColor: Colors.blue.shade600,
+                  child: const Icon(
+                    Icons.lock_reset_sharp,
+                    size: 45,
+                  ),
                 ),
-              ),
+              )
             ],
           ),
           SizedBox(
-            height: 420,
+            height: 380,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
