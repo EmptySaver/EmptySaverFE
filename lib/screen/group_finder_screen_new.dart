@@ -77,7 +77,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 179, 186, 224),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Container(
           child: Column(
         children: [
@@ -102,7 +102,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                         },
                         icon: const Icon(
                           Icons.filter_list,
-                          color: Color.fromARGB(255, 66, 25, 230),
+                          color: Color.fromARGB(255, 25, 162, 230),
                         )),
                     Container(
                       height: 45,
@@ -114,13 +114,14 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 0),
-                          filled: true,
-                          fillColor: Colors.grey.shade200,
                           prefixIcon:
-                              const Icon(Icons.search, color: Colors.grey),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide.none),
+                              const Icon(Icons.search, color: Colors.lightBlue),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: BorderSide(
+                                color: const Color.fromARGB(255, 196, 195, 195),
+                                width: 1.5),
+                          ),
                           hintText: "검색할 그룹 이름을 입력해주세요",
                           hintStyle: const TextStyle(fontSize: 14),
                         ),
@@ -181,7 +182,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icon(
                                     Icons.list,
                                     size: 16,
-                                    color: Colors.white,
+                                    color: Colors.blueAccent,
                                   ),
                                   SizedBox(
                                     width: 4,
@@ -192,7 +193,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: Colors.blueAccent,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -207,7 +208,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Colors.blueAccent,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -276,10 +277,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                    color: Colors.black26,
-                                  ),
-                                  color:
-                                      const Color.fromARGB(255, 210, 132, 243),
+                                      color: Colors.blue, width: 1.5),
+                                  color: Color.fromARGB(255, 255, 255, 255),
                                 ),
                                 elevation: 2,
                               ),
@@ -288,17 +287,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor:
-                                    Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor: Colors.blueAccent,
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
                                   maxHeight: 200,
-                                  width: 200,
+                                  width: 100,
                                   padding: null,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
-                                    color: Colors.deepPurple,
+                                    color: const Color.fromARGB(
+                                        255, 255, 255, 255),
                                   ),
                                   elevation: 8,
                                   offset: const Offset(-20, 0),
@@ -336,7 +335,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Colors.blueAccent,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -350,7 +349,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Colors.blueAccent,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -364,7 +363,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icon(
                                     Icons.list,
                                     size: 16,
-                                    color: Colors.white,
+                                    color: Colors.blue,
                                   ),
                                   SizedBox(
                                     width: 4,
@@ -375,7 +374,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: Colors.blueAccent,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -412,16 +411,14 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               },
                               buttonStyleData: ButtonStyleData(
                                 height: 50,
-                                width: 120,
+                                width: 100,
                                 padding:
                                     const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
-                                    color: Colors.black26,
-                                  ),
-                                  color:
-                                      const Color.fromARGB(255, 210, 132, 243),
+                                      color: Colors.blue, width: 1.5),
+                                  color: Color.fromARGB(255, 255, 255, 255),
                                 ),
                                 elevation: 2,
                               ),
@@ -430,17 +427,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor:
-                                    Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor: Colors.blue,
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
                                   maxHeight: 200,
-                                  width: 200,
+                                  width: 100,
                                   padding: null,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
-                                    color: Colors.deepPurple,
+                                    color: const Color.fromARGB(
+                                        255, 255, 255, 255),
                                   ),
                                   elevation: 8,
                                   offset: const Offset(-20, 0),
@@ -464,10 +461,12 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
               ),
             ],
           ),
+          Divider(
+            color: const Color.fromARGB(255, 126, 126, 126),
+          ),
           Expanded(
               child: groupData.length > 0
                   ? ListView.builder(
-                      padding: const EdgeInsets.all(20),
                       itemCount: groupData.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
@@ -493,21 +492,59 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   jobComponent({required Group job}) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.only(bottom: 15),
+      // padding: const EdgeInsets.all(10),
+      // margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: const Color.fromARGB(255, 251, 246, 255),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ]),
+        borderRadius: BorderRadius.circular(20),
+        color: Color.fromARGB(255, 255, 255, 255),
+      ),
       child: Column(
         children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey.shade200),
+                      child: Text(
+                        job.categoryName!,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 108, 108, 108),
+                            fontSize: 12),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey.shade200),
+                      child: Text(
+                        job.categoryLabel!,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 98, 98, 98),
+                            fontSize: 12),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                ),
+                Text('${job.nowMember!} / ${job.maxMember!}'),
+              ],
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -542,48 +579,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
               ),
             ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 15),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade200),
-                      child: Text(
-                        job.categoryName!,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 15),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade200),
-                      child: Text(
-                        job.categoryLabel!,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  ],
-                ),
-                Text('${job.nowMember!} / ${job.maxMember!}'),
-              ],
-            ),
+          Divider(
+            color: Color.fromARGB(255, 126, 126, 126),
           )
         ],
       ),
