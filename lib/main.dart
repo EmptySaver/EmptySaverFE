@@ -16,6 +16,7 @@ import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -289,6 +290,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.leanBack,
+    );
     return GetMaterialApp(
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -311,20 +315,24 @@ class _MyAppState extends ConsumerState<MyApp> {
         '/info': (context) => const InfoScreenNew(),
       },
       theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-            toolbarHeight: 50,
-            centerTitle: true,
-            backgroundColor: Colors.grey,
+        // scaffoldBackgroundColor: const Color(0xfff0f0f0),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          toolbarHeight: 40,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.blueAccent,
+            side: const BorderSide(color: Colors.blue, width: 1.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.black,
-              side: const BorderSide(
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.black))),
+        ),
+        textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.black)),
+      ),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
-import 'package:emptysaver_fe/garbage/invitation_screen_legacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -32,8 +31,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   getAllGroup() async {
     var url = Uri.http(baseUri, '/group/getAllGroup');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       print("raw: $rawData");
@@ -48,11 +46,9 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   Future<List<Map<String, dynamic>>> getAllCategory() async {
     var url = Uri.http(baseUri, '/category/getCategoryList');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var parsedJson =
-          jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
+      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
       var data = parsedJson.map((e) => e as Map<String, dynamic>).toList();
       print(data);
       return data;
@@ -77,7 +73,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 179, 186, 224),
+      // backgroundColor: const Color.fromARGB(255, 179, 186, 224),
       body: Container(
           child: Column(
         children: [
@@ -112,27 +108,21 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                         cursorColor: Colors.grey,
                         controller: searchTec,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 0),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                           filled: true,
                           fillColor: Colors.grey.shade200,
-                          prefixIcon:
-                              const Icon(Icons.search, color: Colors.grey),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide.none),
+                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide.none),
                           hintText: "검색할 그룹 이름을 입력해주세요",
                           hintStyle: const TextStyle(fontSize: 14),
                         ),
                         onChanged: (value) {
                           setState(() {
                             print("Empty? :${value.isEmpty}");
-                            print("Keyword :${value}");
+                            print("Keyword :$value");
                             List<Group> tmpList = [];
                             tmpList.addAll(initialGroupData);
-                            tmpList.retainWhere((element) => value.isEmpty
-                                ? true
-                                : element.groupName!.contains(value));
+                            tmpList.retainWhere((element) => value.isEmpty ? true : element.groupName!.contains(value));
                             groupData = tmpList;
                             isSearch = false;
                             isCategorySelected = false;
@@ -156,23 +146,14 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       future: allCategoryFuture,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          var items = [
-                            '전체',
-                            for (int i = 0; i < snapshot.data!.length; i++)
-                              snapshot.data![i]['name']!
-                          ];
+                          var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['name']!];
                           var dropItems = items
-                              .map<DropdownMenuItem<String>>(
-                                  (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(e),
-                                      ))
+                              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ))
                               .toList();
-                          var types = [
-                            '전체',
-                            for (int i = 0; i < snapshot.data!.length; i++)
-                              snapshot.data![i]['type']
-                          ];
+                          var types = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['type']];
                           return DropdownButtonHideUnderline(
                             child: DropdownButton2(
                               isExpanded: true,
@@ -218,18 +199,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 var query = items.indexOf(value);
                                 var url, response;
                                 if (!(value == '전체')) {
-                                  url = Uri.http(baseUri,
-                                      '/group/getCategoryTeam/${types[query]}');
-                                  response = await http.get(url, headers: {
-                                    'authorization': 'Bearer $jwtToken'
-                                  });
+                                  url = Uri.http(baseUri, '/group/getCategoryTeam/${types[query]}');
+                                  response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                                   if (response.statusCode == 200) {
-                                    var rawData = jsonDecode(
-                                            utf8.decode(response.bodyBytes))
-                                        as List;
-                                    var data = rawData
-                                        .map((e) => Group.fromJson(e))
-                                        .toList();
+                                    var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                                    var data = rawData.map((e) => Group.fromJson(e)).toList();
                                     setState(() {
                                       groupData = data;
                                     });
@@ -245,20 +219,12 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   });
                                 }
                                 var tags = [];
-                                tags.isEmpty
-                                    ? initialTag = null
-                                    : initialTag =
-                                        tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
-                                url = Uri.http(baseUri,
-                                    '/category/getLabels/${types[query]}');
-                                response = await http.get(url, headers: {
-                                  'authorization': 'Bearer $jwtToken'
-                                });
+                                tags.isEmpty ? initialTag = null : initialTag = tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
+                                url = Uri.http(baseUri, '/category/getLabels/${types[query]}');
+                                response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                                 if (response.statusCode == 200) {
-                                  categoryForTagApi = jsonDecode(
-                                      utf8.decode(response.bodyBytes))['type'];
-                                  tags = jsonDecode(utf8.decode(
-                                      response.bodyBytes))['result'] as List;
+                                  categoryForTagApi = jsonDecode(utf8.decode(response.bodyBytes))['type'];
+                                  tags = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
                                   allTagFuture = Future(() => tags);
                                   // print(allTagFuture);
                                   setState(() {
@@ -271,15 +237,13 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               buttonStyleData: ButtonStyleData(
                                 height: 50,
                                 width: 120,
-                                padding:
-                                    const EdgeInsets.only(left: 14, right: 14),
+                                padding: const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.black26,
                                   ),
-                                  color:
-                                      const Color.fromARGB(255, 210, 132, 243),
+                                  color: const Color.fromARGB(255, 210, 132, 243),
                                 ),
                                 elevation: 2,
                               ),
@@ -288,8 +252,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor:
-                                    Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
@@ -305,8 +268,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   scrollbarTheme: ScrollbarThemeData(
                                     radius: const Radius.circular(40),
                                     thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility:
-                                        MaterialStateProperty.all(true),
+                                    thumbVisibility: MaterialStateProperty.all(true),
                                   )),
                               menuItemStyleData: const MenuItemStyleData(
                                 height: 40,
@@ -342,19 +304,18 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                             ),
                           ));
                           itemList.addAll(snapshot.data!
-                              .map<DropdownMenuItem<String>>(
-                                  (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(
-                                          e,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ))
+                              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(
+                                      e,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ))
                               .toList());
                           return DropdownButtonHideUnderline(
                             child: DropdownButton2(
@@ -388,20 +349,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 initialTag = value!;
                                 print(categoryForTagApi);
                                 print(value);
-                                var url = Uri.http(
-                                    baseUri, '/group/getLabelTeam', {
-                                  'categoryName': categoryForTagApi,
-                                  'label': utf8.decode(utf8.encode(value))
-                                });
-                                var response = await http.get(url, headers: {
-                                  'authorization': 'Bearer $jwtToken'
-                                });
+                                var url = Uri.http(baseUri, '/group/getLabelTeam', {'categoryName': categoryForTagApi, 'label': utf8.decode(utf8.encode(value))});
+                                var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                                 if (response.statusCode == 200) {
-                                  var rawData = jsonDecode(
-                                      utf8.decode(response.bodyBytes)) as List;
-                                  var data = rawData
-                                      .map((e) => Group.fromJson(e))
-                                      .toList();
+                                  var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                                  var data = rawData.map((e) => Group.fromJson(e)).toList();
                                   setState(() {
                                     groupData = data;
                                     initialTag = value;
@@ -413,15 +365,13 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               buttonStyleData: ButtonStyleData(
                                 height: 50,
                                 width: 120,
-                                padding:
-                                    const EdgeInsets.only(left: 14, right: 14),
+                                padding: const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.black26,
                                   ),
-                                  color:
-                                      const Color.fromARGB(255, 210, 132, 243),
+                                  color: const Color.fromARGB(255, 210, 132, 243),
                                 ),
                                 elevation: 2,
                               ),
@@ -430,8 +380,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor:
-                                    Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
@@ -447,8 +396,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                   scrollbarTheme: ScrollbarThemeData(
                                     radius: const Radius.circular(40),
                                     thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility:
-                                        MaterialStateProperty.all(true),
+                                    thumbVisibility: MaterialStateProperty.all(true),
                                   )),
                               menuItemStyleData: const MenuItemStyleData(
                                 height: 40,
@@ -465,7 +413,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
             ],
           ),
           Expanded(
-              child: groupData.length > 0
+              child: groupData.isNotEmpty
                   ? ListView.builder(
                       padding: const EdgeInsets.all(20),
                       itemCount: groupData.length,
@@ -483,7 +431,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                           child: jobComponent(job: groupData[index]),
                         );
                       })
-                  : Center(
+                  : const Center(
                       child: Text("조회된 그룹이 없습니다"),
                     ))
         ],
@@ -495,17 +443,14 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: const Color.fromARGB(255, 251, 246, 255),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ]),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 251, 246, 255), boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.2),
+          spreadRadius: 0,
+          blurRadius: 2,
+          offset: const Offset(0, 1),
+        ),
+      ]),
       child: Column(
         children: [
           Row(
@@ -523,20 +468,13 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       )),
                   const SizedBox(width: 10),
                   Flexible(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(job.groupName!,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500)),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(job.oneLineInfo!,
-                              style: TextStyle(color: Colors.grey[500])),
-                        ]),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(job.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(job.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
+                    ]),
                   )
                 ]),
               ),
@@ -552,11 +490,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 15),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade200),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                       child: Text(
                         job.categoryName!,
                         style: const TextStyle(color: Colors.black),
@@ -566,11 +501,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       width: 10,
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 15),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade200),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                       child: Text(
                         job.categoryLabel!,
                         style: const TextStyle(color: Colors.black),

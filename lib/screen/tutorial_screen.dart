@@ -102,7 +102,6 @@ class _TutorialScreen extends State<TutorialScreen>{
                 padding: const EdgeInsets.only(top: 40, bottom: 12),
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-
                     side: const BorderSide(color: Colors.blue,width: 1.5),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),

@@ -178,258 +178,262 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
     memberScheduleFuture = getMemberSchedule();
     // groupScheduleFuture = getGroupSchedule();
     var colorIndex = -1;
-
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: CarouselSlider.builder(
-            options: CarouselOptions(
-              enableInfiniteScroll: true,
-              initialPage: 0,
-              height: 700,
-              viewportFraction: 1,
-              // onScrolled: (value) {
-              //   print(value);
-              // },
-              onPageChanged: (index, reason) {
-                pageIndex = (index > 499) ? index - 999 : index; //pageIndex(위젯 전체) == realIndex(빌더 안)
-                print(pageIndex);
-                setState(() {});
-              },
-            ),
-            itemCount: 999,
-            itemBuilder: (context, index, big) {
-              int realIndex = big - 10000;
-              print('rebuildtimetable : $index, $big, $realIndex');
-              return RefreshIndicator(
-                onRefresh: () async {
-                  // memberScheduleFuture = getMemberSchedule();
-                  setState(() {});
-                },
-                child: SingleChildScrollView(
-                  child: Container(
-                    decoration: BoxDecoration(border: Border.all()),
-                    child: Row(children: [
-                      Column(children: [
-                        const SizedBox(
-                          width: 20,
-                          height: 20,
-                        ),
-                        for (int i = 1; i < 17; i++) TimeHeaderBox(timeText: i + 7),
-                      ]),
-                      Column(
-                        children: [
-                          Row(
+    return SafeArea(
+      child: Stack(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: CarouselSlider.builder(
+                options: CarouselOptions(
+                  enableInfiniteScroll: true,
+                  initialPage: 0,
+                  height: 700,
+                  viewportFraction: 1,
+                  // onScrolled: (value) {
+                  //   print(value);
+                  // },
+                  onPageChanged: (index, reason) {
+                    pageIndex = (index > 499) ? index - 999 : index; //pageIndex(위젯 전체) == realIndex(빌더 안)
+                    print(pageIndex);
+                    setState(() {});
+                  },
+                ),
+                itemCount: 999,
+                itemBuilder: (context, index, big) {
+                  int realIndex = big - 10000;
+                  print('rebuildtimetable : $index, $big, $realIndex');
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      // memberScheduleFuture = getMemberSchedule();
+                      setState(() {});
+                    },
+                    child: SingleChildScrollView(
+                      child: Container(
+                        // height: MediaQuery.of(context).size.height,
+                        decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(10)),
+                        child: Row(children: [
+                          Column(children: [
+                            const SizedBox(
+                              width: 20,
+                              height: 20,
+                            ),
+                            for (int i = 1; i < 17; i++) TimeHeaderBox(timeText: i + 7),
+                          ]),
+                          Column(
                             children: [
-                              for (int i = 0; i < 5; i++)
-                                DefaultHeaderBox(
-                                  nowDate: '${DateFormat('E', 'ko').format(
-                                    DateTime.now().add(
-                                      Duration(
-                                        days: (i - 5 + (realIndex + 1) * 5),
-                                        hours: 9,
-                                      ),
-                                    ),
-                                  )} ${DateFormat('Md').format(DateTime.now().add(Duration(days: (i - 5 + (realIndex + 1) * 5), hours: 9)))}',
-                                )
-                            ],
-                          ),
-                          FutureBuilder(
-                            future: memberScheduleFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                // print(snapshot.data!.scheduleListPerDays!);
-                                print(memberTrueIndexListsTotal);
-                                if (snapshot.data!.scheduleListPerDays!.isEmpty) {
-                                  return const defaultTimeTableFrame();
-                                } else {
-                                  return Stack(
-                                    children: [
-                                      const defaultTimeTableFrame(),
-                                      for (int h = 0; h < memberTrueIndexListsTotal.length; h++)
-                                        for (int i = 0; i < memberTrueIndexListsTotal[h].length; i++)
-                                          Positioned(
-                                            top: defaultBoxHeight * memberTrueIndexListsTotal[h][i][0],
-                                            left: defaultBoxWidth * h,
-                                            child: GestureDetector(
-                                              onLongPress: () {
-                                                print(memberIdListsTotal[h][i]);
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    var lectureInfo = snapshot.data!.scheduleListPerDays![h][i];
-                                                    return SimpleDialog(
-                                                      title: const Text('스케줄 변경'),
-                                                      children: [
-                                                        !(lectureInfo['groupType'] == true)
-                                                            ? TextButton(
-                                                                onPressed: () {
-                                                                  Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder: (context) => UpdateScheduleScreen(
-                                                                          scheduleId: memberIdListsTotal[h][i],
-                                                                          groupId: lectureInfo['groupId'],
-                                                                        ),
-                                                                      ));
+                              Row(
+                                children: [
+                                  for (int i = 0; i < 5; i++)
+                                    DefaultHeaderBox(
+                                      nowDate: '${DateFormat('E', 'ko').format(
+                                        DateTime.now().add(
+                                          Duration(
+                                            days: (i - 5 + (realIndex + 1) * 5),
+                                            hours: 9,
+                                          ),
+                                        ),
+                                      )} ${DateFormat('Md').format(DateTime.now().add(Duration(days: (i - 5 + (realIndex + 1) * 5), hours: 9)))}',
+                                    )
+                                ],
+                              ),
+                              FutureBuilder(
+                                future: memberScheduleFuture,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    // print(snapshot.data!.scheduleListPerDays!);
+                                    print(memberTrueIndexListsTotal);
+                                    if (snapshot.data!.scheduleListPerDays!.isEmpty) {
+                                      return const defaultTimeTableFrame();
+                                    } else {
+                                      return Stack(
+                                        children: [
+                                          const defaultTimeTableFrame(),
+                                          for (int h = 0; h < memberTrueIndexListsTotal.length; h++)
+                                            for (int i = 0; i < memberTrueIndexListsTotal[h].length; i++)
+                                              Positioned(
+                                                top: defaultBoxHeight * memberTrueIndexListsTotal[h][i][0],
+                                                left: defaultBoxWidth * h,
+                                                child: GestureDetector(
+                                                  onLongPress: () {
+                                                    print(memberIdListsTotal[h][i]);
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        var lectureInfo = snapshot.data!.scheduleListPerDays![h][i];
+                                                        return SimpleDialog(
+                                                          title: const Text('스케줄 변경'),
+                                                          children: [
+                                                            !(lectureInfo['groupType'] == true)
+                                                                ? TextButton(
+                                                                    onPressed: () {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) => UpdateScheduleScreen(
+                                                                              scheduleId: memberIdListsTotal[h][i],
+                                                                              groupId: lectureInfo['groupId'],
+                                                                            ),
+                                                                          ));
+                                                                    },
+                                                                    child: const Text('변경'))
+                                                                : const Center(
+                                                                    child: Text(
+                                                                      '그룹스케줄은 변경이 불가능합니다',
+                                                                      style: TextStyle(color: Colors.grey),
+                                                                    ),
+                                                                  ),
+                                                            TextButton(
+                                                                onPressed: () async {
+                                                                  var url = Uri.http(baseUri, '/timetable/deleteSchedule', {'scheduleId': '${memberIdListsTotal[h][i]}'});
+                                                                  var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                                  if (response.statusCode == 200) {
+                                                                    Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                                    setState(() {});
+                                                                    Navigator.pop(context);
+                                                                  } else {
+                                                                    Fluttertoast.showToast(msg: 'error!');
+                                                                    print(utf8.decode(response.bodyBytes));
+                                                                  }
                                                                 },
-                                                                child: const Text('변경'))
-                                                            : const Center(
-                                                                child: Text(
-                                                                  '그룹스케줄은 변경이 불가능합니다',
-                                                                  style: TextStyle(color: Colors.grey),
-                                                                ),
-                                                              ),
-                                                        TextButton(
-                                                            onPressed: () async {
-                                                              var url = Uri.http(baseUri, '/timetable/deleteSchedule', {'scheduleId': '${memberIdListsTotal[h][i]}'});
-                                                              var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                                              if (response.statusCode == 200) {
-                                                                Fluttertoast.showToast(msg: '삭제되었습니다');
-                                                                setState(() {});
-                                                                Navigator.pop(context);
-                                                              } else {
-                                                                Fluttertoast.showToast(msg: 'error!');
-                                                                print(utf8.decode(response.bodyBytes));
-                                                              }
-                                                            },
-                                                            child: !(lectureInfo['groupType'] == true) ? const Text('삭제') : const Text('나에게서만 삭제')),
-                                                      ],
+                                                                child: !(lectureInfo['groupType'] == true) ? const Text('삭제') : const Text('나에게서만 삭제')),
+                                                          ],
+                                                        );
+                                                      },
                                                     );
                                                   },
-                                                );
-                                              },
-                                              child: Container(
-                                                height: defaultBoxHeight * (memberTrueIndexListsTotal[h][i].length),
-                                                width: defaultBoxWidth,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(width: 1, color: Colors.black),
-                                                  color: ((h + i) > 17) ? Colors.primaries[(h + i) % 17] : Colors.primaries[(h + i)],
+                                                  child: Container(
+                                                    height: defaultBoxHeight * (memberTrueIndexListsTotal[h][i].length),
+                                                    width: defaultBoxWidth,
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(width: 1, color: Colors.black),
+                                                      color: ((h + i) > 17) ? Colors.primaries[(h + i) % 17] : Colors.primaries[(h + i)],
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Text(memberNameListsTotal[h][i]),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(memberNameListsTotal[h][i]),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                    ],
-                                  );
-                                }
-                              } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      )
-                    ]),
-                  ),
-                ),
-              );
-            },
+                                              )
+                                        ],
+                                      );
+                                    }
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                        ]),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SpeedDial(
-              icon: Icons.add,
-              backgroundColor: Colors.blueGrey,
-              children: [
-                SpeedDialChild(
-                  child: const Icon(Icons.schedule),
-                  label: '일정 추가',
-                  backgroundColor: Colors.red,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddScheduleScreen(),
-                        ));
-                  },
-                ),
-                SpeedDialChild(
-                  child: const Icon(Icons.class_outlined),
-                  label: '강의 추가',
-                  backgroundColor: Colors.blue,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LectureSearchResultScreen(),
-                        ));
-                  },
-                ),
-                SpeedDialChild(
-                    child: const Icon(Icons.group_add),
-                    label: '그룹 생성',
-                    backgroundColor: Colors.green,
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SpeedDial(
+                icon: Icons.add,
+                backgroundColor: Colors.blueGrey,
+                children: [
+                  SpeedDialChild(
+                    child: const Icon(Icons.schedule),
+                    label: '일정 추가',
+                    backgroundColor: Colors.red,
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const CategorySelectScreen(),
+                            builder: (context) => const AddScheduleScreen(),
                           ));
-                    }),
-                SpeedDialChild(
-                  child: const Icon(Icons.search),
-                  label: '스케줄 찾기',
-                  backgroundColor: Colors.yellow,
-                  onTap: findSchedule,
-                ),
-                SpeedDialChild(
-                  child: const Icon(Icons.movie_creation_outlined),
-                  label: '오늘 영화',
-                  backgroundColor: Colors.deepPurple.shade100,
-                  onTap: () {
-                    todayMovieListFuture = getTodayMovie();
-                    showDialog(
-                      context: context,
-                      builder: (context) => SimpleDialog(
-                        children: [
-                          FutureBuilder(
-                            future: todayMovieListFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                var todayMovieList = snapshot.data!;
-                                return SizedBox(
-                                  height: 500,
-                                  width: 400,
-                                  child: ListView.builder(
-                                    itemCount: todayMovieList.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        child: Column(
-                                          children: [Text('${todayMovieList[index].name}'), Text('${todayMovieList[index].timeData}')],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
+                    },
+                  ),
+                  SpeedDialChild(
+                    child: const Icon(Icons.class_outlined),
+                    label: '강의 추가',
+                    backgroundColor: Colors.blue,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LectureSearchResultScreen(),
+                          ));
+                    },
+                  ),
+                  SpeedDialChild(
+                      child: const Icon(Icons.group_add),
+                      label: '그룹 생성',
+                      backgroundColor: Colors.green,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CategorySelectScreen(),
+                            ));
+                      }),
+                  SpeedDialChild(
+                    child: const Icon(Icons.search),
+                    label: '스케줄 찾기',
+                    backgroundColor: Colors.yellow,
+                    onTap: findSchedule,
+                  ),
+                  SpeedDialChild(
+                    child: const Icon(Icons.movie_creation_outlined),
+                    label: '오늘 영화',
+                    backgroundColor: Colors.deepPurple.shade100,
+                    onTap: () {
+                      todayMovieListFuture = getTodayMovie();
+                      showDialog(
+                        context: context,
+                        builder: (context) => SimpleDialog(
+                          children: [
+                            FutureBuilder(
+                              future: todayMovieListFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  var todayMovieList = snapshot.data!;
+                                  return SizedBox(
+                                    height: 500,
+                                    width: 400,
+                                    child: ListView.builder(
+                                      itemCount: todayMovieList.length,
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          child: Column(
+                                            children: [Text('${todayMovieList[index].name}'), Text('${todayMovieList[index].timeData}')],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 
