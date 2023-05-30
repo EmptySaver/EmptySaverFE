@@ -30,8 +30,9 @@ class ScheduleText {
   String? body;
   bool? periodicType;
   String? timeData;
+  bool? read;
 
-  ScheduleText({this.id, this.name, this.body, this.periodicType, this.timeData});
+  ScheduleText({this.id, this.name, this.body, this.periodicType, this.timeData, this.read});
 
   factory ScheduleText.fromJson(Map<String, dynamic> parsedJson) {
     return ScheduleText(
@@ -40,6 +41,7 @@ class ScheduleText {
       body: parsedJson['body'],
       periodicType: parsedJson['periodicType'],
       timeData: parsedJson['timeData'],
+      read: parsedJson['read'],
     );
   }
 }
@@ -71,15 +73,51 @@ class Category {
   }
 }
 
-class Unwrap {
-  List<dynamic>? data;
+// class Unwrap {
+//   List<dynamic>? data;
 
-  Unwrap({this.data});
+//   Unwrap({this.data});
 
-  factory Unwrap.fromJson(Map<String, dynamic> parsedJson) {
-    return Unwrap(
-      data: parsedJson['data'],
-    );
+//   factory Unwrap.fromJson(Map<String, dynamic> parsedJson) {
+//     return Unwrap(
+//       data: parsedJson['data'],
+//     );
+//   }
+// }
+
+class ScheduleInfo {
+  int? id;
+  String? name;
+  String? body;
+  bool? periodicType;
+  String? category;
+  Group? groupInfo;
+  String? timeData;
+
+  ScheduleInfo({this.id, this.name, this.body, this.periodicType, this.category, this.groupInfo, this.timeData});
+
+  ScheduleInfo.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    name = json["name"];
+    body = json["body"];
+    periodicType = json["periodicType"];
+    category = json["category"];
+    groupInfo = json["groupInfo"] == null ? null : Group.fromJson(json["groupInfo"]);
+    timeData = json["timeData"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
+    data["name"] = name;
+    data["body"] = body;
+    data["periodicType"] = periodicType;
+    data["category"] = category;
+    if (groupInfo != null) {
+      data["groupInfo"] = groupInfo?.toJson();
+    }
+    data["timeData"] = timeData;
+    return data;
   }
 }
 
@@ -133,8 +171,105 @@ class Group {
         isAnonymous: parsedJson['isAnonymous'],
         categoryLabel: parsedJson['categoryLabel'],
         amIOwner: parsedJson['amIOwner'],
-        commentList: parsedJson['commentList'],
+        commentList: parsedJson['commentList'] == null ? null : (parsedJson["commentList"] as List).map((e) => CommentList.fromJson(e)).toList(),
         categoryName: parsedJson['categoryName']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["groupId"] = groupId;
+    data["groupName"] = groupName;
+    data["oneLineInfo"] = oneLineInfo;
+    data["groupDescription"] = groupDescription;
+    data["nowMember"] = nowMember;
+    data["maxMember"] = maxMember;
+    data["isPublic"] = isPublic;
+    data["isAnonymous"] = isAnonymous;
+    data["categoryLabel"] = categoryLabel;
+    if (commentList != null) {
+      data["commentList"] = commentList?.map((e) => e.toJson()).toList();
+    }
+    data["amIOwner"] = amIOwner;
+    return data;
+  }
+}
+
+class CommentList {
+  Parent? parent;
+  List<ChildList>? childList;
+
+  CommentList({this.parent, this.childList});
+
+  CommentList.fromJson(Map<String, dynamic> json) {
+    parent = json["parent"] == null ? null : Parent.fromJson(json["parent"]);
+    childList = json["childList"] == null ? null : (json["childList"] as List).map((e) => ChildList.fromJson(e)).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (parent != null) {
+      data["parent"] = parent?.toJson();
+    }
+    if (childList != null) {
+      data["childList"] = childList?.map((e) => e.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class ChildList {
+  int? commentId;
+  String? text;
+  String? dateTime;
+  bool? isOwner;
+  String? writerName;
+
+  ChildList({this.commentId, this.text, this.dateTime, this.isOwner, this.writerName});
+
+  ChildList.fromJson(Map<String, dynamic> json) {
+    commentId = json["commentId"];
+    text = json["text"];
+    dateTime = json["dateTime"];
+    isOwner = json["isOwner"];
+    writerName = json["writerName"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["commentId"] = commentId;
+    data["text"] = text;
+    data["dateTime"] = dateTime;
+    data["isOwner"] = isOwner;
+    data["writerName"] = writerName;
+    return data;
+  }
+}
+
+class Parent {
+  int? commentId;
+  String? text;
+  String? dateTime;
+  bool? isOwner;
+  String? writerName;
+
+  Parent({this.commentId, this.text, this.dateTime, this.isOwner, this.writerName});
+
+  Parent.fromJson(Map<String, dynamic> json) {
+    commentId = json["commentId"];
+    text = json["text"];
+    dateTime = json["dateTime"];
+    isOwner = json["isOwner"];
+    writerName = json["writerName"];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["commentId"] = commentId;
+    data["text"] = text;
+    data["dateTime"] = dateTime;
+    data["isOwner"] = isOwner;
+    data["writerName"] = writerName;
+    return data;
   }
 }
 
@@ -280,7 +415,7 @@ class Noti {
     receiveTime = json["receiveTime"];
     isRead = json["isRead"];
   }
-  
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["id"] = id;
@@ -301,11 +436,7 @@ class FullCategoryInfo {
   List<dynamic>? tagList;
   FullCategoryInfo({this.type, this.typeName, this.tagList});
   factory FullCategoryInfo.fromJson(Map<String, dynamic> parsedJson) {
-    return FullCategoryInfo(
-        type: parsedJson['type'],
-        typeName: parsedJson['typeName'],
-        tagList: parsedJson['result']);
+    return FullCategoryInfo(type: parsedJson['type'], typeName: parsedJson['typeName'], tagList: parsedJson['result']);
   }
-  Map<String, dynamic> toJson() =>
-      {'type': type, 'typeName': typeName, 'tagList': tagList};
+  Map<String, dynamic> toJson() => {'type': type, 'typeName': typeName, 'tagList': tagList};
 }

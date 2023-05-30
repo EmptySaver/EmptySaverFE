@@ -26,6 +26,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('알림 리빌드');
     return Scaffold(
       appBar: AppBar(
         title: const Text('알림함'),
@@ -42,6 +43,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   if (notiList.isNotEmpty) {
                     return ListView.builder(
                         shrinkWrap: true,
+                        primary: false,
                         itemCount: notiList.length,
                         itemBuilder: (context, index) {
                           String routeValue = notiList[index].routeValue!;
@@ -49,19 +51,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           String? idType2 = notiList[index].idType2!;
                           int? idValue = notiList[index].idValue!;
                           int? idValue2 = notiList[index].idValue2!;
+                          bool? isRead = notiList[index].isRead;
                           return GestureDetector(
                             onTap: () async {
-                              routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
-                              var url = Uri.http(baseUri, '/notification/check/${notiList[index].id}');
-                              var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
-                              if (response.statusCode == 200) {
-                                print('알림 읽음');
-                              } else {
-                                print(utf8.decode(response.bodyBytes));
+                              if (isRead == false) {
+                                var url = Uri.http(baseUri, '/notification/check/${notiList[index].id}');
+                                var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                if (response.statusCode == 200) {
+                                  print('알림 읽음');
+                                } else {
+                                  print(utf8.decode(response.bodyBytes));
+                                }
                               }
+                              setState(() {
+                                notiListFuture = getAllNotification();
+                                routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
+                              });
                             },
                             child: Container(
-                              decoration: BoxDecoration(border: Border.all(width: 1)),
+                              decoration: BoxDecoration(border: Border.all(width: 1), color: (isRead == true) ? Colors.grey.shade300 : null),
                               child: Row(
                                 children: [
                                   const SizedBox(

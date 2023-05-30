@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/main.dart';
-import 'package:emptysaver_fe/screen/login_screen_new.dart';
+import 'package:emptysaver_fe/garbage/login_screen_new.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
 import 'package:emptysaver_fe/screen/signup_screen.dart';
 import 'package:flutter/material.dart';
-import 'bar_screen.dart';
+import '../screen/bar_screen.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreenLegacy extends ConsumerStatefulWidget {

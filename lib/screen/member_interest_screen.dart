@@ -4,7 +4,7 @@ import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
-import 'package:emptysaver_fe/screen/login_screen_new.dart';
+import 'package:emptysaver_fe/garbage/login_screen_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
