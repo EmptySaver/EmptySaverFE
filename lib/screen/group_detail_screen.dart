@@ -342,10 +342,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                     IconButton(
                                                       padding: EdgeInsets.zero,
                                                       constraints: const BoxConstraints(),
-                                                      onPressed: () async {
-                                                        await okSchedule(snapshot.data![index].id, true);
-                                                        print(snapshot.data![index].read);
-                                                        setState(() {});
+                                                      onPressed: () {
+                                                        okSchedule(snapshot.data![index].id, true);
                                                       },
                                                       icon: const Icon(Icons.check),
                                                     ),
@@ -619,16 +617,16 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Future<bool> okSchedule(int? memberId, bool? accept) async {
+  void okSchedule(int? memberId, bool? accept) async {
     var url = Uri.http(baseUri, '/timetable/team/readSchedule', {'scheduleId': '$memberId', 'accept': '$accept'});
     var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '스케줄을 처리했습니다');
-      print(utf8.decode(response.bodyBytes));
-      return true;
+      setState(() {
+        groupScheduleTextListFuture = getGroupScheduleTextList();
+      });
     } else {
       print(utf8.decode(response.bodyBytes));
-      return false;
     }
   }
 }

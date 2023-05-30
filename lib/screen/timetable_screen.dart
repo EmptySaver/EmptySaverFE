@@ -389,7 +389,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                   label: '오늘 영화',
                   backgroundColor: Colors.deepPurple.shade100,
                   onTap: () {
-                    getTodayMovie();
+                    todayMovieListFuture = getTodayMovie();
                     showDialog(
                       context: context,
                       builder: (context) => SimpleDialog(
