@@ -31,7 +31,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   getAllGroup() async {
     var url = Uri.http(baseUri, '/group/getAllGroup');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       print("raw: $rawData");
@@ -46,9 +47,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   Future<List<Map<String, dynamic>>> getAllCategory() async {
     var url = Uri.http(baseUri, '/category/getCategoryList');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
+      var parsedJson =
+          jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
       var data = parsedJson.map((e) => e as Map<String, dynamic>).toList();
       print(data);
       return data;
@@ -68,6 +71,46 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
           },
         ));
     allCategoryFuture = getAllCategory();
+  }
+
+  List<DropdownMenuItem<String>> _addDividersAfterItems(List<String> items) {
+    List<DropdownMenuItem<String>> _menuItems = [];
+    for (var item in items) {
+      _menuItems.addAll(
+        [
+          DropdownMenuItem<String>(
+            value: item,
+            // child: Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            //   child: Text(
+            //     item,
+            //     style: const TextStyle(
+            //       fontSize: 14,
+            //     ),
+            //   ),
+            // ),
+            child: Center(
+              child: Text(
+                item,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ),
+          ),
+          //If it's last item, we will not add Divider after it.
+          if (item != items.last)
+            const DropdownMenuItem<String>(
+              enabled: false,
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+        ],
+      );
+    }
+    return _menuItems;
   }
 
   @override
@@ -127,7 +170,9 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                             print("Keyword :$value");
                             List<Group> tmpList = [];
                             tmpList.addAll(initialGroupData);
-                            tmpList.retainWhere((element) => value.isEmpty ? true : element.groupName!.contains(value));
+                            tmpList.retainWhere((element) => value.isEmpty
+                                ? true
+                                : element.groupName!.contains(value));
                             groupData = tmpList;
                             isSearch = false;
                             isCategorySelected = false;
@@ -141,286 +186,318 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
               ],
             ),
           ),
-          Row(
-            children: [
-              Visibility(
-                visible: isSearch,
-                child: Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: FutureBuilder(
-                      future: allCategoryFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['name']!];
-                          var dropItems = items
-                              .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e),
-                                  ))
-                              .toList();
-                          var types = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['type']];
-                          return DropdownButtonHideUnderline(
-                            child: DropdownButton2(
-                              isExpanded: true,
-                              hint: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.list,
-                                    size: 16,
-                                    color: Colors.blueAccent,
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      '전체분류',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
+          SizedBox(
+            height: 5,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              children: [
+                Visibility(
+                  visible: isSearch,
+                  child: Container(
+                      child: FutureBuilder(
+                    future: allCategoryFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var items = [
+                          '전체',
+                          for (int i = 0; i < snapshot.data!.length; i++)
+                            snapshot.data![i]['name']
+                        ];
+                        var types = [
+                          '전체',
+                          for (int i = 0; i < snapshot.data!.length; i++)
+                            snapshot.data![i]['type']
+                        ];
+                        return DropdownButtonHideUnderline(
+                          child: DropdownButton2(
+                            isExpanded: true,
+                            hint: const Row(
+                              children: [
+                                // Icon(
+                                //   Icons.list,
+                                //   size: 16,
+                                //   color: Colors.blue,
+                                // ),
+                                // SizedBox(
+                                //   width: 4,
+                                // ),
+                                Expanded(
+                                    child: Center(
+                                  child: Text(
+                                    '카테고리',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 45, 115, 235),
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ],
-                              ),
-                              items: items
-                                  .map((item) => DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Text(
-                                          item,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueAccent,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ))
-                                  .toList(),
-                              value: initialCategory,
-                              onChanged: (value) async {
-                                var query = items.indexOf(value);
-                                var url, response;
-                                if (!(value == '전체')) {
-                                  url = Uri.http(baseUri, '/group/getCategoryTeam/${types[query]}');
-                                  response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                  if (response.statusCode == 200) {
-                                    var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-                                    var data = rawData.map((e) => Group.fromJson(e)).toList();
-                                    setState(() {
-                                      groupData = data;
-                                    });
-                                  } else {
-                                    print(utf8.decode(response.bodyBytes));
-                                    throw Exception('failed to get groupData');
-                                  }
-                                } else {
-                                  setState(() {
-                                    initialCategory = "전체";
-                                    groupData = initialGroupData;
-                                    isCategorySelected = false;
-                                  });
-                                }
-                                var tags = [];
-                                tags.isEmpty ? initialTag = null : initialTag = tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
-                                url = Uri.http(baseUri, '/category/getLabels/${types[query]}');
-                                response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                if (response.statusCode == 200) {
-                                  categoryForTagApi = jsonDecode(utf8.decode(response.bodyBytes))['type'];
-                                  tags = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
-                                  allTagFuture = Future(() => tags);
-                                  // print(allTagFuture);
-                                  setState(() {
-                                    initialCategory = value!;
-                                    // initialTag = tags[0];
-                                    isCategorySelected = true;
-                                  });
-                                }
-                              },
-                              buttonStyleData: ButtonStyleData(
-                                height: 50,
-                                width: 120,
-                                padding: const EdgeInsets.only(left: 14, right: 14),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                      color: Colors.blue, width: 1.5),
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                ),
-                                elevation: 2,
-                              ),
-                              iconStyleData: const IconStyleData(
-                                icon: Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                ),
-                                iconSize: 14,
-                                iconEnabledColor: Colors.blueAccent,
-                                iconDisabledColor: Colors.grey,
-                              ),
-                              dropdownStyleData: DropdownStyleData(
-                                  maxHeight: 200,
-                                  width: 100,
-                                  padding: null,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
-                                  ),
-                                  elevation: 8,
-                                  offset: const Offset(-20, 0),
-                                  scrollbarTheme: ScrollbarThemeData(
-                                    radius: const Radius.circular(40),
-                                    thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility: MaterialStateProperty.all(true),
-                                  )),
-                              menuItemStyleData: const MenuItemStyleData(
-                                height: 40,
-                                padding: EdgeInsets.only(left: 14, right: 14),
-                              ),
+                                )),
+                              ],
                             ),
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    )),
-              ),
-              Visibility(
-                visible: isCategorySelected,
-                child: Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: FutureBuilder(
-                      future: allTagFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<DropdownMenuItem> itemList = [];
-                          itemList.add(const DropdownMenuItem(
-                            value: "전체",
-                            child: Text(
-                              "전체",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueAccent,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ));
-                          itemList.addAll(snapshot.data!
-                              .map<DropdownMenuItem<String>>(
-                                  (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(
-                                          e,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueAccent,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ))
-                              .toList());
-                          return DropdownButtonHideUnderline(
-                            child: DropdownButton2(
-                              isExpanded: true,
-                              hint: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.list,
-                                    size: 16,
-                                    color: Colors.blue,
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      '태그',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              items: itemList,
-                              value: initialTag,
-                              onChanged: (value) async {
-                                initialTag = value!;
-                                print(categoryForTagApi);
-                                print(value);
-                                var url = Uri.http(baseUri, '/group/getLabelTeam', {'categoryName': categoryForTagApi, 'label': utf8.decode(utf8.encode(value))});
-                                var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                            items: _addDividersAfterItems(
+                                items.map((e) => e as String).toList()),
+                            value: initialCategory,
+                            onChanged: (value) async {
+                              var query = items.indexOf(value);
+                              var url, response;
+                              if (!(value == '전체')) {
+                                url = Uri.http(baseUri,
+                                    '/group/getCategoryTeam/${types[query]}');
+                                response = await http.get(url, headers: {
+                                  'authorization': 'Bearer $jwtToken'
+                                });
                                 if (response.statusCode == 200) {
-                                  var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-                                  var data = rawData.map((e) => Group.fromJson(e)).toList();
+                                  var rawData = jsonDecode(
+                                      utf8.decode(response.bodyBytes)) as List;
+                                  var data = rawData
+                                      .map((e) => Group.fromJson(e))
+                                      .toList();
                                   setState(() {
                                     groupData = data;
-                                    initialTag = value;
                                   });
                                 } else {
                                   print(utf8.decode(response.bodyBytes));
+                                  throw Exception('failed to get groupData');
                                 }
-                              },
-                              buttonStyleData: ButtonStyleData(
-                                height: 50,
+                              } else {
+                                setState(() {
+                                  initialCategory = "전체";
+                                  groupData = initialGroupData;
+                                  isCategorySelected = false;
+                                });
+                              }
+                              var tags = [];
+                              tags.isEmpty
+                                  ? initialTag = null
+                                  : initialTag =
+                                      tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
+                              url = Uri.http(baseUri,
+                                  '/category/getLabels/${types[query]}');
+                              response = await http.get(url, headers: {
+                                'authorization': 'Bearer $jwtToken'
+                              });
+                              if (response.statusCode == 200) {
+                                categoryForTagApi = jsonDecode(
+                                    utf8.decode(response.bodyBytes))['type'];
+                                tags =
+                                    jsonDecode(utf8.decode(response.bodyBytes))[
+                                        'result'] as List;
+                                allTagFuture = Future(() => tags);
+                                // print(allTagFuture);
+                                setState(() {
+                                  print("val : ${value}");
+                                  initialCategory = value!.toString();
+                                  // initialTag = tags[0];
+                                  isCategorySelected = true;
+                                });
+                              }
+                            },
+                            buttonStyleData: ButtonStyleData(
+                              height: 30,
+                              width: 100,
+                              padding: const EdgeInsets.only(left: 8, right: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                border:
+                                    Border.all(color: Colors.blue, width: 1.5),
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
+                              elevation: 2,
+                            ),
+                            iconStyleData: const IconStyleData(
+                              icon: Icon(
+                                Icons.arrow_forward_ios_outlined,
+                              ),
+                              iconSize: 14,
+                              iconEnabledColor: Colors.blue,
+                              iconDisabledColor: Colors.grey,
+                            ),
+                            dropdownStyleData: DropdownStyleData(
+                                maxHeight: 200,
                                 width: 100,
-                                padding:
-                                    const EdgeInsets.only(left: 14, right: 14),
+                                padding: null,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                      color: Colors.blue, width: 1.5),
-                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
                                 ),
-                                elevation: 2,
-                              ),
-                              iconStyleData: const IconStyleData(
-                                icon: Icon(
-                                  Icons.arrow_forward_ios_outlined,
+                                elevation: 8,
+                                offset: const Offset(-20, 0),
+                                scrollbarTheme: ScrollbarThemeData(
+                                  radius: const Radius.circular(40),
+                                  thickness: MaterialStateProperty.all(6),
+                                  thumbVisibility:
+                                      MaterialStateProperty.all(true),
+                                )),
+                            menuItemStyleData: const MenuItemStyleData(
+                                height: 20,
+                                padding: EdgeInsets.only(left: 14, right: 14),
+                                overlayColor: MaterialStatePropertyAll(
+                                    Color.fromARGB(255, 178, 225, 247))),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  )),
+                ),
+                Visibility(
+                  visible: isCategorySelected,
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: FutureBuilder(
+                        future: allTagFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<DropdownMenuItem> itemList = [];
+                            itemList.add(const DropdownMenuItem(
+                              value: "전체",
+                              child: Text(
+                                "전체",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  // fontWeight: FontWeight.bold,
+                                  color: Colors.blueAccent,
                                 ),
-                                iconSize: 14,
-                                iconEnabledColor: Colors.blue,
-                                iconDisabledColor: Colors.grey,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              dropdownStyleData: DropdownStyleData(
-                                  maxHeight: 200,
+                            ));
+                            itemList.addAll(snapshot.data!
+                                .map<DropdownMenuItem<String>>(
+                                    (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(
+                                            e,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ))
+                                .toList());
+                            var items = [
+                              '전체',
+                              for (int i = 0; i < snapshot.data!.length; i++)
+                                snapshot.data![i]
+                            ];
+
+                            return DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                isExpanded: true,
+                                hint: const Row(
+                                  children: [
+                                    Expanded(
+                                        child: Center(
+                                      child: Text(
+                                        '태그',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromARGB(255, 45, 115, 235),
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                  ],
+                                ),
+                                items: _addDividersAfterItems(
+                                    items.map((e) => e as String).toList()),
+                                value: initialTag,
+                                onChanged: (value) async {
+                                  initialTag = value!;
+                                  print(categoryForTagApi);
+                                  print(value);
+                                  var url = Uri.http(
+                                      baseUri, '/group/getLabelTeam', {
+                                    'categoryName': categoryForTagApi,
+                                    'label': utf8.decode(utf8.encode(value))
+                                  });
+                                  var response = await http.get(url, headers: {
+                                    'authorization': 'Bearer $jwtToken'
+                                  });
+                                  if (response.statusCode == 200) {
+                                    var rawData = jsonDecode(
+                                            utf8.decode(response.bodyBytes))
+                                        as List;
+                                    var data = rawData
+                                        .map((e) => Group.fromJson(e))
+                                        .toList();
+                                    setState(() {
+                                      groupData = data;
+                                      initialTag = value;
+                                    });
+                                  } else {
+                                    print(utf8.decode(response.bodyBytes));
+                                  }
+                                },
+                                buttonStyleData: ButtonStyleData(
+                                  height: 30,
                                   width: 100,
-                                  padding: null,
+                                  padding:
+                                      const EdgeInsets.only(left: 8, right: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
+                                    border: Border.all(
+                                        color: Colors.blue, width: 1.5),
+                                    color: Color.fromARGB(255, 255, 255, 255),
                                   ),
-                                  elevation: 8,
-                                  offset: const Offset(-20, 0),
-                                  scrollbarTheme: ScrollbarThemeData(
-                                    radius: const Radius.circular(40),
-                                    thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility: MaterialStateProperty.all(true),
-                                  )),
-                              menuItemStyleData: const MenuItemStyleData(
-                                height: 40,
-                                padding: EdgeInsets.only(left: 14, right: 14),
+                                  elevation: 2,
+                                ),
+                                iconStyleData: const IconStyleData(
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios_outlined,
+                                  ),
+                                  iconSize: 14,
+                                  iconEnabledColor: Colors.blue,
+                                  iconDisabledColor: Colors.grey,
+                                ),
+                                dropdownStyleData: DropdownStyleData(
+                                    maxHeight: 200,
+                                    width: 100,
+                                    padding: null,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                    ),
+                                    elevation: 8,
+                                    offset: const Offset(-20, 0),
+                                    scrollbarTheme: ScrollbarThemeData(
+                                      radius: const Radius.circular(40),
+                                      thickness: MaterialStateProperty.all(6),
+                                      thumbVisibility:
+                                          MaterialStateProperty.all(true),
+                                    )),
+                                menuItemStyleData: const MenuItemStyleData(
+                                    height: 20,
+                                    padding:
+                                        EdgeInsets.only(left: 14, right: 14),
+                                    overlayColor: MaterialStatePropertyAll(
+                                        Color.fromARGB(255, 178, 225, 247))),
                               ),
-                            ),
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    )),
-              ),
-            ],
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      )),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
           ),
           Divider(
-            color: const Color.fromARGB(255, 126, 126, 126),
+            color: Colors.blue,
+            thickness: 0.8,
           ),
           Expanded(
               child: groupData.isNotEmpty
@@ -518,20 +595,28 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       )),
                   const SizedBox(width: 10),
                   Flexible(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(job.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(job.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(job.groupName!,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500)),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(job.oneLineInfo!,
+                              style: TextStyle(color: Colors.grey[500])),
+                        ]),
                   )
                 ]),
               ),
             ],
           ),
           Divider(
-            color: Color.fromARGB(255, 126, 126, 126),
+            color: Colors.blue,
+            thickness: 0.8,
           )
         ],
       ),
