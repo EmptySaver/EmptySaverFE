@@ -128,7 +128,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           const SizedBox(
             height: 60.0,
           ),
-          Image(
+          const Image(
               image: AssetImage('assets/logoVer2.png'),
               width: 250,
               height: 150),
