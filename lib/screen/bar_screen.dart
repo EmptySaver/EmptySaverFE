@@ -90,7 +90,6 @@ class _BarScreenState extends ConsumerState<BarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('공강구조대!'),
         actions: [
           IconButton(
             onPressed: () {
@@ -122,9 +121,10 @@ class _BarScreenState extends ConsumerState<BarScreen> {
       ),
       body: bodyWidgets.elementAt(selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
+          type: BottomNavigationBarType.fixed,
           selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.grey,
+          // unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
           currentIndex: selectedIndex,
           onTap: (int index) {
             setState(() {
