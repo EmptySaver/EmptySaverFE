@@ -7,7 +7,7 @@ import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/friend_check_screen_new.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/invitation_screen_new.dart';
-import 'package:emptysaver_fe/screen/invitation_screen_legacy.dart';
+import 'package:emptysaver_fe/garbage/invitation_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

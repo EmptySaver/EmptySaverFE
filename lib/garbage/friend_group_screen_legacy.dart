@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
-import 'package:emptysaver_fe/screen/friend_check_screen_legacy.dart';
+import 'package:emptysaver_fe/garbage/friend_check_screen_legacy.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:flutter/material.dart';

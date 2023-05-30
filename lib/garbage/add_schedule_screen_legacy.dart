@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:emptysaver_fe/main.dart';
-import 'package:emptysaver_fe/screen/test_screen.dart';
+import 'package:emptysaver_fe/garbage/test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
