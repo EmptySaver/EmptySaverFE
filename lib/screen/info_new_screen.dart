@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -116,7 +115,7 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
       future: targetList,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Container(
+          return SizedBox(
             //padding: const EdgeInsets.only(top: 80),
             height: MediaQuery.of(context).size.height,
             width: double.infinity,
@@ -153,15 +152,12 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                     ),
                     Text('신청 기간: ${snapshot.data![index].applyDate}'),
                     Text('활동 기간: ${snapshot.data![index].runDate}'),
-                    Text('대상학과 : ${snapshot.data![index].targetDepartment}, 대상학년 : ${snapshot.data![index].targetGrade}',
-                        textAlign: TextAlign.center
-                    ),
+                    Text('대상학과 : ${snapshot.data![index].targetDepartment}, 대상학년 : ${snapshot.data![index].targetGrade}', textAlign: TextAlign.center),
                     //Text('${snapshot.data![index].url}'),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.blue,width: 1.5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
+                        side: const BorderSide(color: Colors.blue, width: 1.5),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                       onPressed: () async {
                         final url = Uri.parse(
@@ -174,7 +170,8 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
                           throw Exception('Could not launch $url');
                         }
                       },
-                      child: const Text('신청 바로가기',
+                      child: const Text(
+                        '신청 바로가기',
                         style: TextStyle(
                           //fontFamily: 'NimbusSanL',
                           fontSize: 15,
@@ -208,80 +205,79 @@ class _InfoScreenStateNew extends ConsumerState<InfoScreenNew> {
             children: [
               Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        targetList = recruitingList;
-                        print("취업으로");
-                        infoTitle = recruitTitle; //recruitType = true;
+                onTap: () {
+                  setState(() {
+                    targetList = recruitingList;
+                    print("취업으로");
+                    infoTitle = recruitTitle; //recruitType = true;
 
-                        recruitType = !recruitType;
-                      });
-                    },
-                    child:Container(
-                      height: 60,
-                      //width: double.infinity,
-                      decoration: BoxDecoration(
-                        //color: Colors.blue,
-                          border: Border.all(color: recruitType ? Colors.blueAccent: Colors.blueGrey.shade200),
-                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "리쿠르팅",
-                            style: TextStyle(color: recruitType ? Colors.blueAccent: Colors.blueGrey.shade200, fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                    recruitType = !recruitType;
+                  });
+                },
+                child: Container(
+                  height: 60,
+                  //width: double.infinity,
+                  decoration: BoxDecoration(
+                      //color: Colors.blue,
+                      border: Border.all(color: recruitType ? Colors.blueAccent : Colors.blueGrey.shade200),
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "리쿠르팅",
+                        style: TextStyle(color: recruitType ? Colors.blueAccent : Colors.blueGrey.shade200, fontSize: 30, fontWeight: FontWeight.bold),
                       ),
-                    ),
-              )),Expanded(
+                    ],
+                  ),
+                ),
+              )),
+              Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        targetList = nonSubjectList;
-                        print("비교과로");
-                        infoTitle = nonSubjectTitle;
-                        //recruitType = false;
+                onTap: () {
+                  setState(() {
+                    targetList = nonSubjectList;
+                    print("비교과로");
+                    infoTitle = nonSubjectTitle;
+                    //recruitType = false;
 
-                        recruitType = !recruitType;
-                      });
-                    },
-                    child: Container(
-                      height: 60,
-                      //width: double.infinity,
-                      decoration: BoxDecoration(
-                        //color: Colors.blue,
-                          border: Border.all(color: recruitType ? Colors.blueGrey.shade200 : Colors.blueAccent),
-                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                      child:
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "비교과",
-                            style: TextStyle(color: recruitType ? Colors.blueGrey.shade200 : Colors.blueAccent,  fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                    recruitType = !recruitType;
+                  });
+                },
+                child: Container(
+                  height: 60,
+                  //width: double.infinity,
+                  decoration: BoxDecoration(
+                      //color: Colors.blue,
+                      border: Border.all(color: recruitType ? Colors.blueGrey.shade200 : Colors.blueAccent),
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "비교과",
+                        style: TextStyle(color: recruitType ? Colors.blueGrey.shade200 : Colors.blueAccent, fontSize: 30, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                )),
+                    ],
+                  ),
+                ),
+              )),
             ],
           ),
           const SizedBox(
-            height: 15,
+            height: 5,
           ),
-          const Divider(thickness: 1,),
           Expanded(
             child: SingleChildScrollView(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: getFutureBuilder()/*Stack(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: getFutureBuilder() /*Stack(
                   children: <Widget>[
                     getFutureBuilder(),
                   ],
                 ),*/
-              ),
+                  ),
             ),
           )
         ],
