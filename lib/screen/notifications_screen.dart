@@ -31,72 +31,83 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       appBar: AppBar(
         title: const Text('알림함'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Center(
-          child: SingleChildScrollView(
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
             child: FutureBuilder(
               future: notiListFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var notiList = snapshot.data!.reversed.toList();
                   if (notiList.isNotEmpty) {
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        primary: false,
-                        itemCount: notiList.length,
-                        itemBuilder: (context, index) {
-                          String routeValue = notiList[index].routeValue!;
-                          String? idType = notiList[index].idType!;
-                          String? idType2 = notiList[index].idType2!;
-                          int? idValue = notiList[index].idValue!;
-                          int? idValue2 = notiList[index].idValue2!;
-                          bool? isRead = notiList[index].isRead;
-                          return GestureDetector(
-                            onTap: () async {
-                              if (isRead == false) {
-                                var url = Uri.http(baseUri, '/notification/check/${notiList[index].id}');
-                                var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                if (response.statusCode == 200) {
-                                  print('알림 읽음');
-                                } else {
-                                  print(utf8.decode(response.bodyBytes));
+                    return Container(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: notiList.length,
+                          itemBuilder: (context, index) {
+                            String routeValue = notiList[index].routeValue!;
+                            String? idType = notiList[index].idType!;
+                            String? idType2 = notiList[index].idType2!;
+                            int? idValue = notiList[index].idValue!;
+                            int? idValue2 = notiList[index].idValue2!;
+                            bool? isRead = notiList[index].isRead;
+                            return GestureDetector(
+                              onTap: () async {
+                                if (isRead == false) {
+                                  var url = Uri.http(baseUri, '/notification/check/${notiList[index].id}');
+                                  var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                  if (response.statusCode == 200) {
+                                    print('알림 읽음');
+                                  } else {
+                                    print(utf8.decode(response.bodyBytes));
+                                  }
                                 }
-                              }
-                              setState(() {
-                                notiListFuture = getAllNotification();
-                                routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all(width: 1), color: (isRead == true) ? Colors.grey.shade300 : null),
-                              child: Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  const Icon(
-                                    Icons.message,
-                                    size: 45,
-                                  ),
-                                  const SizedBox(
-                                    width: 50,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text('${notiList[index].title}'),
-                                        Text('${notiList[index].body}'),
-                                        Text('${notiList[index].receiveTime}'),
-                                      ],
+                                setState(() {
+                                  notiListFuture = getAllNotification();
+                                  routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                decoration: BoxDecoration(
+                                  color: (isRead == true) ? Colors.blueGrey.withAlpha(30) : null,
+                                ),
+                                child: Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 10,
                                     ),
-                                  )
-                                ],
+                                    const Icon(
+                                      Icons.messenger_outline,
+                                      size: 30,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '${notiList[index].title}',
+                                            style: const TextStyle(fontWeight: FontWeight.w600),
+                                          ),
+                                          Text('${notiList[index].body}'),
+                                          Text('${notiList[index].receiveTime}'),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        });
+                            );
+                          }),
+                    );
                   } else {
                     return const Text('알림이 없습니다');
                   }
@@ -108,7 +119,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               },
             ),
           ),
-        ),
+        ],
       ),
     );
   }
