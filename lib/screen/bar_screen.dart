@@ -121,9 +121,10 @@ class _BarScreenState extends ConsumerState<BarScreen> {
       ),
       body: bodyWidgets.elementAt(selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+          elevation: 100,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.black,
-          // unselectedItemColor: Colors.grey,
+          selectedItemColor: Colors.blueAccent,
+          unselectedItemColor: Colors.blueGrey,
           backgroundColor: Colors.white,
           currentIndex: selectedIndex,
           onTap: (int index) {

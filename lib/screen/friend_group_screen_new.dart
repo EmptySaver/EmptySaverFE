@@ -92,7 +92,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   }
 
   friendView1() {
-    return Flexible(
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -113,15 +114,16 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             },
             child: Container(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-              child: const Row(children: [
+              child: Row(children: [
                 Icon(
-                  Icons.call_received,
-                  color: Color.fromARGB(108, 67, 182, 99),
+                  Icons.list_alt_rounded,
+                  // color: Color.fromARGB(108, 67, 182, 99),
+                  color: Colors.blueAccent.shade100,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
-                Text("친구 초대 관리"),
+                const Text("친구 초대 관리"),
               ]),
             ),
           ),
@@ -160,16 +162,17 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             },
             child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 40, 0),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(
-                      Icons.add_to_home_screen,
-                      color: Color.fromARGB(108, 67, 182, 99),
+                      Icons.person_add_alt_outlined,
+                      // color: Color.fromARGB(108, 67, 182, 99),
+                      color: Colors.blueAccent.shade100,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Text("친구 추가")
+                    const Text("친구 추가")
                   ],
                 )),
           ),
@@ -223,81 +226,84 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             ));
       },
       child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ]),
-          child: Column(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.blueGrey.shade100,
+                width: 1.5,
+              )
+              // boxShadow: const [
+              // BoxShadow(
+              //   color: Colors.blueGrey,
+              //   spreadRadius: 0,
+              //   blurRadius: 2,
+              //   offset: Offset(0, 1),
+              // ),
+              // ],
+              ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(children: [
-                      SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            // child: Image.asset(job.companyLogo),
-                            child: const Icon(Icons.person_4),
-                          )),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(friend.friendName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                        ]),
+              Expanded(
+                child: Row(children: [
+                  SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        // child: Image.asset(job.companyLogo),
+                        child: const Icon(Icons.person_4),
+                      )),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(friend.friendName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                        ],
                       ),
-                      const SizedBox(width: 10),
-                      IconButton(
-                          onPressed: () {
-                            AwesomeDialog(
-                              context: context,
-                              dialogType: DialogType.info,
-                              title: "친구 정보",
-                              desc: " 이름 : ${friend.friendName}\n Email: ${friend.friendEmail}",
-                              btnOkOnPress: () {},
-                            ).show();
-                          },
-                          icon: const Icon(Icons.info)),
-                      IconButton(
-                          onPressed: () {
-                            AwesomeDialog(
-                                    context: context,
-                                    dialogType: DialogType.warning,
-                                    title: "친구 삭제",
-                                    desc: "정말 ${friend.friendName}님과 친구를 끊으시겠습니까?",
-                                    btnOkOnPress: () async {
-                                      var url = Uri.http(baseUri, '/friend/delete/${friend.friendId}');
-                                      var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                      if (response.statusCode == 200) {
-                                        Fluttertoast.showToast(msg: '삭제되었습니다');
-                                        setState(() {
-                                          friendListFuture = getFriendList();
-                                        });
-                                      }
-                                    },
-                                    btnCancelOnPress: () {})
-                                .show();
-                          },
-                          icon: const Icon(Icons.delete))
+                      const SizedBox(
+                        height: 5,
+                      ),
                     ]),
                   ),
-                ],
+                  const SizedBox(width: 10),
+                  IconButton(
+                      onPressed: () {
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.info,
+                          title: "친구 정보",
+                          desc: " 이름 : ${friend.friendName}\n Email: ${friend.friendEmail}",
+                          btnOkOnPress: () {},
+                        ).show();
+                      },
+                      icon: const Icon(Icons.info)),
+                  IconButton(
+                      onPressed: () {
+                        AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.warning,
+                                title: "친구 삭제",
+                                desc: "정말 ${friend.friendName}님과 친구를 끊으시겠습니까?",
+                                btnOkOnPress: () async {
+                                  var url = Uri.http(baseUri, '/friend/delete/${friend.friendId}');
+                                  var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                  if (response.statusCode == 200) {
+                                    Fluttertoast.showToast(msg: '삭제되었습니다');
+                                    setState(() {
+                                      friendListFuture = getFriendList();
+                                    });
+                                  }
+                                },
+                                btnCancelOnPress: () {})
+                            .show();
+                      },
+                      icon: const Icon(Icons.delete))
+                ]),
               ),
             ],
           )),
@@ -321,16 +327,17 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               },
               child: Container(
                   padding: const EdgeInsets.fromLTRB(10, 10, 20, 0),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Icon(
-                        Icons.call_received,
-                        color: Color.fromARGB(108, 84, 67, 182),
+                        Icons.list_alt_rounded,
+                        // color: Color.fromARGB(108, 84, 67, 182),
+                        color: Colors.blueAccent.shade100,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
-                      Text('그룹 초대 관리')
+                      const Text('그룹 초대 관리')
                     ],
                   )),
             ),
@@ -344,16 +351,17 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               },
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 30, 0),
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(
-                      Icons.add_circle_sharp,
-                      color: Color.fromARGB(108, 84, 67, 182),
+                      Icons.group_add_outlined,
+                      // color: Color.fromARGB(108, 84, 67, 182),
+                      color: Colors.blueAccent.shade100,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Text("그룹 만들기")
+                    const Text("그룹 만들기")
                   ],
                 ),
               ),
@@ -365,8 +373,8 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   groupView2() {
     return Expanded(
       child: Container(
-        // padding: const EdgeInsets.all(8.0),
-        margin: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(8.0),
+        // margin: const EdgeInsets.all(20),
         // decoration: BoxDecoration(
         //     color: Colors.white,
         //     borderRadius: BorderRadius.all(Radius.circular(30))),
@@ -377,7 +385,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
               if (snapshot.data!.isNotEmpty) {
                 print("data is present");
                 return ListView.builder(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(8),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return groupComponent(group: snapshot.data![index]);
@@ -414,16 +422,23 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
           });
         },
         child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(15),
             margin: const EdgeInsets.only(bottom: 15),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 0,
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              ),
-            ]),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.blueGrey.shade200,
+                  width: 1.5,
+                )
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.grey.withOpacity(0.2),
+                //     spreadRadius: 0,
+                //     blurRadius: 2,
+                //     offset: const Offset(0, 1),
+                //   ),
+                // ],
+                ),
             child: Column(
               children: [
                 Row(
@@ -470,7 +485,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.grey.shade200),
                             child: Text(
                               group.categoryName!,
                               style: const TextStyle(color: Colors.black),
@@ -481,7 +496,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.grey.shade200),
                             child: Text(
                               group.categoryLabel!,
                               style: const TextStyle(color: Colors.black),
@@ -517,19 +532,20 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   });
                 },
                 child: Container(
-                  height: 80,
+                  height: 60,
                   // width: 200,
                   decoration: BoxDecoration(
-                      color: widget.isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
+                      // color: widget.isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
+                      border: Border.all(color: widget.isGroup ? Colors.blueAccent : Colors.blueGrey.shade200),
                       borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           "그룹",
-                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: widget.isGroup ? Colors.blueAccent : Colors.blueGrey.shade200, fontSize: 30, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
@@ -544,19 +560,20 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                   });
                 },
                 child: Container(
-                  height: 80,
+                  height: 60,
                   // width: 200,
                   decoration: BoxDecoration(
-                      color: widget.isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                      // color: widget.isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                      border: Border.all(color: widget.isGroup ? Colors.blueGrey.shade200 : Colors.blueAccent),
                       borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           "친구",
-                          style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: widget.isGroup ? Colors.blueGrey.shade200 : Colors.blueAccent, fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -566,6 +583,12 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             ],
           ),
           widget.isGroup ? groupView1() : friendView1(),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(
+            thickness: 1,
+          ),
           widget.isGroup ? groupView2() : friendView2(),
         ],
       ),

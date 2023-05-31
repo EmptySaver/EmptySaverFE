@@ -290,9 +290,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setEnabledSystemUIMode(
-    //   SystemUiMode.leanBack,
-    // );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
     return GetMaterialApp(
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -328,7 +326,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           toolbarHeight: 40,
           centerTitle: true,
           backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          foregroundColor: Colors.blueGrey,
           elevation: 0,
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
@@ -338,7 +336,10 @@ class _MyAppState extends ConsumerState<MyApp> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           ),
         ),
-        textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Colors.black)),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: Colors.black),
+        ),
+        dividerTheme: DividerThemeData(color: Colors.blueGrey.shade100),
       ),
     );
   }
