@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:emptysaver_fe/element/controller.dart';
-import 'package:emptysaver_fe/screen/member_interest_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:emptysaver_fe/screen/find_password_screen.dart';
@@ -9,9 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'bar_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:emptysaver_fe/core/assets.dart';
-import 'package:emptysaver_fe/widgets/network_image.dart';
 
 class NewLoginScreen extends ConsumerStatefulWidget {
   String? firebaseToken;
@@ -121,35 +117,40 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
   }
 
   Widget _buildPageContent(BuildContext context) {
-    return Container(
-      color: Colors.blue.shade100,
-      child: ListView(
-        children: <Widget>[
-          const SizedBox(
-            height: 60.0,
-          ),
-          const Image(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Container(
+        // color: Colors.blue.shade100,
+        child: ListView(
+          children: <Widget>[
+            const SizedBox(
+              height: 60.0,
+            ),
+            const Image(
               image: AssetImage('assets/logoVer2.png'),
               width: 250,
-              height: 150),
-          _buildLoginForm(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => SignupScreen(
-                                firebaseToken: widget.firebaseToken,
-                              )));
-                },
-                child: const Text("Sign Up", style: TextStyle(color: Colors.blue, fontSize: 18.0)),
-              ),
-            ],
-          )
-        ],
+              height: 150,
+              color: Colors.blueAccent,
+            ),
+            _buildLoginForm(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => SignupScreen(
+                                  firebaseToken: widget.firebaseToken,
+                                )));
+                  },
+                  child: const Text("Sign Up", style: TextStyle(color: Colors.blue, fontSize: 18.0)),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -165,10 +166,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           Container(
             //height: 400,
             padding: const EdgeInsets.all(10.0),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(40.0)),
-              color: Colors.white,
-            ),
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(20.0)), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -262,13 +260,9 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
             height: 420,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
-                  backgroundColor: Colors.blue,
-                ),
+              child: OutlinedButton(
                 onPressed: postLogin,
-                child: const Text("Login", style: TextStyle(color: Colors.white70)),
+                child: const Text("Login"),
               ),
             ),
           )
