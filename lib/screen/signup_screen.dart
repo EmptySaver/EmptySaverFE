@@ -171,13 +171,12 @@ class _SignupScreenState extends State<SignupScreen> {
           const SizedBox(
             height: 30.0,
           ),
-          const CircleAvatar(
-            maxRadius: 50,
-            backgroundColor: Colors.transparent,
-            child: PNetworkImage(origami),
-          ),
+          const Image(
+              image: AssetImage('assets/logoVer2.png'),
+              width: 250,
+              height: 150),
           const SizedBox(
-            height: 20.0,
+            height: 10.0,
           ),
           _buildSingUpForm(),
           // Row(
@@ -203,10 +202,8 @@ class _SignupScreenState extends State<SignupScreen> {
       padding: const EdgeInsets.all(20.0),
       child: Stack(
         children: <Widget>[
-          ClipPath(
-            clipper: RoundedDiagonalPathClipper(),
-            child: Container(
-              height: 750,
+          Container(
+              height: 600,
               padding: const EdgeInsets.all(10.0),
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(40.0)),
@@ -216,7 +213,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(
-                    height: 90.0,
+                    height: 10.0,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -225,7 +222,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           AbsorbPointer(
                               absorbing: isauthed,
                               child: SizedBox(
-                                width: 240,
+                                width: 200,
                                 child: TextField(
                                   controller: addrTec,
                                   style: const TextStyle(color: Colors.blue),
@@ -242,7 +239,10 @@ class _SignupScreenState extends State<SignupScreen> {
                               )),
                           OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.all(8),
+
+                              side: const BorderSide(color: Colors.blue,width: 1.5),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30)),
                             ),
                             onPressed: isauthed
                                 ? null
@@ -254,7 +254,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             child: Text(
                               isauthed ? '인증완료' : '이메일 인증',
                               style: const TextStyle(
-                                  color: Colors.cyan, fontSize: 10),
+                                //fontFamily: 'NimbusSanL',
+                                fontSize: 12,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
@@ -430,22 +434,24 @@ class _SignupScreenState extends State<SignupScreen> {
                 ],
               ),
             ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircleAvatar(
-                radius: 40.0,
-                backgroundColor: Colors.blue.shade600,
-                child: const Icon(
-                  Icons.menu_book_sharp,
-                  size: 30,
+              Transform.translate(
+                offset: const Offset(0.0, -30),
+                child: CircleAvatar(
+                  radius: 40.0,
+                  backgroundColor: Colors.blue.shade600,
+                  child: const Icon(
+                    Icons.menu_book_sharp,
+                    size: 30,
+                  ),
                 ),
-              ),
+              )
             ],
           ),
           SizedBox(
-            height: 770,
+            height: 670,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(

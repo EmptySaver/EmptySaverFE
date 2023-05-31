@@ -128,7 +128,10 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           const SizedBox(
             height: 60.0,
           ),
-          const Image(image: AssetImage('assets/logoVer2.png'), width: 250, height: 150),
+          const Image(
+              image: AssetImage('assets/logoVer2.png'),
+              width: 250,
+              height: 150),
           _buildLoginForm(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
