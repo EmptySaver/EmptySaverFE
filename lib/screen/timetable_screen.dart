@@ -187,7 +187,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               options: CarouselOptions(
                 enableInfiniteScroll: true,
                 initialPage: 0,
-                height: 700,
+                height: double.infinity,
                 viewportFraction: 1,
                 // onScrolled: (value) {
                 //   print(value);

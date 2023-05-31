@@ -290,9 +290,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.leanBack,
-    );
+    // SystemChrome.setEnabledSystemUIMode(
+    //   SystemUiMode.leanBack,
+    // );
     return GetMaterialApp(
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -318,6 +318,13 @@ class _MyAppState extends ConsumerState<MyApp> {
         // scaffoldBackgroundColor: const Color(0xfff0f0f0),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.white,
+              statusBarBrightness: Brightness.light,
+              statusBarIconBrightness: Brightness.dark,
+              systemNavigationBarColor: Colors.white,
+              systemNavigationBarIconBrightness: Brightness.dark,
+              systemNavigationBarDividerColor: Colors.black12),
           toolbarHeight: 40,
           centerTitle: true,
           backgroundColor: Colors.white,
