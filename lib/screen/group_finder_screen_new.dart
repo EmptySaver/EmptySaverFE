@@ -31,8 +31,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   getAllGroup() async {
     var url = Uri.http(baseUri, '/group/getAllGroup');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       print("raw: $rawData");
@@ -47,11 +46,9 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
 
   Future<List<Map<String, dynamic>>> getAllCategory() async {
     var url = Uri.http(baseUri, '/category/getCategoryList');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
-      var parsedJson =
-          jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
+      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
       var data = parsedJson.map((e) => e as Map<String, dynamic>).toList();
       print(data);
       return data;
@@ -74,9 +71,9 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   }
 
   List<DropdownMenuItem<String>> _addDividersAfterItems(List<String> items) {
-    List<DropdownMenuItem<String>> _menuItems = [];
+    List<DropdownMenuItem<String>> menuItems = [];
     for (var item in items) {
-      _menuItems.addAll(
+      menuItems.addAll(
         [
           DropdownMenuItem<String>(
             value: item,
@@ -110,7 +107,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
         ],
       );
     }
-    return _menuItems;
+    return menuItems;
   }
 
   @override
@@ -151,15 +148,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                         cursorColor: Colors.grey,
                         controller: searchTec,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 0),
-                          prefixIcon:
-                              const Icon(Icons.search, color: Colors.lightBlue),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                          prefixIcon: const Icon(Icons.search, color: Colors.lightBlue),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50),
-                            borderSide: BorderSide(
-                                color: const Color.fromARGB(255, 196, 195, 195),
-                                width: 1.5),
+                            borderSide: const BorderSide(color: Color.fromARGB(255, 196, 195, 195), width: 1.5),
                           ),
                           hintText: "검색할 그룹 이름을 입력해주세요",
                           hintStyle: const TextStyle(fontSize: 14),
@@ -170,9 +163,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                             print("Keyword :$value");
                             List<Group> tmpList = [];
                             tmpList.addAll(initialGroupData);
-                            tmpList.retainWhere((element) => value.isEmpty
-                                ? true
-                                : element.groupName!.contains(value));
+                            tmpList.retainWhere((element) => value.isEmpty ? true : element.groupName!.contains(value));
                             groupData = tmpList;
                             isSearch = false;
                             isCategorySelected = false;
@@ -186,7 +177,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Container(
@@ -200,16 +191,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                     future: allCategoryFuture,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        var items = [
-                          '전체',
-                          for (int i = 0; i < snapshot.data!.length; i++)
-                            snapshot.data![i]['name']
-                        ];
-                        var types = [
-                          '전체',
-                          for (int i = 0; i < snapshot.data!.length; i++)
-                            snapshot.data![i]['type']
-                        ];
+                        var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['name']];
+                        var types = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['type']];
                         return DropdownButtonHideUnderline(
                           child: DropdownButton2(
                             isExpanded: true,
@@ -237,24 +220,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 )),
                               ],
                             ),
-                            items: _addDividersAfterItems(
-                                items.map((e) => e as String).toList()),
+                            items: _addDividersAfterItems(items.map((e) => e as String).toList()),
                             value: initialCategory,
                             onChanged: (value) async {
                               var query = items.indexOf(value);
                               var url, response;
                               if (!(value == '전체')) {
-                                url = Uri.http(baseUri,
-                                    '/group/getCategoryTeam/${types[query]}');
-                                response = await http.get(url, headers: {
-                                  'authorization': 'Bearer $jwtToken'
-                                });
+                                url = Uri.http(baseUri, '/group/getCategoryTeam/${types[query]}');
+                                response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                                 if (response.statusCode == 200) {
-                                  var rawData = jsonDecode(
-                                      utf8.decode(response.bodyBytes)) as List;
-                                  var data = rawData
-                                      .map((e) => Group.fromJson(e))
-                                      .toList();
+                                  var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                                  var data = rawData.map((e) => Group.fromJson(e)).toList();
                                   setState(() {
                                     groupData = data;
                                   });
@@ -270,25 +246,16 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 });
                               }
                               var tags = [];
-                              tags.isEmpty
-                                  ? initialTag = null
-                                  : initialTag =
-                                      tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
-                              url = Uri.http(baseUri,
-                                  '/category/getLabels/${types[query]}');
-                              response = await http.get(url, headers: {
-                                'authorization': 'Bearer $jwtToken'
-                              });
+                              tags.isEmpty ? initialTag = null : initialTag = tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
+                              url = Uri.http(baseUri, '/category/getLabels/${types[query]}');
+                              response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                               if (response.statusCode == 200) {
-                                categoryForTagApi = jsonDecode(
-                                    utf8.decode(response.bodyBytes))['type'];
-                                tags =
-                                    jsonDecode(utf8.decode(response.bodyBytes))[
-                                        'result'] as List;
+                                categoryForTagApi = jsonDecode(utf8.decode(response.bodyBytes))['type'];
+                                tags = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
                                 allTagFuture = Future(() => tags);
                                 // print(allTagFuture);
                                 setState(() {
-                                  print("val : ${value}");
+                                  print("val : $value");
                                   initialCategory = value!.toString();
                                   // initialTag = tags[0];
                                   isCategorySelected = true;
@@ -301,9 +268,8 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               padding: const EdgeInsets.only(left: 8, right: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(14),
-                                border:
-                                    Border.all(color: Colors.blue, width: 1.5),
-                                color: Color.fromARGB(255, 255, 255, 255),
+                                border: Border.all(color: Colors.blue, width: 1.5),
+                                color: const Color.fromARGB(255, 255, 255, 255),
                               ),
                               elevation: 2,
                             ),
@@ -321,22 +287,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 padding: null,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                 ),
                                 elevation: 8,
-                                offset: const Offset(-20, 0),
+                                offset: const Offset(0, 0),
                                 scrollbarTheme: ScrollbarThemeData(
                                   radius: const Radius.circular(40),
                                   thickness: MaterialStateProperty.all(6),
-                                  thumbVisibility:
-                                      MaterialStateProperty.all(true),
+                                  thumbVisibility: MaterialStateProperty.all(true),
                                 )),
-                            menuItemStyleData: const MenuItemStyleData(
-                                height: 20,
-                                padding: EdgeInsets.only(left: 14, right: 14),
-                                overlayColor: MaterialStatePropertyAll(
-                                    Color.fromARGB(255, 178, 225, 247))),
+                            menuItemStyleData:
+                                const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
                           ),
                         );
                       } else {
@@ -367,25 +328,20 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                               ),
                             ));
                             itemList.addAll(snapshot.data!
-                                .map<DropdownMenuItem<String>>(
-                                    (e) => DropdownMenuItem(
-                                          value: e,
-                                          child: Text(
-                                            e,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blueAccent,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ))
+                                .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(
+                                        e,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ))
                                 .toList());
-                            var items = [
-                              '전체',
-                              for (int i = 0; i < snapshot.data!.length; i++)
-                                snapshot.data![i]
-                            ];
+                            var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]];
 
                             return DropdownButtonHideUnderline(
                               child: DropdownButton2(
@@ -399,36 +355,24 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 45, 115, 235),
+                                          color: Color.fromARGB(255, 45, 115, 235),
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     )),
                                   ],
                                 ),
-                                items: _addDividersAfterItems(
-                                    items.map((e) => e as String).toList()),
+                                items: _addDividersAfterItems(items.map((e) => e as String).toList()),
                                 value: initialTag,
                                 onChanged: (value) async {
                                   initialTag = value!;
                                   print(categoryForTagApi);
                                   print(value);
-                                  var url = Uri.http(
-                                      baseUri, '/group/getLabelTeam', {
-                                    'categoryName': categoryForTagApi,
-                                    'label': utf8.decode(utf8.encode(value))
-                                  });
-                                  var response = await http.get(url, headers: {
-                                    'authorization': 'Bearer $jwtToken'
-                                  });
+                                  var url = Uri.http(baseUri, '/group/getLabelTeam', {'categoryName': categoryForTagApi, 'label': utf8.decode(utf8.encode(value))});
+                                  var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
                                   if (response.statusCode == 200) {
-                                    var rawData = jsonDecode(
-                                            utf8.decode(response.bodyBytes))
-                                        as List;
-                                    var data = rawData
-                                        .map((e) => Group.fromJson(e))
-                                        .toList();
+                                    var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                                    var data = rawData.map((e) => Group.fromJson(e)).toList();
                                     setState(() {
                                       groupData = data;
                                       initialTag = value;
@@ -440,13 +384,11 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                 buttonStyleData: ButtonStyleData(
                                   height: 30,
                                   width: 100,
-                                  padding:
-                                      const EdgeInsets.only(left: 8, right: 8),
+                                  padding: const EdgeInsets.only(left: 8, right: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                        color: Colors.blue, width: 1.5),
-                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    border: Border.all(color: Colors.blue, width: 1.5),
+                                    color: const Color.fromARGB(255, 255, 255, 255),
                                   ),
                                   elevation: 2,
                                 ),
@@ -464,23 +406,17 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                                     padding: null,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
+                                      color: const Color.fromARGB(255, 255, 255, 255),
                                     ),
                                     elevation: 8,
                                     offset: const Offset(-20, 0),
                                     scrollbarTheme: ScrollbarThemeData(
                                       radius: const Radius.circular(40),
                                       thickness: MaterialStateProperty.all(6),
-                                      thumbVisibility:
-                                          MaterialStateProperty.all(true),
+                                      thumbVisibility: MaterialStateProperty.all(true),
                                     )),
-                                menuItemStyleData: const MenuItemStyleData(
-                                    height: 20,
-                                    padding:
-                                        EdgeInsets.only(left: 14, right: 14),
-                                    overlayColor: MaterialStatePropertyAll(
-                                        Color.fromARGB(255, 178, 225, 247))),
+                                menuItemStyleData:
+                                    const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
                               ),
                             );
                           } else {
@@ -492,10 +428,10 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Divider(
+          const Divider(
             color: Colors.blue,
             thickness: 0.8,
           ),
@@ -531,44 +467,34 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
       // margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: const Color.fromARGB(255, 255, 255, 255),
       ),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade200),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                       child: Text(
                         job.categoryName!,
-                        style: const TextStyle(
-                            color: Color.fromARGB(255, 108, 108, 108),
-                            fontSize: 12),
+                        style: const TextStyle(color: Color.fromARGB(255, 108, 108, 108), fontSize: 12),
                       ),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade200),
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey.shade200),
                       child: Text(
                         job.categoryLabel!,
-                        style: const TextStyle(
-                            color: Color.fromARGB(255, 98, 98, 98),
-                            fontSize: 12),
+                        style: const TextStyle(color: Color.fromARGB(255, 98, 98, 98), fontSize: 12),
                       ),
                     ),
                     const SizedBox(
@@ -595,26 +521,19 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                       )),
                   const SizedBox(width: 10),
                   Flexible(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(job.groupName!,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500)),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(job.oneLineInfo!,
-                              style: TextStyle(color: Colors.grey[500])),
-                        ]),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(job.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(job.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
+                    ]),
                   )
                 ]),
               ),
             ],
           ),
-          Divider(
+          const Divider(
             color: Colors.blue,
             thickness: 0.8,
           )
