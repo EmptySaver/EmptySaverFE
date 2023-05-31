@@ -257,7 +257,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     height: 10,
                   ),
                   Container(
-                    height: 150,
+                    height: 200,
                     width: 350,
                     decoration: BoxDecoration(border: Border.all()),
                     child: FutureBuilder(
@@ -316,7 +316,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                     );
                                   },
                                   child: Container(
-                                    height: 60,
+                                    height: 70,
                                     decoration: BoxDecoration(
                                       border: Border.all(),
                                       color: (snapshot.data![index].read!) ? Colors.grey.shade300 : null,

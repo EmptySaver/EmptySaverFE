@@ -231,7 +231,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.blueGrey.shade100,
+                color: Colors.blueAccent,
                 width: 1.5,
               )
               // boxShadow: const [
@@ -427,7 +427,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.blueGrey.shade200,
+                  color: Colors.blueAccent,
                   width: 1.5,
                 )
                 // boxShadow: [

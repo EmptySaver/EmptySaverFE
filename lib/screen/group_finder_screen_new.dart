@@ -113,354 +113,350 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-
-      child: Scaffold(
-        // backgroundColor: const Color.fromARGB(255, 179, 186, 224),
-        body: Container(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 50,
             child: Column(
               children: [
-                SizedBox(
-                  height: 50,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                              padding: const EdgeInsets.only(left: 20),
-                              onPressed: () {
-                                isSearch = !isSearch;
-                                setState(() {
-                                  if (isSearch) {
-                                    searchTec.text = "";
-                                  }
-    
-                                  isCategorySelected = false;
-                                  groupData = initialGroupData;
-                                });
-                              },
-                              icon: const Icon(
-                                Icons.filter_list,
-                                color: Color.fromARGB(255, 25, 162, 230),
-                              )),
-                          Container(
-                            height: 45,
-                            width: 300,
-                            margin: const EdgeInsets.only(left: 20),
-                            child: TextField(
-                              cursorColor: Colors.grey,
-                              controller: searchTec,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                                prefixIcon: const Icon(Icons.search, color: Colors.lightBlue),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                  borderSide: const BorderSide(color: Color.fromARGB(255, 196, 195, 195), width: 1.5),
-                                ),
-                                // hintText: "검색할 그룹 이름을 입력해주세요",
-                                hintStyle: const TextStyle(fontSize: 14),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  print("Empty? :${value.isEmpty}");
-                                  print("Keyword :$value");
-                                  List<Group> tmpList = [];
-                                  tmpList.addAll(initialGroupData);
-                                  tmpList.retainWhere((element) => value.isEmpty ? true : element.groupName!.contains(value));
-                                  groupData = tmpList;
-                                  isSearch = false;
-                                  isCategorySelected = false;
-                                  initialTag = initialCategory = null;
-                                });
-                              },
-                            ),
+                Row(
+                  children: [
+                    IconButton(
+                        padding: const EdgeInsets.only(left: 20),
+                        onPressed: () {
+                          isSearch = !isSearch;
+                          setState(() {
+                            if (isSearch) {
+                              searchTec.text = "";
+                            }
+
+                            isCategorySelected = false;
+                            groupData = initialGroupData;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.filter_list,
+                          color: Color.fromARGB(255, 25, 162, 230),
+                        )),
+                    Container(
+                      height: 45,
+                      width: 300,
+                      margin: const EdgeInsets.only(left: 20),
+                      child: TextField(
+                        cursorColor: Colors.grey,
+                        controller: searchTec,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                          prefixIcon: const Icon(Icons.search, color: Colors.lightBlue),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: const BorderSide(color: Colors.blueAccent, width: 1.5),
                           ),
-                        ],
+                          hintText: "그룹 검색",
+                          hintStyle: const TextStyle(fontSize: 14),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            print("Empty? :${value.isEmpty}");
+                            print("Keyword :$value");
+                            List<Group> tmpList = [];
+                            tmpList.addAll(initialGroupData);
+                            tmpList.retainWhere((element) => value.isEmpty ? true : element.groupName!.contains(value));
+                            groupData = tmpList;
+                            isSearch = false;
+                            isCategorySelected = false;
+                            initialTag = initialCategory = null;
+                          });
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Row(
-                    children: [
-                      Visibility(
-                        visible: isSearch,
-                        child: Container(
-                            child: FutureBuilder(
-                          future: allCategoryFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['name']];
-                              var types = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['type']];
-                              return DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  isExpanded: true,
-                                  hint: const Row(
-                                    children: [
-                                      // Icon(
-                                      //   Icons.list,
-                                      //   size: 16,
-                                      //   color: Colors.blue,
-                                      // ),
-                                      // SizedBox(
-                                      //   width: 4,
-                                      // ),
-                                      Expanded(
-                                          child: Center(
-                                        child: Text(
-                                          '카테고리',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(255, 45, 115, 235),
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      )),
-                                    ],
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              children: [
+                Visibility(
+                  visible: isSearch,
+                  child: Container(
+                      child: FutureBuilder(
+                    future: allCategoryFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['name']];
+                        var types = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]['type']];
+                        return DropdownButtonHideUnderline(
+                          child: DropdownButton2(
+                            isExpanded: true,
+                            hint: const Row(
+                              children: [
+                                // Icon(
+                                //   Icons.list,
+                                //   size: 16,
+                                //   color: Colors.blue,
+                                // ),
+                                // SizedBox(
+                                //   width: 4,
+                                // ),
+                                Expanded(
+                                    child: Center(
+                                  child: Text(
+                                    '카테고리',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 45, 115, 235),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  items: _addDividersAfterItems(items.map((e) => e as String).toList()),
-                                  value: initialCategory,
-                                  onChanged: (value) async {
-                                    var query = items.indexOf(value);
-                                    var url, response;
-                                    if (!(value == '전체')) {
-                                      url = Uri.http(baseUri, '/group/getCategoryTeam/${types[query]}');
-                                      response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                      if (response.statusCode == 200) {
-                                        var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-                                        var data = rawData.map((e) => Group.fromJson(e)).toList();
-                                        setState(() {
-                                          groupData = data;
-                                        });
-                                      } else {
-                                        print(utf8.decode(response.bodyBytes));
-                                        throw Exception('failed to get groupData');
-                                      }
-                                    } else {
-                                      setState(() {
-                                        initialCategory = "전체";
-                                        groupData = initialGroupData;
-                                        isCategorySelected = false;
-                                      });
-                                    }
-                                    var tags = [];
-                                    tags.isEmpty ? initialTag = null : initialTag = tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
-                                    url = Uri.http(baseUri, '/category/getLabels/${types[query]}');
-                                    response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                    if (response.statusCode == 200) {
-                                      categoryForTagApi = jsonDecode(utf8.decode(response.bodyBytes))['type'];
-                                      tags = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
-                                      allTagFuture = Future(() => tags);
-                                      // print(allTagFuture);
-                                      setState(() {
-                                        print("val : $value");
-                                        initialCategory = value!.toString();
-                                        // initialTag = tags[0];
-                                        isCategorySelected = true;
-                                      });
-                                    }
-                                  },
-                                  buttonStyleData: ButtonStyleData(
-                                    height: 30,
+                                )),
+                              ],
+                            ),
+                            items: _addDividersAfterItems(items.map((e) => e as String).toList()),
+                            value: initialCategory,
+                            onChanged: (value) async {
+                              var query = items.indexOf(value);
+                              var url, response;
+                              if (!(value == '전체')) {
+                                url = Uri.http(baseUri, '/group/getCategoryTeam/${types[query]}');
+                                response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                if (response.statusCode == 200) {
+                                  var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                                  var data = rawData.map((e) => Group.fromJson(e)).toList();
+                                  setState(() {
+                                    groupData = data;
+                                  });
+                                } else {
+                                  print(utf8.decode(response.bodyBytes));
+                                  throw Exception('failed to get groupData');
+                                }
+                              } else {
+                                setState(() {
+                                  initialCategory = "전체";
+                                  groupData = initialGroupData;
+                                  isCategorySelected = false;
+                                });
+                              }
+                              var tags = [];
+                              tags.isEmpty ? initialTag = null : initialTag = tags[0]; // 수정하긴 했는데.. 더 깊게 공부해야 할듯
+                              url = Uri.http(baseUri, '/category/getLabels/${types[query]}');
+                              response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                              if (response.statusCode == 200) {
+                                categoryForTagApi = jsonDecode(utf8.decode(response.bodyBytes))['type'];
+                                tags = jsonDecode(utf8.decode(response.bodyBytes))['result'] as List;
+                                allTagFuture = Future(() => tags);
+                                // print(allTagFuture);
+                                setState(() {
+                                  print("val : $value");
+                                  initialCategory = value!.toString();
+                                  // initialTag = tags[0];
+                                  isCategorySelected = true;
+                                });
+                              }
+                            },
+                            buttonStyleData: ButtonStyleData(
+                              height: 30,
+                              width: 100,
+                              padding: const EdgeInsets.only(left: 8, right: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.blue, width: 1.5),
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                              ),
+                              elevation: 2,
+                            ),
+                            iconStyleData: const IconStyleData(
+                              icon: Icon(
+                                Icons.arrow_forward_ios_outlined,
+                              ),
+                              iconSize: 14,
+                              iconEnabledColor: Colors.blue,
+                              iconDisabledColor: Colors.grey,
+                            ),
+                            dropdownStyleData: DropdownStyleData(
+                                maxHeight: 200,
+                                width: 100,
+                                padding: null,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                elevation: 8,
+                                offset: const Offset(0, 0),
+                                scrollbarTheme: ScrollbarThemeData(
+                                  radius: const Radius.circular(40),
+                                  thickness: MaterialStateProperty.all(6),
+                                  thumbVisibility: MaterialStateProperty.all(true),
+                                )),
+                            menuItemStyleData:
+                                const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  )),
+                ),
+                Visibility(
+                  visible: isCategorySelected,
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: FutureBuilder(
+                        future: allTagFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<DropdownMenuItem> itemList = [];
+                            itemList.add(const DropdownMenuItem(
+                              value: "전체",
+                              child: Text(
+                                "전체",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  // fontWeight: FontWeight.bold,
+                                  color: Colors.blueAccent,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ));
+                            itemList.addAll(snapshot.data!
+                                .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(
+                                        e,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ))
+                                .toList());
+                            var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]];
+
+                            return DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                isExpanded: true,
+                                hint: const Row(
+                                  children: [
+                                    Expanded(
+                                        child: Center(
+                                      child: Text(
+                                        '태그',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(255, 45, 115, 235),
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )),
+                                  ],
+                                ),
+                                items: _addDividersAfterItems(items.map((e) => e as String).toList()),
+                                value: initialTag,
+                                onChanged: (value) async {
+                                  initialTag = value!;
+                                  print(categoryForTagApi);
+                                  print(value);
+                                  var url = Uri.http(baseUri, '/group/getLabelTeam', {'categoryName': categoryForTagApi, 'label': utf8.decode(utf8.encode(value))});
+                                  var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                  if (response.statusCode == 200) {
+                                    var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                                    var data = rawData.map((e) => Group.fromJson(e)).toList();
+                                    setState(() {
+                                      groupData = data;
+                                      initialTag = value;
+                                    });
+                                  } else {
+                                    print(utf8.decode(response.bodyBytes));
+                                  }
+                                },
+                                buttonStyleData: ButtonStyleData(
+                                  height: 30,
+                                  width: 100,
+                                  padding: const EdgeInsets.only(left: 8, right: 8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: Colors.blue, width: 1.5),
+                                    color: const Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  elevation: 2,
+                                ),
+                                iconStyleData: const IconStyleData(
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios_outlined,
+                                  ),
+                                  iconSize: 14,
+                                  iconEnabledColor: Colors.blue,
+                                  iconDisabledColor: Colors.grey,
+                                ),
+                                dropdownStyleData: DropdownStyleData(
+                                    maxHeight: 200,
                                     width: 100,
-                                    padding: const EdgeInsets.only(left: 8, right: 8),
+                                    padding: null,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
-                                      border: Border.all(color: Colors.blue, width: 1.5),
                                       color: const Color.fromARGB(255, 255, 255, 255),
                                     ),
-                                    elevation: 2,
-                                  ),
-                                  iconStyleData: const IconStyleData(
-                                    icon: Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                    ),
-                                    iconSize: 14,
-                                    iconEnabledColor: Colors.blue,
-                                    iconDisabledColor: Colors.grey,
-                                  ),
-                                  dropdownStyleData: DropdownStyleData(
-                                      maxHeight: 200,
-                                      width: 100,
-                                      padding: null,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        color: const Color.fromARGB(255, 255, 255, 255),
-                                      ),
-                                      elevation: 8,
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(40),
-                                        thickness: MaterialStateProperty.all(6),
-                                        thumbVisibility: MaterialStateProperty.all(true),
-                                      )),
-                                  menuItemStyleData:
-                                      const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
-                                ),
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          },
-                        )),
-                      ),
-                      Visibility(
-                        visible: isCategorySelected,
-                        child: Container(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: FutureBuilder(
-                              future: allTagFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  List<DropdownMenuItem> itemList = [];
-                                  itemList.add(const DropdownMenuItem(
-                                    value: "전체",
-                                    child: Text(
-                                      "전체",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        // fontWeight: FontWeight.bold,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ));
-                                  itemList.addAll(snapshot.data!
-                                      .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
-                                            value: e,
-                                            child: Text(
-                                              e,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueAccent,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ))
-                                      .toList());
-                                  var items = ['전체', for (int i = 0; i < snapshot.data!.length; i++) snapshot.data![i]];
-    
-                                  return DropdownButtonHideUnderline(
-                                    child: DropdownButton2(
-                                      isExpanded: true,
-                                      hint: const Row(
-                                        children: [
-                                          Expanded(
-                                              child: Center(
-                                            child: Text(
-                                              '태그',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color.fromARGB(255, 45, 115, 235),
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          )),
-                                        ],
-                                      ),
-                                      items: _addDividersAfterItems(items.map((e) => e as String).toList()),
-                                      value: initialTag,
-                                      onChanged: (value) async {
-                                        initialTag = value!;
-                                        print(categoryForTagApi);
-                                        print(value);
-                                        var url = Uri.http(baseUri, '/group/getLabelTeam', {'categoryName': categoryForTagApi, 'label': utf8.decode(utf8.encode(value))});
-                                        var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                        if (response.statusCode == 200) {
-                                          var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-                                          var data = rawData.map((e) => Group.fromJson(e)).toList();
-                                          setState(() {
-                                            groupData = data;
-                                            initialTag = value;
-                                          });
-                                        } else {
-                                          print(utf8.decode(response.bodyBytes));
-                                        }
-                                      },
-                                      buttonStyleData: ButtonStyleData(
-                                        height: 30,
-                                        width: 100,
-                                        padding: const EdgeInsets.only(left: 8, right: 8),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(14),
-                                          border: Border.all(color: Colors.blue, width: 1.5),
-                                          color: const Color.fromARGB(255, 255, 255, 255),
-                                        ),
-                                        elevation: 2,
-                                      ),
-                                      iconStyleData: const IconStyleData(
-                                        icon: Icon(
-                                          Icons.arrow_forward_ios_outlined,
-                                        ),
-                                        iconSize: 14,
-                                        iconEnabledColor: Colors.blue,
-                                        iconDisabledColor: Colors.grey,
-                                      ),
-                                      dropdownStyleData: DropdownStyleData(
-                                          maxHeight: 200,
-                                          width: 100,
-                                          padding: null,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(14),
-                                            color: const Color.fromARGB(255, 255, 255, 255),
-                                          ),
-                                          elevation: 8,
-                                          offset: const Offset(-20, 0),
-                                          scrollbarTheme: ScrollbarThemeData(
-                                            radius: const Radius.circular(40),
-                                            thickness: MaterialStateProperty.all(6),
-                                            thumbVisibility: MaterialStateProperty.all(true),
-                                          )),
-                                      menuItemStyleData:
-                                          const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
-                                    ),
-                                  );
-                                } else {
-                                  return const SizedBox.shrink();
-                                }
-                              },
-                            )),
-                      ),
-                    ],
-                  ),
+                                    elevation: 8,
+                                    offset: const Offset(-20, 0),
+                                    scrollbarTheme: ScrollbarThemeData(
+                                      radius: const Radius.circular(40),
+                                      thickness: MaterialStateProperty.all(6),
+                                      thumbVisibility: MaterialStateProperty.all(true),
+                                    )),
+                                menuItemStyleData:
+                                    const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      )),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Divider(
-                  color: Colors.blueGrey.shade200,
-                  thickness: 0.8,
-                ),
-                Expanded(
-                    child: groupData.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: groupData.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => GroupFinderDetailScreen(
-                                          id: groupData[index].groupId,
-                                        ),
-                                      ));
-                                },
-                                child: jobComponent(job: groupData[index]),
-                              );
-                            })
-                        : const Center(
-                            child: Text("조회된 그룹이 없습니다"),
-                          ))
               ],
-            )),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Divider(
+            color: Colors.blueGrey.shade200,
+            thickness: 0.8,
+          ),
+          Expanded(
+              child: groupData.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: groupData.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => GroupFinderDetailScreen(
+                                    id: groupData[index].groupId,
+                                  ),
+                                ));
+                          },
+                          child: jobComponent(job: groupData[index]),
+                        );
+                      })
+                  : const Center(
+                      child: Text("조회된 그룹이 없습니다"),
+                    ))
+        ],
       ),
     );
   }
@@ -476,7 +472,7 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: const EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -506,7 +502,10 @@ class _GroupFinderScreenState extends ConsumerState<GroupFinderScreen> {
                     ),
                   ],
                 ),
-                Text('${job.nowMember!} / ${job.maxMember!}'),
+                Text(
+                  '${job.nowMember!} / ${job.maxMember!}',
+                  style: const TextStyle(color: Colors.blueAccent),
+                ),
               ],
             ),
           ),

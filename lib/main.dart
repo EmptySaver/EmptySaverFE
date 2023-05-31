@@ -340,9 +340,10 @@ class _MyAppState extends ConsumerState<MyApp> {
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(foregroundColor: Colors.black),
           ),
-          dividerTheme: DividerThemeData(color: Colors.blueGrey.shade100),
+          dividerTheme: DividerThemeData(color: Colors.blueGrey.shade200),
           textTheme: TextTheme(
             bodyMedium: TextStyle(color: Colors.blueGrey.shade900),
+            
           )),
     );
   }
