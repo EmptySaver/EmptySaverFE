@@ -101,7 +101,10 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                 height: 30,
               ),
               Container(
-                decoration: BoxDecoration(border: Border.all(width: 1)),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueGrey.shade200),
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Center(
@@ -109,6 +112,9 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         const Text('추천목록'),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -126,7 +132,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                             ),
                             const Text('관심사 적용'),
                             const SizedBox(
-                              width: 20,
+                              width: 30,
                             ),
                           ],
                         ),
@@ -139,11 +145,24 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                             if (snapshot.hasData) {
                               return ListView.separated(
                                   shrinkWrap: true,
-                                  itemBuilder: (context, index) => Container(
-                                        height: 90,
-                                        decoration: BoxDecoration(border: Border.all(width: 1)),
-                                        child: Column(children: [Text('${snapshot.data![index].name}'), Text('${snapshot.data![index].body}')]),
+                                  itemBuilder: (context, index) {
+                                    var eachCategory = snapshot.data![index].category;
+                                    return Container(
+                                      padding: const EdgeInsets.all(5),
+                                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.blueAccent),
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
+                                      child: Column(children: [
+                                        Text('${snapshot.data![index].name}'),
+                                        Text('${snapshot.data![index].body}'),
+                                        (eachCategory != null) ? Text(eachCategory) : const Text('카테고리 없음'),
+                                        Text('${snapshot.data![index].timeData}'),
+                                      ]),
+                                    );
+                                  },
                                   separatorBuilder: (context, index) => const SizedBox(
                                         height: 5,
                                       ),

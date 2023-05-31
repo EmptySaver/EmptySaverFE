@@ -200,6 +200,7 @@ void routeSwitching(String? routeValue, {String? idType, String? idType2, int? i
           break;
         case 'Schedule':
           print('스케줄아이디 : $idValue');
+          print('그룹id : $idValue2');
           Get.to(() => GroupDetailScreen(
                 // groupId 필요
                 groupId: idValue2,
@@ -313,34 +314,36 @@ class _MyAppState extends ConsumerState<MyApp> {
         '/info': (context) => const InfoScreenNew(),
       },
       theme: ThemeData(
-        // scaffoldBackgroundColor: const Color(0xfff0f0f0),
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.white,
-              statusBarBrightness: Brightness.light,
-              statusBarIconBrightness: Brightness.dark,
-              systemNavigationBarColor: Colors.white,
-              systemNavigationBarIconBrightness: Brightness.dark,
-              systemNavigationBarDividerColor: Colors.black12),
-          toolbarHeight: 40,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.blueGrey,
-          elevation: 0,
-        ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.blueAccent,
-            side: const BorderSide(color: Colors.blue, width: 1.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          // scaffoldBackgroundColor: const Color(0xfff0f0f0),
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.white,
+                statusBarBrightness: Brightness.light,
+                statusBarIconBrightness: Brightness.dark,
+                systemNavigationBarColor: Colors.white,
+                systemNavigationBarIconBrightness: Brightness.dark,
+                systemNavigationBarDividerColor: Colors.black12),
+            toolbarHeight: 40,
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.blueGrey,
+            elevation: 0,
           ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(foregroundColor: Colors.black),
-        ),
-        dividerTheme: DividerThemeData(color: Colors.blueGrey.shade100),
-      ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.blueAccent,
+              side: const BorderSide(color: Colors.blue, width: 1.5),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(foregroundColor: Colors.black),
+          ),
+          dividerTheme: DividerThemeData(color: Colors.blueGrey.shade100),
+          textTheme: TextTheme(
+            bodyMedium: TextStyle(color: Colors.blueGrey.shade900),
+          )),
     );
   }
 }

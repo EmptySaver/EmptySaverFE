@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,8 +25,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
   bool isRequest = false;
   Future<List<Group>> getMemberReceiveList() async {
     var url = Uri.http(baseUri, '/group/getMemberReceiveList');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Group.fromJson(e)).toList();
@@ -40,8 +38,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
 
   Future<List<Group>> getMemberRequestList() async {
     var url = Uri.http(baseUri, '/group/getMemberRequestList');
-    var response =
-        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = rawData.map((e) => Group.fromJson(e)).toList();
@@ -68,9 +65,11 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              return const Text(
-                '받은 요청이 없습니다',
-                textAlign: TextAlign.center,
+              return const Center(
+                child: Text(
+                  '받은 요청이 없습니다',
+                  textAlign: TextAlign.center,
+                ),
               );
             } else {
               return ListView.builder(
@@ -101,19 +100,23 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
             ));
       },
       child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(15),
           margin: const EdgeInsets.only(bottom: 15),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: const Color.fromARGB(255, 255, 255, 255),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 2,
-                  offset: const Offset(0, 1),
-                ),
-              ]),
+              border: Border.all(
+                color: Colors.blueGrey.shade200,
+                width: 1.5,
+              )
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.grey.withOpacity(0.2),
+              //     spreadRadius: 0,
+              //     blurRadius: 2,
+              //     offset: const Offset(0, 1),
+              //   ),
+              // ],
+              ),
           child: Column(
             children: [
               Row(
@@ -131,40 +134,28 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                           )),
                       const SizedBox(width: 10),
                       Flexible(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(group.groupName!,
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500)),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(group.oneLineInfo!,
-                                  style: TextStyle(color: Colors.grey[500])),
-                            ]),
+                              Text(group.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(group.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
+                        ]),
                       ),
                       const SizedBox(width: 10),
                       IconButton(
                           onPressed: () async {
-                            var url = Uri.http(baseUri,
-                                '/group/acceptInvite/${group.groupId}');
-                            var response = await http.put(url,
-                                headers: {'authorization': 'Bearer $jwtToken'});
+                            var url = Uri.http(baseUri, '/group/acceptInvite/${group.groupId}');
+                            var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
                             if (response.statusCode == 200) {
-                              Fluttertoast.showToast(
-                                  msg: '${group.groupName} 그룹에 가입되었습니다');
+                              Fluttertoast.showToast(msg: '${group.groupName} 그룹에 가입되었습니다');
                               setState(() {
-                                memberReceiveListFuture =
-                                    getMemberReceiveList();
+                                memberReceiveListFuture = getMemberReceiveList();
                               });
                             } else {
                               print(utf8.decode(response.bodyBytes));
@@ -172,7 +163,8 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                             }
                           },
                           icon: const Icon(
-                            FontAwesomeIcons.check,
+                            //FontAwesomeIcons.check,
+                            Icons.check,
                             color: Colors.green,
                           )),
                       IconButton(
@@ -180,20 +172,16 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                             AwesomeDialog(
                                     context: context,
                                     title: "요청 거절",
-                                    desc:
-                                        "정말 ${group.groupName}그룹에서 보낸 가입 권유를 거절하시겠습니까?",
+                                    desc: "정말 ${group.groupName}그룹에서 보낸 가입 권유를 거절하시겠습니까?",
                                     btnOkOnPress: () async {
-                                      var url = Uri.http(baseUri,
-                                          '/group/deleteMe/${group.groupId}');
-                                      var response =
-                                          await http.delete(url, headers: {
+                                      var url = Uri.http(baseUri, '/group/deleteMe/${group.groupId}');
+                                      var response = await http.delete(url, headers: {
                                         'authorization': 'Bearer $jwtToken',
                                       });
                                       if (response.statusCode == 200) {
                                         Fluttertoast.showToast(msg: '거절되었습니다');
                                         setState(() {
-                                          memberReceiveListFuture =
-                                              getMemberReceiveList();
+                                          memberReceiveListFuture = getMemberReceiveList();
                                         });
                                       } else {
                                         print(utf8.decode(response.bodyBytes));
@@ -203,7 +191,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                                 .show();
                           },
                           icon: const Icon(
-                            FontAwesomeIcons.x,
+                            Icons.remove,
                             color: Colors.red,
                           ))
                     ]),
@@ -224,7 +212,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
-                return const Text('보낸 요청이 없습니다');
+                return const Center(child: Text('보낸 요청이 없습니다'));
               } else {
                 return ListView.builder(
                     itemBuilder: (context, index) {
@@ -245,19 +233,14 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
 
   requestComponent({required Group group}) {
     return Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: const Color.fromARGB(255, 255, 255, 255),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 0,
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              ),
-            ]),
+            border: Border.all(
+              color: Colors.blueGrey.shade200,
+              width: 1.5,
+            )),
         child: Column(
           children: [
             Row(
@@ -275,25 +258,18 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                         )),
                     const SizedBox(width: 10),
                     Flexible(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(group.groupName!,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500)),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(group.oneLineInfo!,
-                                style: TextStyle(color: Colors.grey[500])),
-                          ]),
+                            Text(group.groupName!, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(group.oneLineInfo!, style: TextStyle(color: Colors.grey[500])),
+                      ]),
                     ),
                     const SizedBox(width: 10),
                     IconButton(
@@ -302,20 +278,16 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                                   context: context,
                                   dialogType: DialogType.warning,
                                   title: "보낸 친구 요청 삭제",
-                                  desc:
-                                      "정말 ${group.groupName}그룹에 보낸 가입 신청을 취소하시겠습니까?",
+                                  desc: "정말 ${group.groupName}그룹에 보낸 가입 신청을 취소하시겠습니까?",
                                   btnOkOnPress: () async {
-                                    var url = Uri.http(baseUri,
-                                        '/group/deleteMe/${group.groupId}');
-                                    var response =
-                                        await http.delete(url, headers: {
+                                    var url = Uri.http(baseUri, '/group/deleteMe/${group.groupId}');
+                                    var response = await http.delete(url, headers: {
                                       'authorization': 'Bearer $jwtToken',
                                     });
                                     if (response.statusCode == 200) {
                                       Fluttertoast.showToast(msg: '취소되었습니다');
                                       setState(() {
-                                        memberRequestListFuture =
-                                            getMemberRequestList();
+                                        memberRequestListFuture = getMemberRequestList();
                                       });
                                     } else {
                                       print(utf8.decode(response.bodyBytes));
@@ -325,7 +297,8 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                               .show();
                         },
                         icon: const Icon(
-                          FontAwesomeIcons.x,
+                          // FontAwesomeIcons.x,
+                          Icons.remove,
                           color: Colors.red,
                         ))
                   ]),
@@ -348,7 +321,7 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
           },
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 227, 244, 248),
+      // backgroundColor: const Color.fromARGB(255, 227, 244, 248),
       body: Center(
         child: Column(
           children: [
@@ -362,25 +335,21 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                     });
                   },
                   child: Container(
-                    height: 80,
+                    height: 60,
                     decoration: BoxDecoration(
-                        color: isRequest
-                            ? const Color.fromARGB(255, 176, 220, 240)
-                            : Colors.blue,
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30))),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                        // color: isRequest ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                        border: Border.all(
+                          color: isRequest ? Colors.blueGrey.shade200 : Colors.blueAccent,
+                        ),
+                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
                             "받은 가입 권유",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: isRequest ? Colors.blueGrey.shade200 : Colors.blueAccent, fontSize: 20, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -395,25 +364,23 @@ class _InvitationScreenState extends ConsumerState<InvitationScreen> {
                     });
                   },
                   child: Container(
-                    height: 80,
+                    height: 60,
                     decoration: BoxDecoration(
-                        color: isRequest
-                            ? Colors.blue
-                            : const Color.fromARGB(255, 176, 220, 240),
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30))),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                        // color: isRequest
+                        //     ? Colors.blue
+                        //     : const Color.fromARGB(255, 176, 220, 240),
+                        border: Border.all(
+                          color: isRequest ? Colors.blueAccent : Colors.blueGrey.shade200,
+                        ),
+                        borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
                             "보낸 가입 신청",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: isRequest ? Colors.blueAccent : Colors.blueGrey.shade200, fontSize: 20, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),

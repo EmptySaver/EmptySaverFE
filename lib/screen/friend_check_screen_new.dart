@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -64,9 +63,11 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
-                return const Text(
-                  '받은 요청이 없습니다',
-                  textAlign: TextAlign.center,
+                return const Center(
+                  child: Text(
+                    '받은 요청이 없습니다',
+                    textAlign: TextAlign.center,
+                  ),
                 );
               } else {
                 return ListView.builder(
@@ -87,16 +88,14 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
 
   receiveComponent({required Friend friend}) {
     return Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.only(bottom: 15),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 0,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ]),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.blueGrey.shade200,
+              width: 1.5,
+            )),
         child: Column(
           children: [
             Row(
@@ -141,7 +140,7 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
                           }
                         },
                         icon: const Icon(
-                          FontAwesomeIcons.check,
+                          Icons.check,
                           color: Colors.green,
                         )),
                     IconButton(
@@ -166,7 +165,7 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
                               .show();
                         },
                         icon: const Icon(
-                          FontAwesomeIcons.x,
+                          Icons.remove,
                           color: Colors.red,
                         ))
                   ]),
@@ -186,7 +185,7 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
-                return const Text('보낸 요청이 없습니다');
+                return const Center(child: Text('보낸 요청이 없습니다'));
               } else {
                 return ListView.builder(
                     itemBuilder: (context, index) {
@@ -207,16 +206,15 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
 
   requestComponent({required Friend friend}) {
     return Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.only(bottom: 15),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 255, 255, 255), boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 0,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.blueGrey.shade200,
+            width: 1.5,
           ),
-        ]),
+        ),
         child: Column(
           children: [
             Row(
@@ -268,7 +266,7 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
                               .show();
                         },
                         icon: const Icon(
-                          FontAwesomeIcons.x,
+                          Icons.remove,
                           color: Colors.red,
                         ))
                   ]),
@@ -291,7 +289,7 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
           },
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 227, 244, 248),
+      // backgroundColor: const Color.fromARGB(255, 227, 244, 248),
       body: Center(
         child: Column(
           children: [
@@ -305,18 +303,21 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
                     });
                   },
                   child: Container(
-                    height: 80,
+                    height: 60,
                     decoration: BoxDecoration(
-                        color: isRequest ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                        // color: isRequest ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                        border: Border.all(
+                          color: isRequest ? Colors.blueGrey.shade200 : Colors.blueAccent,
+                        ),
                         borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
                             "받은 친구 요청",
-                            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(color: isRequest ? Colors.blueGrey.shade200 : Colors.blueAccent, fontSize: 20, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -331,18 +332,23 @@ class _FriendCheckScreenState extends ConsumerState<FriendCheckScreen> {
                     });
                   },
                   child: Container(
-                    height: 80,
+                    height: 60,
                     decoration: BoxDecoration(
-                        color: isRequest ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
+                        // color: isRequest
+                        //     ? Colors.blue
+                        //     : const Color.fromARGB(255, 176, 220, 240),
+                        border: Border.all(
+                          color: isRequest ? Colors.blueAccent : Colors.blueGrey.shade200,
+                        ),
                         borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
                             "보낸 친구 요청",
-                            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(color: isRequest ? Colors.blueAccent : Colors.blueGrey.shade200, fontSize: 20, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
