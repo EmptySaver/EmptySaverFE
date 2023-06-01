@@ -82,13 +82,15 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
 
   Widget _buildPageContent(BuildContext context) {
     return Container(
-      color: Colors.blue.shade100,
+      color: Colors.white,
       child: ListView(
         children: <Widget>[
           const Image(
               image: AssetImage('assets/logoVer2.png'),
               width: 250,
-              height: 150),
+              height: 150,
+              color: Colors.blueAccent,
+          ),
           // const SizedBox(
           //   height: 30.0,
           // ),
@@ -114,11 +116,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
           Container(
               //height: 700,
               padding: const EdgeInsets.all(10.0),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                color: Colors.white,
-              ),
-              child: Column(
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+            child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(
@@ -594,12 +593,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                     //height: 380,
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(60.0)),
-                          backgroundColor: Colors.blue,
-                        ),
+                      child: OutlinedButton(
                         onPressed: () async {
                           if (!isChecked) {
                             Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
@@ -706,7 +700,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           }
                         },
                         child:
-                        const Text("등록하기", style: TextStyle(color: Colors.white70)),
+                        const Text("등록하기"),
                       ),
                     ),
                   ),
@@ -735,7 +729,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade100,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
