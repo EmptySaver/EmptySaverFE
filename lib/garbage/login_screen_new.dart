@@ -13,18 +13,18 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:emptysaver_fe/core/assets.dart';
 import 'package:emptysaver_fe/widgets/network_image.dart';
 
-class NewLoginScreen extends ConsumerStatefulWidget {
+class LegLoginScreen extends ConsumerStatefulWidget {
   String? firebaseToken;
-  NewLoginScreen({
+  LegLoginScreen({
     super.key,
     required this.firebaseToken,
   });
 
   @override
-  ConsumerState<NewLoginScreen> createState() => _LoginScreenStateNew();
+  ConsumerState<LegLoginScreen> createState() => _LoginScreenStateNew();
 }
 
-class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
+class _LoginScreenStateNew extends ConsumerState<LegLoginScreen> {
   static const storage = FlutterSecureStorage();
   dynamic userInfo = '';
   bool isAutoLogin = false;
