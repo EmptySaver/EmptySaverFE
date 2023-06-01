@@ -175,6 +175,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size.width);
     memberScheduleFuture = getMemberSchedule();
     // groupScheduleFuture = getGroupSchedule();
     var colorIndex = -1;

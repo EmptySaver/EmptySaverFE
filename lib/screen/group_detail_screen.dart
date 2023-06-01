@@ -104,6 +104,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         '${groupData.groupName}',
                         style: const TextStyle(
                           fontSize: 25,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Visibility(
@@ -127,7 +128,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('공지사항'),
+                      const Text(
+                        '공지사항',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
                       Visibility(
                         visible: amIOwner,
                         child: OutlinedButton(
@@ -148,10 +152,16 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Container(
-                    height: 150,
+                    height: 200,
                     width: 350,
-                    decoration: BoxDecoration(border: Border.all()),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: FutureBuilder(
                       future: groupPostListFuture,
                       builder: (context, snapshot) {
@@ -217,9 +227,19 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                     );
                                   },
                                   child: Container(
-                                    height: 40,
-                                    decoration: BoxDecoration(border: Border.all()),
-                                    child: Text('${snapshot.data![index]['title']}'),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    height: 60,
+                                    decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
+                                    child: Center(
+                                      child: Text(
+                                        '${snapshot.data![index]['title']}',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
@@ -243,7 +263,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('일정 목록'),
+                      const Text(
+                        '일정 목록',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
                       Visibility(
                         visible: amIOwner,
                         child: OutlinedButton(
@@ -257,9 +280,14 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     height: 10,
                   ),
                   Container(
-                    height: 200,
+                    padding: const EdgeInsets.all(5),
+                    // clipBehavior: Clip.hardEdge,
+                    height: 250,
                     width: 350,
-                    decoration: BoxDecoration(border: Border.all()),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: FutureBuilder(
                       future: groupScheduleTextListFuture,
                       builder: (context, snapshot) {
@@ -316,56 +344,59 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                     );
                                   },
                                   child: Container(
-                                    height: 70,
+                                    height: 100,
+                                    clipBehavior: Clip.antiAlias,
                                     decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      color: (snapshot.data![index].read!) ? Colors.grey.shade300 : null,
+                                      // border: const Border(bottom: BorderSide(style: BorderStyle.none)),
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                      color: (snapshot.data![index].read!) ? Colors.grey.shade200 : null,
                                     ),
                                     child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Column(
+                                        Text(
+                                          '${snapshot.data![index].name}',
+                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                        ),
+                                        Text('${snapshot.data![index].body}'),
+                                        Text('${snapshot.data![index].timeData}'),
+                                        Visibility(
+                                          visible: !amIOwner,
+                                          child: Visibility(
+                                            visible: !snapshot.data![index].read!,
+                                            child: ButtonBar(
+                                              buttonPadding: EdgeInsets.zero,
                                               children: [
-                                                Text('${snapshot.data![index].name}'),
-                                                Text('${snapshot.data![index].body}'),
+                                                IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(),
+                                                  onPressed: () {
+                                                    okSchedule(snapshot.data![index].id, true);
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.check,
+                                                    color: Colors.greenAccent,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(),
+                                                  onPressed: () {
+                                                    okSchedule(snapshot.data![index].id, false);
+                                                    setState(() {});
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.remove,
+                                                    color: Colors.redAccent,
+                                                  ),
+                                                )
                                               ],
                                             ),
-                                            Visibility(
-                                              visible: !amIOwner,
-                                              child: Visibility(
-                                                visible: !snapshot.data![index].read!,
-                                                child: ButtonBar(
-                                                  buttonPadding: EdgeInsets.zero,
-                                                  children: [
-                                                    IconButton(
-                                                      padding: EdgeInsets.zero,
-                                                      constraints: const BoxConstraints(),
-                                                      onPressed: () {
-                                                        okSchedule(snapshot.data![index].id, true);
-                                                      },
-                                                      icon: const Icon(Icons.check),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    IconButton(
-                                                      padding: EdgeInsets.zero,
-                                                      constraints: const BoxConstraints(),
-                                                      onPressed: () {
-                                                        okSchedule(snapshot.data![index].id, false);
-                                                        setState(() {});
-                                                      },
-                                                      icon: const Icon(Icons.remove),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        Text('${snapshot.data![index].timeData}'),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -387,7 +418,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('구성원 목록'),
+                      const Text(
+                        '구성원 목록',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -423,9 +457,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.all(5),
-                    height: 180,
+                    height: 250,
                     width: 350,
-                    decoration: BoxDecoration(border: Border.all()),
+                    decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(10)),
                     child: FutureBuilder(
                       future: groupMemberFuture,
                       builder: (context, snapshot) {
@@ -436,14 +470,17 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             return ListView.separated(
                                 itemBuilder: (context, index) => Container(
                                       height: 40,
-                                      decoration: BoxDecoration(border: Border.all()),
+                                      decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(10)),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          Text('id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}'),
+                                          Text(
+                                            'id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}',
+                                            style: const TextStyle(fontSize: 16),
+                                          ),
                                           Row(
                                             children: [
                                               Visibility(
@@ -452,7 +489,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                     onPressed: () {
                                                       changeOwner(snapshot.data![index]['memberId']);
                                                     },
-                                                    icon: const Icon(Icons.upgrade)),
+                                                    icon: const Icon(
+                                                      Icons.upgrade_rounded,
+                                                      color: Colors.teal,
+                                                    )),
                                               ),
                                               IconButton(
                                                   onPressed: () {
@@ -469,7 +509,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                           ),
                                                         ));
                                                   },
-                                                  icon: const Icon(Icons.remove_red_eye)),
+                                                  icon: const Icon(
+                                                    Icons.schedule,
+                                                    color: Colors.blueAccent,
+                                                  )),
                                               IconButton(
                                                   onPressed: () async {
                                                     var url = Uri.http(baseUri, '/group/deleteMember');
@@ -483,7 +526,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                       });
                                                     }
                                                   },
-                                                  icon: const Icon(Icons.remove_circle_outline)),
+                                                  icon: const Icon(
+                                                    Icons.remove,
+                                                    color: Colors.redAccent,
+                                                  )),
                                             ],
                                           ),
                                         ],
