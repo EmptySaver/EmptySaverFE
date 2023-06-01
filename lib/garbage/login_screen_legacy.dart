@@ -184,7 +184,7 @@ class _LoginScreenState extends ConsumerState<LoginScreenLegacy> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => NewLoginScreen(
+                                    builder: (context) => LegLoginScreen(
                                         firebaseToken: widget.firebaseToken),
                                   ));
                             },
