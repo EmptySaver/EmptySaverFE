@@ -45,7 +45,7 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
 
   Widget _buildPageContent(BuildContext context) {
     return Container(
-      color: Colors.blue.shade100,
+      color: Colors.white,
       child: ListView(
         children: <Widget>[
           const SizedBox(
@@ -54,7 +54,9 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
           const Image(
               image: AssetImage('assets/logoVer2.png'),
               width: 250,
-              height: 150),
+              height: 150,
+              color: Colors.blueAccent,
+          ),
           _buildLoginForm(),
           const SizedBox(
             height: 20.0,
@@ -84,12 +86,10 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
       child: Stack(
         children: <Widget>[
             Container(
-              height: 300,
+              height: 280,
               padding: const EdgeInsets.all(10.0),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                color: Colors.white,
-              ),
+              decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -164,19 +164,14 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
             height: 380,
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0)),
-                  backgroundColor: Colors.blue,
-                ),
+              child: OutlinedButton(
                 onPressed: isSended
                     ? null
                     : () {
                         findMyPwd();
                       },
                 child: Text(isSended ? '완료' : '비밀번호 초기화',
-                    style: const TextStyle(color: Colors.white70)),
+                   ),
               ),
             ),
           )
@@ -188,7 +183,7 @@ class _FindPasswordScreenState extends State<FindPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade100,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,

@@ -166,7 +166,7 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
           Container(
             //height: 400,
             padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(20.0)), border: Border.all(color: Colors.blueAccent)),
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

@@ -115,7 +115,7 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
 
   Widget _buildPageContent(BuildContext context) {
     return Container(
-      color: Colors.blue.shade100,
+      color: Colors.white,
       child: ListView(
         children: <Widget>[
           const SizedBox(
@@ -157,11 +157,8 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
           Container(
               //height: 800,
               padding: const EdgeInsets.all(10.0),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                color: Colors.white,
-              ),
-              child: Column(
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+            child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(
@@ -313,6 +310,60 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
                   const SizedBox(
                     height: 10,
                   ),
+                  OutlinedButton(
+                    onPressed: () async {
+                      if (nameTec.text.isEmpty) {
+                        Fluttertoast.showToast(msg: '그룹명을 입력해주세요');
+                        return;
+                      }
+                      if (oneLineTec.text.isEmpty) {
+                        Fluttertoast.showToast(msg: '한줄 설명을 입력해주세요');
+                        return;
+                      }
+                      if (bodyTec.text.isEmpty) {
+                        Fluttertoast.showToast(msg: '한줄 설명을 입력해주세요');
+                        return;
+                      }
+                      if (numTec.text.isEmpty) {
+                        Fluttertoast.showToast(msg: '그룹 정원을 입력해주세요');
+                        return;
+                      }
+                      if (selectedTag == null) {
+                        Fluttertoast.showToast(msg: '그룹 태그를 선택해주세요');
+                        return;
+                      }
+                      var postBody = <String, dynamic>{
+                        'groupName': nameTec.text,
+                        'oneLineInfo': oneLineTec.text,
+                        'groupDescription': bodyTec.text,
+                        'maxMember': numTec.text,
+                        'isPublic': isPublic,
+                        'isAnonymous': isAnonymous,
+                        'categoryName': widget.type,
+                        'labelName': selectedTag,
+                      };
+                      var url = Uri.http(baseUri, '/group/make');
+                      var response = await http.post(
+                        url,
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'authorization': 'Bearer $jwtToken'
+                        },
+                        body: jsonEncode(postBody),
+                      );
+                      if (response.statusCode == 200) {
+                        print('groupaddsuccess');
+                        print(response.body);
+                        Navigator.pushNamed(
+                            context, '/bar'); //group 디테일 페이지로 라우팅바꿀것
+                      } else {
+                        var result = jsonDecode(utf8.decode(response.bodyBytes));
+                        Fluttertoast.showToast(msg: '${result['message']}');
+                      }
+                    },
+                    child:
+                    const Text("생성"),
+                  ),
                 ],
               ),
             ),
@@ -329,71 +380,6 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
               )
             ],
           ),
-          SizedBox(
-            height: 700,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(60.0)),
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed: () async {
-                  if (nameTec.text.isEmpty) {
-                    Fluttertoast.showToast(msg: '그룹명을 입력해주세요');
-                    return;
-                  }
-                  if (oneLineTec.text.isEmpty) {
-                    Fluttertoast.showToast(msg: '한줄 설명을 입력해주세요');
-                    return;
-                  }
-                  if (bodyTec.text.isEmpty) {
-                    Fluttertoast.showToast(msg: '한줄 설명을 입력해주세요');
-                    return;
-                  }
-                  if (numTec.text.isEmpty) {
-                    Fluttertoast.showToast(msg: '그룹 정원을 입력해주세요');
-                    return;
-                  }
-                  if (selectedTag == null) {
-                    Fluttertoast.showToast(msg: '그룹 태그를 선택해주세요');
-                    return;
-                  }
-                  var postBody = <String, dynamic>{
-                    'groupName': nameTec.text,
-                    'oneLineInfo': oneLineTec.text,
-                    'groupDescription': bodyTec.text,
-                    'maxMember': numTec.text,
-                    'isPublic': isPublic,
-                    'isAnonymous': isAnonymous,
-                    'categoryName': widget.type,
-                    'labelName': selectedTag,
-                  };
-                  var url = Uri.http(baseUri, '/group/make');
-                  var response = await http.post(
-                    url,
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'authorization': 'Bearer $jwtToken'
-                    },
-                    body: jsonEncode(postBody),
-                  );
-                  if (response.statusCode == 200) {
-                    print('groupaddsuccess');
-                    print(response.body);
-                    Navigator.pushNamed(
-                        context, '/bar'); //group 디테일 페이지로 라우팅바꿀것
-                  } else {
-                    var result = jsonDecode(utf8.decode(response.bodyBytes));
-                    Fluttertoast.showToast(msg: '${result['message']}');
-                  }
-                },
-                child:
-                    const Text("생성", style: TextStyle(color: Colors.white70)),
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -402,7 +388,7 @@ class _AddGroupScreenState extends ConsumerState<AddGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade100,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
