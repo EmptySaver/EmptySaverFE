@@ -165,7 +165,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildPageContent(BuildContext context) {
     return Container(
-      color: Colors.blue.shade100,
+      color: Colors.white,
       child: ListView(
         children: <Widget>[
           const SizedBox(
@@ -174,7 +174,9 @@ class _SignupScreenState extends State<SignupScreen> {
           const Image(
               image: AssetImage('assets/logoVer2.png'),
               width: 250,
-              height: 150),
+              height: 150,
+              color: Colors.blueAccent,
+          ),
           const SizedBox(
             height: 10.0,
           ),
@@ -203,12 +205,15 @@ class _SignupScreenState extends State<SignupScreen> {
       child: Stack(
         children: <Widget>[
           Container(
-              height: 600,
-              padding: const EdgeInsets.all(10.0),
+              //height: 600,
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+
+            padding: const EdgeInsets.all(10.0),
+              /*
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(40.0)),
                 color: Colors.white,
-              ),
+              ),*/
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -237,7 +242,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       )),
                                 ),
                               )),
-                          OutlinedButton(
+                          Expanded(child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
 
                               side: const BorderSide(color: Colors.blue,width: 1.5),
@@ -247,20 +252,22 @@ class _SignupScreenState extends State<SignupScreen> {
                             onPressed: isauthed
                                 ? null
                                 : () {
-                                    setState(() {
-                                      postMyEmail();
-                                    });
-                                  },
+                              setState(() {
+                                postMyEmail();
+                              });
+                            },
                             child: Text(
                               isauthed ? '인증완료' : '이메일 인증',
                               style: const TextStyle(
                                 //fontFamily: 'NimbusSanL',
-                                fontSize: 12,
+                                fontSize: 11,
                                 color: Colors.blueAccent,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
+                          )
+
                         ],
                       )),
                   Visibility(
@@ -275,7 +282,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             hintText: '코드를 입력하세요',
                             border: OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  BorderRadius.all(Radius.circular(20)),
                             ),
                           ),
                           keyboardType: TextInputType.visiblePassword,
@@ -431,41 +438,26 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(
                     height: 10.0,
                   ),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+
+                      side: const BorderSide(color: Colors.blue,width: 1.8),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    onPressed: postSignUp,
+                    child: const Text("Sign Up",
+                      style: TextStyle(
+                        //fontFamily: 'NimbusSanL',
+                        fontSize: 15,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Transform.translate(
-                offset: const Offset(0.0, -30),
-                child: CircleAvatar(
-                  radius: 40.0,
-                  backgroundColor: Colors.blue.shade600,
-                  child: const Icon(
-                    Icons.menu_book_sharp,
-                    size: 30,
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 670,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(60.0)),
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed: postSignUp,
-                child: const Text("Sign Up",
-                    style: TextStyle(color: Colors.white70)),
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -474,7 +466,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade100,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
