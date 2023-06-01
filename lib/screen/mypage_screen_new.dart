@@ -32,7 +32,8 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
 
   Future<MemberInfo> getMemberInfo() async {
     var url = Uri.http(baseUri, '/afterAuth/getMemberInfo');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     var data = MemberInfo.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     return data;
   }
@@ -60,26 +61,27 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
         brightness: _getBrightness(),
       ),
       child: Scaffold(
-        backgroundColor: _dark ? null : const Color.fromARGB(255, 220, 241, 248),
+        backgroundColor: _dark ? null : Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           elevation: 0,
-          systemOverlayStyle: _dark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+          systemOverlayStyle:
+              _dark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
           iconTheme: IconThemeData(color: _dark ? Colors.white : Colors.black),
           backgroundColor: Colors.transparent,
           title: Text(
             'MyPage',
             style: TextStyle(color: _dark ? Colors.white : Colors.black),
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.moon),
-              onPressed: () {
-                setState(() {
-                  _dark = !_dark;
-                });
-              },
-            )
-          ],
+          // actions: <Widget>[
+          //   IconButton(
+          //     icon: const Icon(FontAwesomeIcons.moon),
+          //     onPressed: () {
+          //       setState(() {
+          //         _dark = !_dark;
+          //       });
+          //     },
+          //   )
+          // ],
         ),
         body: Stack(
           fit: StackFit.expand,
@@ -90,9 +92,10 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Card(
-                      elevation: 8.0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                      color: const Color.fromARGB(255, 63, 118, 185),
+                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: BorderSide(color: Colors.blueAccent)),
                       child: FutureBuilder(
                         future: memberInfoFuture,
                         builder: (context, snapshot) {
@@ -109,7 +112,7 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                   title: Text(
                                     '환영합니다, ${snapshot.data!.name!}님',
                                     style: const TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.blue,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -120,11 +123,13 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                   trailing: isMoreInfo
                                       ? const Icon(
                                           FontAwesomeIcons.angleUp,
-                                          color: Colors.white,
+                                          color: Color.fromARGB(
+                                              255, 123, 206, 245),
                                         )
                                       : const Icon(
                                           FontAwesomeIcons.angleDown,
-                                          color: Colors.white,
+                                          color: Color.fromARGB(
+                                              255, 123, 211, 252),
                                         ),
                                 ),
                                 _buildDivider(),
@@ -135,12 +140,13 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                         ListTile(
                                             leading: const Icon(
                                               Icons.email,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(
+                                                  255, 123, 211, 252),
                                             ),
                                             title: Text(
                                               "${snapshot.data!.email}",
                                               style: const TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.blue,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             )),
@@ -148,12 +154,13 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                         ListTile(
                                             leading: const Icon(
                                               Icons.school,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(
+                                                  255, 123, 211, 252),
                                             ),
                                             title: Text(
                                               "${snapshot.data!.classOf}",
                                               style: const TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.blue,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             )),
@@ -161,12 +168,13 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                         ListTile(
                                             leading: const Icon(
                                               FontAwesomeIcons.personRays,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(
+                                                  255, 123, 211, 252),
                                             ),
                                             title: Text(
                                               "${snapshot.data!.nickname}",
                                               style: const TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.blue,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             )),
@@ -185,7 +193,8 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                   Card(
                     elevation: 4.0,
                     margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 16.0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
                     child: Column(
                       children: <Widget>[
                         ListTile(
@@ -196,57 +205,106 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                           title: const Text("비밀번호 변경"),
                           trailing: const Icon(Icons.keyboard_arrow_right),
                           onTap: () {
-                            //open change password
-                            AwesomeDialog(
-                              context: context,
-                              dialogType: DialogType.question,
-                              body: Column(
-                                children: [
-                                  const Text(
-                                    "비밀번호 변경",
-                                    style: TextStyle(color: Color.fromARGB(255, 60, 60, 69), fontSize: 22),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    decoration: const InputDecoration(icon: Icon(Icons.lock), hintText: '기존 비밀번호를 입력하세요', labelText: '기존 비밀번호'),
-                                    controller: oldPwdTec,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    decoration: const InputDecoration(icon: Icon(Icons.lock, color: Colors.cyan), hintText: '변경할 비밀번호를 입력하세요', labelText: '새 비밀번호'),
-                                    controller: newPwdTec,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              ),
-                              btnOkOnPress: () async {
-                                if (!_checkSpace(newPwdTec.text)) {
-                                  Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
-                                  return;
-                                }
-                                var url = Uri.http(baseUri, '/afterAuth/changePassword');
-                                var response = await http.put(url,
-                                    headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
-                                    body: jsonEncode({
-                                      'oldPassword': oldPwdTec.text,
-                                      'newPassword': newPwdTec.text,
-                                    }));
-                                if (response.statusCode == 200) {
-                                  Fluttertoast.showToast(msg: '변경되었습니다');
-                                } else {
-                                  var result = jsonDecode(utf8.decode(response.bodyBytes));
-                                  print(result['message']);
-                                  Fluttertoast.showToast(msg: '${result['message']}');
-                                }
-                              },
-                              btnCancelOnPress: () {},
-                            ).show();
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      title: const Center(
+                                          child: Text(
+                                        "비밀번호 변경",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      )),
+                                      content: Container(
+                                        height: 220,
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  TextFormField(
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            icon: Icon(
+                                                                Icons.lock),
+                                                            hintText:
+                                                                '기존 비밀번호를 입력하세요',
+                                                            labelText:
+                                                                '기존 비밀번호'),
+                                                    controller: oldPwdTec,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  TextFormField(
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            icon: Icon(
+                                                                Icons.lock,
+                                                                color: Colors
+                                                                    .cyan),
+                                                            hintText:
+                                                                '변경할 비밀번호를 입력하세요',
+                                                            labelText:
+                                                                '새 비밀번호'),
+                                                    controller: newPwdTec,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                ],
+                                              ),
+                                              OutlinedButton(
+                                                  onPressed: () async {
+                                                    if (!_checkSpace(
+                                                        newPwdTec.text)) {
+                                                      Fluttertoast.showToast(
+                                                          msg: '공백은 허용되지 않습니다');
+                                                      return;
+                                                    }
+                                                    var url = Uri.http(baseUri,
+                                                        '/afterAuth/changePassword');
+                                                    var response =
+                                                        await http.put(url,
+                                                            headers: {
+                                                              'authorization':
+                                                                  'Bearer $jwtToken',
+                                                              'Content-Type':
+                                                                  'application/json; charset=UTF-8'
+                                                            },
+                                                            body: jsonEncode({
+                                                              'oldPassword':
+                                                                  oldPwdTec
+                                                                      .text,
+                                                              'newPassword':
+                                                                  newPwdTec
+                                                                      .text,
+                                                            }));
+                                                    if (response.statusCode ==
+                                                        200) {
+                                                      oldPwdTec.text =
+                                                          newPwdTec.text = "";
+                                                      Fluttertoast.showToast(
+                                                          msg: '변경되었습니다');
+                                                      Navigator.pop(context);
+                                                    } else {
+                                                      var result = jsonDecode(
+                                                          utf8.decode(response
+                                                              .bodyBytes));
+                                                      print(result['message']);
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              '${result['message']}');
+                                                    }
+                                                  },
+                                                  child: Text("확인"))
+                                            ]),
+                                      ));
+                                });
                           },
                         ),
                         _buildDivider(),
@@ -260,52 +318,106 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                                     color: Colors.cyan,
                                   ),
                                   title: const Text("닉네임 변경"),
-                                  trailing: const Icon(Icons.keyboard_arrow_right),
+                                  trailing:
+                                      const Icon(Icons.keyboard_arrow_right),
                                   onTap: () {
-                                    AwesomeDialog(
-                                      context: context,
-                                      dialogType: DialogType.question,
-                                      body: Column(
-                                        children: [
-                                          Text("현재 닉네임 : ${snapshot.data!.nickname!}"),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          TextFormField(
-                                            decoration: const InputDecoration(
-                                                icon: Icon(
-                                                  FontAwesomeIcons.person,
-                                                  color: Colors.cyan,
-                                                ),
-                                                hintText: '변경할 닉네임을 입력하세요',
-                                                labelText: 'Nickname'),
-                                            controller: nicknameTec,
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      ),
-                                      btnOkOnPress: () async {
-                                        if (!_checkSpace(nicknameTec.text)) {
-                                          Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
-                                          return;
-                                        }
-                                        var url = Uri.http(baseUri, '/afterAuth/changeNickName/${nicknameTec.text}');
-                                        var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                        if (response.statusCode == 200) {
-                                          Fluttertoast.showToast(msg: '변경되었습니다');
-                                          setState(() {
-                                            memberInfoFuture = getMemberInfo();
-                                            nicknameTec.text = "";
-                                          });
-                                        } else {
-                                          print(utf8.decode(response.bodyBytes));
-                                          Fluttertoast.showToast(msg: '변경 에러');
-                                        }
-                                      },
-                                      btnCancelOnPress: () {},
-                                    ).show();
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            title: const Center(
+                                                child: Text(
+                                              "닉네임 변경",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500),
+                                            )),
+                                            content: Container(
+                                              height: 180,
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      children: [
+                                                        Text(
+                                                            "현재 닉네임 : ${snapshot.data!.nickname!}"),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        TextFormField(
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            icon: Icon(
+                                                              FontAwesomeIcons
+                                                                  .person,
+                                                              color:
+                                                                  Colors.cyan,
+                                                            ),
+                                                            hintText: '새로운 닉네임',
+                                                          ),
+                                                          controller:
+                                                              nicknameTec,
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    OutlinedButton(
+                                                        onPressed: () async {
+                                                          if (!_checkSpace(
+                                                              nicknameTec
+                                                                  .text)) {
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    '공백은 허용되지 않습니다');
+                                                            return;
+                                                          }
+                                                          var url = Uri.http(
+                                                              baseUri,
+                                                              '/afterAuth/changeNickName/${nicknameTec.text}');
+                                                          var response =
+                                                              await http.put(
+                                                                  url,
+                                                                  headers: {
+                                                                'authorization':
+                                                                    'Bearer $jwtToken'
+                                                              });
+                                                          if (response
+                                                                  .statusCode ==
+                                                              200) {
+                                                            setState(() {
+                                                              memberInfoFuture =
+                                                                  getMemberInfo();
+                                                              nicknameTec.text =
+                                                                  "";
+                                                              Fluttertoast
+                                                                  .showToast(
+                                                                      msg:
+                                                                          '변경되었습니다');
+                                                              Navigator.pop(
+                                                                  context);
+                                                            });
+                                                          } else {
+                                                            print(utf8.decode(
+                                                                response
+                                                                    .bodyBytes));
+                                                            Fluttertoast
+                                                                .showToast(
+                                                                    msg:
+                                                                        '변경 에러');
+                                                          }
+                                                        },
+                                                        child: Text("확인"))
+                                                  ]),
+                                            ),
+                                          );
+                                        });
                                   },
                                 );
                               } else {
@@ -324,20 +436,100 @@ class _MypageScreenOneState extends ConsumerState<MyPageScreen> {
                           trailing: const Icon(Icons.keyboard_arrow_right),
                           onTap: () {
                             AwesomeDialog(
-                              context: context,
-                              dialogType: DialogType.warning,
-                              title: "회원 탈퇴",
-                              desc: "정말 탈퇴하시겠습니까?",
-                              btnOkOnPress: () async {
-                                var url = Uri.http(baseUri, '/afterAuth/deleteme');
-                                var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                if (response.statusCode == 200) {
-                                  Fluttertoast.showToast(msg: '회원탈퇴되었습니다');
-                                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                                }
-                              },
-                              btnCancelOnPress: () {},
-                            ).show();
+                                    context: context,
+                                    dialogType: DialogType.infoReverse,
+                                    title: "회원 탈퇴",
+                                    desc: "정말 탈퇴하시겠습니까?",
+                                    btnOkColor: Colors.lightBlueAccent,
+                                    btnOkText: "아니요 !",
+                                    btnOkOnPress: () {},
+                                    btnCancelColor: Colors.redAccent,
+                                    btnCancelOnPress: () async {
+                                      var url = Uri.http(
+                                          baseUri, '/afterAuth/deleteme');
+                                      var response = await http.delete(url,
+                                          headers: {
+                                            'authorization': 'Bearer $jwtToken'
+                                          });
+                                      if (response.statusCode == 200) {
+                                        Fluttertoast.showToast(
+                                            msg: '회원탈퇴되었습니다');
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context, '/', (route) => false);
+                                      }
+                                    },
+                                    btnCancelText: "네")
+                                .show();
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (context) {
+                            //       return AlertDialog(
+                            //         shape: RoundedRectangleBorder(
+                            //             borderRadius:
+                            //                 BorderRadius.circular(10.0)),
+                            //         title: const Center(
+                            //             child: Text(
+                            //           "회원 탈퇴",
+                            //           style: TextStyle(
+                            //               fontWeight: FontWeight.w500),
+                            //         )),
+                            //         content: Container(
+                            //           height: 120,
+                            //           child: Column(children: [
+                            //             Center(child: Text("정말 탈퇴하시겠습니까?")),
+                            //             SizedBox(
+                            //               height: 20,
+                            //             ),
+                            //             Row(
+                            //               mainAxisAlignment:
+                            //                   MainAxisAlignment.spaceEvenly,
+                            //               children: [
+                            //                 OutlinedButton(
+                            //                     style: OutlinedButton.styleFrom(
+                            //                       // backgroundColor: Colors.red,
+                            //                       foregroundColor:
+                            //                           Colors.redAccent,
+                            //                       side: const BorderSide(
+                            //                           color: Colors.red,
+                            //                           width: 1.5),
+                            //                       shape: RoundedRectangleBorder(
+                            //                           borderRadius:
+                            //                               BorderRadius.circular(
+                            //                                   30)),
+                            //                     ),
+                            //                     onPressed: () async {
+                            //                       var url = Uri.http(baseUri,
+                            //                           '/afterAuth/deleteme');
+                            //                       var response = await http
+                            //                           .delete(url, headers: {
+                            //                         'authorization':
+                            //                             'Bearer $jwtToken'
+                            //                       });
+                            //                       if (response.statusCode ==
+                            //                           200) {
+                            //                         Fluttertoast.showToast(
+                            //                             msg: '회원탈퇴되었습니다');
+                            //                         Navigator
+                            //                             .pushNamedAndRemoveUntil(
+                            //                                 context,
+                            //                                 '/',
+                            //                                 (route) => false);
+                            //                       }
+                            //                     },
+                            //                     child: Text(
+                            //                       "네",
+                            //                       style: TextStyle(
+                            //                           color: Colors.red),
+                            //                     )),
+                            //                 OutlinedButton(
+                            //                     onPressed: () {},
+                            //                     child: Text("아니요 !"))
+                            //               ],
+                            //             )
+                            //           ]),
+                            //         ),
+                            //       );
+                            //     });
                           },
                         ),
                       ],
