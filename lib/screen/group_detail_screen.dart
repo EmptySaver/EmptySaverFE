@@ -57,6 +57,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       appBar: AppBar(
         title: const Text('그룹 상세'),
         actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz)),
           IconButton(
               onPressed: () async {
                 var url = Uri.http(baseUri, '/group/deleteMe/${widget.groupId}');
@@ -420,7 +421,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     children: [
                       const Text(
                         '구성원 목록',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(
                         width: 10,
@@ -604,6 +608,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       Navigator.pop(context);
     } else {
       print(utf8.decode(response.bodyBytes));
+      Fluttertoast.showToast(msg: jsonDecode(utf8.decode(response.bodyBytes))['message']);
     }
   }
 

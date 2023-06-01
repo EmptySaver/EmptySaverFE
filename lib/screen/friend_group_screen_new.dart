@@ -277,7 +277,7 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
                           context: context,
                           dialogType: DialogType.info,
                           title: "친구 정보",
-                          desc: " 이름 : ${friend.friendName}\n Email: ${friend.friendEmail}",
+                          desc: " 이름 : ${friend.friendName}\n Email: ${friend.friendEmail}\n ID:${friend.friendMemberId}",
                           btnOkOnPress: () {},
                         ).show();
                       },
