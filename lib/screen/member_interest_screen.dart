@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
+import 'package:emptysaver_fe/screen/login_screen_new_style.dart';
 import 'package:emptysaver_fe/screen/group_detail_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
-import 'package:emptysaver_fe/garbage/login_screen_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -111,19 +111,6 @@ class _InterestScreenState extends ConsumerState<InterestScreen> {
       {required FullCategoryInfo categoryInfo, required int num}) {
     var tags = categoryInfo.tagList as List;
     return Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: const Color.fromARGB(255, 255, 255, 255),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ]),
       child: Column(
         children: <Widget>[
           GestureDetector(
@@ -137,7 +124,8 @@ class _InterestScreenState extends ConsumerState<InterestScreen> {
                 margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    border: Border.all(color: Colors.blue),
+                    color: Colors.white,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.2),
@@ -159,49 +147,49 @@ class _InterestScreenState extends ConsumerState<InterestScreen> {
               )),
           Visibility(
               visible: isTab[num],
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    child: SingleChildScrollView(
-                      // scrollDirection: Axis.horizontal,
-                      child: Wrap(
-                        children: tags.map((tag) {
-                          int currentIndex = tags.indexOf(tag);
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isSelected[num][currentIndex] =
-                                    !isSelected[num][currentIndex];
-                              });
-                              print("tab tab");
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14.0, vertical: 12.0),
-                              margin: const EdgeInsets.only(
-                                  right: 8.0, bottom: 8.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                border: Border.all(
-                                  color: isSelected[num][currentIndex]
-                                      ? Colors.cyanAccent
-                                      : const Color.fromRGBO(195, 228, 243, 1),
-                                ),
-                                color: isSelected[num][currentIndex]
-                                    ? Colors.lightBlue
-                                    : const Color.fromRGBO(196, 220, 227, 1),
-                              ),
-                              child: Text(tag),
+              child: Container(
+                margin: EdgeInsets.all(10),
+                child: SingleChildScrollView(
+                  // scrollDirection: Axis.horizontal,
+                  child: Wrap(
+                    children: tags.map((tag) {
+                      int currentIndex = tags.indexOf(tag);
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isSelected[num][currentIndex] =
+                                !isSelected[num][currentIndex];
+                          });
+                          print("tab tab");
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14.0, vertical: 12.0),
+                          margin:
+                              const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(
+                              color: isSelected[num][currentIndex]
+                                  ? Colors.lightBlueAccent
+                                  : Colors.blue,
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  )
-                ],
+                            color: isSelected[num][currentIndex]
+                                ? Colors.lightBlue
+                                : Colors.white,
+                          ),
+                          child: Text(
+                            tag,
+                            style: TextStyle(
+                                color: isSelected[num][currentIndex]
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               )),
         ],
       ),
@@ -211,15 +199,15 @@ class _InterestScreenState extends ConsumerState<InterestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () {
-            // Navigator.of(context).maybePop();
-            Navigator.pop(context, true);
-          },
-        ),
-      ),
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back_ios_new_rounded),
+      //     onPressed: () {
+      //       // Navigator.of(context).maybePop();
+      //       Navigator.pop(context, true);
+      //     },
+      //   ),
+      // ),
       body: Column(children: [
         const SizedBox(
           height: 50,
