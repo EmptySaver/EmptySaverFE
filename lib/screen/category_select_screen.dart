@@ -1,5 +1,6 @@
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/screen/add_group_screen_new.dart';
+import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -151,22 +152,33 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                                       var eachCategory = snapshot.data![index].category;
                                       return Column(
                                         children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(5),
-                                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            height: 120,
-                                            decoration: const BoxDecoration(),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Text(
-                                                  '${snapshot.data![index].name}',
-                                                  style: Theme.of(context).textTheme.titleLarge,
-                                                ),
-                                                Text('${snapshot.data![index].body}'),
-                                                (eachCategory != null) ? Text(eachCategory) : const Text('카테고리 없음'),
-                                                Text('${snapshot.data![index].timeData}'),
-                                              ],
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => GroupFinderDetailScreen(
+                                                      id: snapshot.data![index].groupInfo!.groupId,
+                                                    ),
+                                                  ));
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.all(5),
+                                              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                              height: 120,
+                                              decoration: const BoxDecoration(),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Text(
+                                                    '${snapshot.data![index].name}',
+                                                    style: Theme.of(context).textTheme.titleLarge,
+                                                  ),
+                                                  Text('${snapshot.data![index].body}'),
+                                                  (eachCategory != null) ? Text(eachCategory) : const Text('카테고리 없음'),
+                                                  Text('${snapshot.data![index].timeData}'),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                           const Divider(

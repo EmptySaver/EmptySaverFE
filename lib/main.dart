@@ -343,7 +343,6 @@ class _MyAppState extends ConsumerState<MyApp> {
           dividerTheme: DividerThemeData(color: Colors.blueGrey.shade200),
           textTheme: TextTheme(
             bodyMedium: TextStyle(color: Colors.blueGrey.shade900),
-            
           )),
     );
   }
