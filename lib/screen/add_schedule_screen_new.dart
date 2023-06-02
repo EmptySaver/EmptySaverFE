@@ -112,7 +112,9 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
           Container(
             //height: 700,
             padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                border: Border.all(color: Colors.blueAccent)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -135,7 +137,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       keyboardType: TextInputType.name,
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -156,7 +159,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       keyboardType: TextInputType.text,
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -192,7 +196,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -207,13 +212,20 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                               icon: const Icon(Icons.calendar_month),
                               onPressed: () async {
                                 DateTime currentTime = await NTP.now();
-                                currentTime = currentTime.toUtc().add(const Duration(hours: 9));
-                                DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
+                                currentTime = currentTime
+                                    .toUtc()
+                                    .add(const Duration(hours: 9));
+                                DateTime? result = await showRoundedDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    borderRadius: 16,
+                                    locale: const Locale('ko', 'KR'));
                                 if (result != null) {
                                   setState(() {
                                     nonDate = result;
                                     print("nonDate: ${nonDate.toString()}");
-                                    dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                    dateInfo =
+                                        "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
                                   });
                                 }
                               },
@@ -221,13 +233,21 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                             TextButton(
                                 onPressed: () async {
                                   DateTime currentTime = await NTP.now();
-                                  currentTime = currentTime.toUtc().add(const Duration(hours: 9));
-                                  DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
+                                  currentTime = currentTime
+                                      .toUtc()
+                                      .add(const Duration(hours: 9));
+                                  DateTime? result =
+                                      await showRoundedDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          borderRadius: 16,
+                                          locale: const Locale('ko', 'KR'));
                                   if (result != null) {
                                     setState(() {
                                       nonDate = result;
                                       print("nonDate: ${nonDate.toString()}");
-                                      dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                      dateInfo =
+                                          "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
                                     });
                                   }
                                 },
@@ -242,18 +262,25 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                 TimeRange? result = await showTimeRangePicker(
                                     context: context,
                                     interval: const Duration(minutes: 30),
-                                    disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                    disabledTime: TimeRange(
+                                        startTime:
+                                            const TimeOfDay(hour: 0, minute: 0),
+                                        endTime: const TimeOfDay(
+                                            hour: 8, minute: 0)),
                                     start: const TimeOfDay(hour: 12, minute: 0),
                                     end: const TimeOfDay(hour: 15, minute: 0));
                                 if (result != null) {
                                   setState(() {
-                                    if ((result.startTime.hour > result.endTime.hour)) {
-                                      Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                    if ((result.startTime.hour >
+                                        result.endTime.hour)) {
+                                      Fluttertoast.showToast(
+                                          msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                       return;
                                     }
                                     nonPeriodicStartTime = result.startTime;
                                     nonPeriodicEndTime = result.endTime;
-                                    timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                    timeInfo =
+                                        '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                   });
                                 }
                               },
@@ -263,18 +290,27 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                   TimeRange? result = await showTimeRangePicker(
                                       context: context,
                                       interval: const Duration(minutes: 30),
-                                      disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
-                                      start: const TimeOfDay(hour: 12, minute: 0),
-                                      end: const TimeOfDay(hour: 15, minute: 0));
+                                      disabledTime: TimeRange(
+                                          startTime: const TimeOfDay(
+                                              hour: 0, minute: 0),
+                                          endTime: const TimeOfDay(
+                                              hour: 8, minute: 0)),
+                                      start:
+                                          const TimeOfDay(hour: 12, minute: 0),
+                                      end:
+                                          const TimeOfDay(hour: 15, minute: 0));
                                   if (result != null) {
                                     setState(() {
-                                      if ((result.startTime.hour > result.endTime.hour)) {
-                                        Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                      if ((result.startTime.hour >
+                                          result.endTime.hour)) {
+                                        Fluttertoast.showToast(
+                                            msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                         return;
                                       }
                                       nonPeriodicStartTime = result.startTime;
                                       nonPeriodicEndTime = result.endTime;
-                                      timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                      timeInfo =
+                                          '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                     });
                                   }
                                 },
@@ -333,19 +369,22 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   selectedValue = value as String;
-                                  if (startDayTime != null && endDayTime != null) isSelectPlan = true;
+                                  if (startDayTime != null &&
+                                      endDayTime != null) isSelectPlan = true;
                                 });
                               },
                               buttonStyleData: ButtonStyleData(
                                 height: 40,
                                 width: 120,
-                                padding: const EdgeInsets.only(left: 14, right: 14),
+                                padding:
+                                    const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.black26,
                                   ),
-                                  color: const Color.fromARGB(255, 73, 190, 244),
+                                  color:
+                                      const Color.fromARGB(255, 73, 190, 244),
                                 ),
                                 elevation: 2,
                               ),
@@ -354,7 +393,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                   Icons.arrow_forward_ios_outlined,
                                 ),
                                 iconSize: 14,
-                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
+                                iconEnabledColor:
+                                    Color.fromARGB(255, 255, 255, 255),
                                 iconDisabledColor: Colors.grey,
                               ),
                               dropdownStyleData: DropdownStyleData(
@@ -370,7 +410,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                   scrollbarTheme: ScrollbarThemeData(
                                     radius: const Radius.circular(40),
                                     thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility: MaterialStateProperty.all(true),
+                                    thumbVisibility:
+                                        MaterialStateProperty.all(true),
                                   )),
                               menuItemStyleData: const MenuItemStyleData(
                                 height: 40,
@@ -387,13 +428,20 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                             style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.lightBlue,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                                padding: const EdgeInsets.only(left: 14, right: 14)),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                padding:
+                                    const EdgeInsets.only(left: 14, right: 14)),
                             onPressed: () async {
                               TimeRange? result = await showTimeRangePicker(
                                   context: context,
                                   interval: const Duration(minutes: 30),
-                                  disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                  disabledTime: TimeRange(
+                                      startTime:
+                                          const TimeOfDay(hour: 0, minute: 0),
+                                      endTime:
+                                          const TimeOfDay(hour: 8, minute: 0)),
                                   start: const TimeOfDay(hour: 12, minute: 0),
                                   end: const TimeOfDay(hour: 15, minute: 0));
 
@@ -401,13 +449,16 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                 startDayTime = result.startTime;
                                 endDayTime = result.endTime;
                                 setState(() {
-                                  if ((result.startTime.hour > result.endTime.hour)) {
-                                    Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                  if ((result.startTime.hour >
+                                      result.endTime.hour)) {
+                                    Fluttertoast.showToast(
+                                        msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                     return;
                                   }
                                   startDayTime = result.startTime;
                                   endDayTime = result.endTime;
-                                  perTimeInfo = '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
+                                  perTimeInfo =
+                                      '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
                                   if (selectedValue != null) {
                                     isSelectPlan = true;
                                   }
@@ -438,13 +489,18 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           absorbing: true,
                           child: Text(
                             "설정된 일시 :  $selectedValue요일 ${startDayTime?.hour}시 ${startDayTime?.minute}분 ~ ${endDayTime?.hour}시 ${endDayTime?.minute}분",
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.lightBlue),
                           ),
                         ),
                         OutlinedButton(
                             onPressed: () {
                               setState(() {
-                                itemList.add(Item(day: selectedValue, startDayInfo: startDayTime, endDayInfo: endDayTime));
+                                itemList.add(Item(
+                                    day: selectedValue,
+                                    startDayInfo: startDayTime,
+                                    endDayInfo: endDayTime));
                                 isSelectPlan = false;
                                 startDayTime = endDayTime = null;
                                 selectedValue = null;
@@ -455,7 +511,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       ],
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -466,7 +523,10 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                       alignment: Alignment.center,
                       child: const Text(
                         "추가된 일시",
-                        style: TextStyle(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 20),
+                        style: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     )),
                 const SizedBox(
@@ -477,7 +537,12 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                     child: Container(
                         decoration: const BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2.0, spreadRadius: 1.0)],
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 2.0,
+                                spreadRadius: 1.0)
+                          ],
                         ),
                         child: SizedBox(
                           height: 200,
@@ -491,25 +556,42 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                 Item item = itemList[index];
                                 return Card(
                                   elevation: 3,
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Colors.blueAccent)),
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                                    Container(
-                                      padding: const EdgeInsets.only(left: 20),
-                                      child: Text("${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                                              padding: const EdgeInsets.all(5),
-                                              side: const BorderSide(
-                                                color: Colors.cyan,
-                                              )),
-                                          onPressed: () {},
-                                          child: const Text("삭제")),
-                                    ),
-                                  ]),
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(12)),
+                                      side:
+                                          BorderSide(color: Colors.blueAccent)),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 20),
+                                          child: Text(
+                                              "${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          12))),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  side: const BorderSide(
+                                                    color: Colors.cyan,
+                                                  )),
+                                              onPressed: () {},
+                                              child: const Text("삭제")),
+                                        ),
+                                      ]),
                                 );
                               }),
                         ))),
@@ -543,11 +625,17 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           } else {
                             List<String> periodicList = [];
                             for (var element in itemList) {
-                              String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
+                              String target =
+                                  "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
                               print(target);
                               periodicList.add(target);
                             }
-                            postBody = {'name': nameTec.text, 'body': bodyTec.text, 'periodicType': isPeriodic, 'periodicTimeStringList': periodicList};
+                            postBody = {
+                              'name': nameTec.text,
+                              'body': bodyTec.text,
+                              'periodicType': isPeriodic,
+                              'periodicTimeStringList': periodicList
+                            };
                             print(postBody);
                           }
                         } else {
@@ -563,13 +651,19 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           }
                           print(nonDate.toString().split(" ")[0]);
                           print(nonPeriodicStartTime);
-
+                          var startMin =
+                              nonPeriodicStartTime!.minute.toString();
+                          if (startMin == "0") startMin = "00";
+                          var endMin = nonPeriodicEndTime!.minute.toString();
+                          if (endMin == "0") endMin = "00";
                           postBody = {
                             'name': nameTec.text,
                             'body': bodyTec.text,
                             'periodicType': isPeriodic,
-                            'startTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicStartTime!.hour}:${nonPeriodicStartTime!.minute}:00",
-                            'endTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicEndTime!.hour}:${nonPeriodicEndTime!.minute}:00",
+                            'startTime':
+                                "${nonDate.toString().split(" ")[0]}T${nonPeriodicStartTime!.hour}:${startMin}:00",
+                            'endTime':
+                                "${nonDate.toString().split(" ")[0]}T${nonPeriodicEndTime!.hour}:${endMin}:00",
                           };
                         }
                         print(postBody);
@@ -601,7 +695,12 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                         //       };
                         var url = Uri.http(baseUri, '/timetable/saveSchedule');
                         print(url);
-                        var response = await http.post(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
+                        var response = await http.post(url,
+                            headers: <String, String>{
+                              'Content-Type': 'application/json',
+                              'authorization': 'Bearer $jwtToken'
+                            },
+                            body: jsonEncode(postBody));
                         if (response.statusCode == 200) {
                           print('success!');
                           print(response.body);
