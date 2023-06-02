@@ -13,6 +13,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 const double defaultBoxWidth = 75;
 const double defaultBoxHeight = 35;
@@ -438,6 +439,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
 
   var findScheduleStartTec = TextEditingController();
   var findScheduleEndTec = TextEditingController();
+  var findScheduleTec = TextEditingController();
   bool isSearched = false;
   late List<ScheduleInfo> scheduleInfoList;
 
@@ -451,62 +453,88 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               contentPadding: const EdgeInsets.all(8),
               children: [
                 TextField(
-                    controller: findScheduleStartTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_month_outlined),
-                      labelText: '시작일자',
-                    ),
-                    keyboardType: TextInputType.none,
-                    onTap: () async {
-                      {
-                        DateTime? pickeddate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2030),
-                          initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        );
-                        if (pickeddate != null) {
-                          setState(() {
-                            findScheduleStartTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                          });
-                        }
-                      }
-                    }),
+                  controller: findScheduleStartTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '시작시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  // onTap: () async {
+                  //   {
+                  //     DateTime? pickeddate = await showDatePicker(
+                  //       context: context,
+                  //       initialDate: DateTime.now().toUtc().add(const Duration(hours: 9)),
+                  //       firstDate: DateTime(2000),
+                  //       lastDate: DateTime(2030),
+                  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
+                  //     );
+                  //     if (pickeddate != null) {
+                  //       setState(() {
+                  //         findScheduleStartTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                  //       });
+                  //     }
+                  //   }
+                  // }
+                ),
                 TextField(
-                    controller: findScheduleEndTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_month_outlined),
-                      labelText: '종료일자',
-                    ),
-                    keyboardType: TextInputType.none,
-                    onTap: () async {
-                      {
-                        DateTime? pickeddate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2030),
-                          initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        );
-                        if (pickeddate != null) {
-                          setState(() {
-                            findScheduleEndTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                          });
-                        }
-                      }
-                    }),
+                  controller: findScheduleEndTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '종료시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  // onTap: () async {
+                  //   {
+                  //     DateTime? pickeddate = await showDatePicker(
+                  //       context: context,
+                  //       initialDate: DateTime.now().toUtc().add(const Duration(hours: 9)),
+                  //       firstDate: DateTime(2000),
+                  //       lastDate: DateTime(2030),
+                  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
+                  //     );
+                  //     if (pickeddate != null) {
+                  //       setState(() {
+                  //         findScheduleEndTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
+                  //       });
+                  //     }
+                  //   }
+                  // }
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 OutlinedButton(
                     onPressed: () async {
+                      onTap:
+                      List<DateTime>? dates = await showOmniDateTimeRangePicker(
+                        context: context,
+                        is24HourMode: true,
+                        isForce2Digits: true,
+                        minutesInterval: 30,
+                      );
+                      if (dates != null) {
+                        setState(() {
+                          findScheduleStartTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[0]);
+                          findScheduleEndTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[1]);
+                        });
+                      }
+                    },
+                    child: const Text('시간 선택')),
+                OutlinedButton(
+                    onPressed: () async {
+                      if (findScheduleStartTec.text == '' || findScheduleEndTec.text == '') {
+                        Fluttertoast.showToast(msg: '시간을 선택해주세요');
+                        return;
+                      }
                       var url = Uri.http(baseUri, '/timetable/findSchedule');
                       var response = await http.post(url,
                           headers: {
                             'authorization': 'Bearer $jwtToken',
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json; charset=UTF-8',
                           },
                           body: jsonEncode({
-                            'startTime': '${findScheduleStartTec.text}T00:00:00',
-                            'endTime': '${findScheduleEndTec.text}T00:00:00',
+                            'startTime': findScheduleStartTec.text,
+                            'endTime': findScheduleEndTec.text,
                           }));
                       if (response.statusCode == 200) {
                         isSearched = true;
