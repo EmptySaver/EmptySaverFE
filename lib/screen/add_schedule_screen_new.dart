@@ -110,8 +110,8 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
       child: Stack(
         children: <Widget>[
           Container(
-              //height: 700,
-              padding: const EdgeInsets.all(10.0),
+            //height: 700,
+            padding: const EdgeInsets.all(10.0),
             decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -247,16 +247,13 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                     end: const TimeOfDay(hour: 15, minute: 0));
                                 if (result != null) {
                                   setState(() {
-                                    if ((result.startTime.hour >
-                                        result.endTime.hour)) {
-                                      Fluttertoast.showToast(
-                                          msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                    if ((result.startTime.hour > result.endTime.hour)) {
+                                      Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                       return;
                                     }
                                     nonPeriodicStartTime = result.startTime;
                                     nonPeriodicEndTime = result.endTime;
-                                    timeInfo =
-                                        '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                    timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                   });
                                 }
                               },
@@ -340,7 +337,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                                 });
                               },
                               buttonStyleData: ButtonStyleData(
-                                height: 50,
+                                height: 40,
                                 width: 120,
                                 padding: const EdgeInsets.only(left: 14, right: 14),
                                 decoration: BoxDecoration(
@@ -383,9 +380,9 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.fromLTRB(70, 0, 30, 0),
+                          padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
                           width: 200,
-                          height: 50,
+                          height: 40,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.white,
@@ -429,6 +426,9 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                         ),
                       ],
                     )),
+                const SizedBox(
+                  height: 10,
+                ),
                 Visibility(
                     visible: isSelectPlan && isPeriodic,
                     child: Row(
@@ -535,25 +535,19 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                           return;
                         }
 
-                        var postBody;
+                        Map<String, Object> postBody;
                         if (isPeriodic) {
                           if (itemList.isEmpty) {
                             Fluttertoast.showToast(msg: '일시를 1개 이상 추가해야 합니다.');
                             return;
                           } else {
                             List<String> periodicList = [];
-                            itemList.forEach((element) {
-                              String target =
-                                  "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
+                            for (var element in itemList) {
+                              String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
                               print(target);
                               periodicList.add(target);
-                            });
-                            postBody = {
-                              'name': nameTec.text,
-                              'body': bodyTec.text,
-                              'periodicType': isPeriodic,
-                              'periodicTimeStringList': periodicList
-                            };
+                            }
+                            postBody = {'name': nameTec.text, 'body': bodyTec.text, 'periodicType': isPeriodic, 'periodicTimeStringList': periodicList};
                             print(postBody);
                           }
                         } else {
@@ -607,12 +601,7 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                         //       };
                         var url = Uri.http(baseUri, '/timetable/saveSchedule');
                         print(url);
-                        var response = await http.post(url,
-                            headers: <String, String>{
-                              'Content-Type': 'application/json',
-                              'authorization': 'Bearer $jwtToken'
-                            },
-                            body: jsonEncode(postBody));
+                        var response = await http.post(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
                         if (response.statusCode == 200) {
                           print('success!');
                           print(response.body);
