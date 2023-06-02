@@ -456,7 +456,7 @@ class _AddGroupScheduleScreenState extends ConsumerState<AddGroupScheduleScreen>
                           }));
                       if (response.statusCode == 200) {
                         isFinded = true;
-                        findedEmptyTimeList = jsonDecode(response.body);
+                        findedEmptyTimeList = jsonDecode(utf8.decode(response.bodyBytes));
                       } else {
                         print(utf8.decode(response.bodyBytes));
                       }

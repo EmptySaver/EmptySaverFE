@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:emptysaver_fe/core//assets.dart';
-import 'package:emptysaver_fe/widgets/network_image.dart';
 
 class SignupScreen extends StatefulWidget {
   String? firebaseToken;
@@ -79,8 +76,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     isClicked = true;
-    var url =
-        Uri.parse('http://43.201.208.100:8080/auth/sendEmail/${addrTec.text}');
+    var url = Uri.parse('http://43.201.208.100:8080/auth/sendEmail/${addrTec.text}');
     _time = 100;
     _setTimer();
     var response = await http.post(
@@ -104,11 +100,7 @@ class _SignupScreenState extends State<SignupScreen> {
     //   Fluttertoast.showToast(msg: '이메일 인증 후 진행해주세요');
     //   return;
     // }
-    if (!_checkSpace(addrTec.text) ||
-        !_checkSpace(pwdTec.text) ||
-        !_checkSpace(classnumTec.text) ||
-        !_checkSpace(nameTec.text) ||
-        !_checkSpace(nicknameTec.text)) {
+    if (!_checkSpace(addrTec.text) || !_checkSpace(pwdTec.text) || !_checkSpace(classnumTec.text) || !_checkSpace(nameTec.text) || !_checkSpace(nicknameTec.text)) {
       Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
       return;
     }
@@ -141,9 +133,7 @@ class _SignupScreenState extends State<SignupScreen> {
         'name': nameTec.text,
         'nickname': nicknameTec.text,
       }),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8'
-      },
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
     );
     if (response.statusCode == 200) {
       // Fluttertoast.showToast(msg: '가입되었습니다');
@@ -172,10 +162,10 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 30.0,
           ),
           const Image(
-              image: AssetImage('assets/logoVer2.png'),
-              width: 250,
-              height: 150,
-              color: Colors.blueAccent,
+            image: AssetImage('assets/logoVer2.png'),
+            width: 250,
+            height: 150,
+            color: Colors.blueAccent,
           ),
           const SizedBox(
             height: 10.0,
@@ -205,57 +195,55 @@ class _SignupScreenState extends State<SignupScreen> {
       child: Stack(
         children: <Widget>[
           Container(
-              //height: 600,
+            //height: 600,
             decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
 
             padding: const EdgeInsets.all(10.0),
-              /*
+            /*
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(40.0)),
                 color: Colors.white,
               ),*/
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Row(
-                        children: [
-                          AbsorbPointer(
-                              absorbing: isauthed,
-                              child: SizedBox(
-                                width: 200,
-                                child: TextField(
-                                  controller: addrTec,
-                                  style: const TextStyle(color: Colors.blue),
-                                  decoration: InputDecoration(
-                                      hintText: "@uos.ac.kr",
-                                      hintStyle: TextStyle(
-                                          color: Colors.blue.shade200),
-                                      border: InputBorder.none,
-                                      icon: const Icon(
-                                        Icons.email,
-                                        color: Colors.blue,
-                                      )),
-                                ),
-                              )),
-                          Expanded(child: OutlinedButton(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        AbsorbPointer(
+                            absorbing: isauthed,
+                            child: SizedBox(
+                              width: 200,
+                              child: TextField(
+                                controller: addrTec,
+                                style: const TextStyle(color: Colors.blue),
+                                decoration: InputDecoration(
+                                    hintText: "@uos.ac.kr",
+                                    hintStyle: TextStyle(color: Colors.blue.shade200),
+                                    border: InputBorder.none,
+                                    icon: const Icon(
+                                      Icons.email,
+                                      color: Colors.blue,
+                                    )),
+                              ),
+                            )),
+                        Expanded(
+                          child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-
-                              side: const BorderSide(color: Colors.blue,width: 1.5),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30)),
+                              side: const BorderSide(color: Colors.blue, width: 1.5),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                             ),
                             onPressed: isauthed
                                 ? null
                                 : () {
-                              setState(() {
-                                postMyEmail();
-                              });
-                            },
+                                    setState(() {
+                                      postMyEmail();
+                                    });
+                                  },
                             child: Text(
                               isauthed ? '인증완료' : '이메일 인증',
                               style: const TextStyle(
@@ -266,198 +254,189 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             ),
                           ),
-                          )
-
-                        ],
-                      )),
-                  Visibility(
-                    visible: isClicked,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        TextField(
-                          controller: authTec,
-                          decoration: const InputDecoration(
-                            labelText: '인증코드',
-                            hintText: '코드를 입력하세요',
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            ),
-                          ),
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        //전송, 재전송버튼
-                        OutlinedButton(
-                          onPressed: () {
-                            if (authTec.text == authResponse) {
-                              Fluttertoast.showToast(msg: '인증되었습니다');
-                              isauthed = true;
-                              setState(() {
-                                isClicked = false;
-                              });
-                            } else {
-                              Fluttertoast.showToast(msg: '코드가 다릅니다');
-                            }
-                          },
-                          child: const Text(
-                            '확인',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          "남은시간 : $_time",
-                          style: const TextStyle(color: Colors.red),
                         )
                       ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
-                    child: Divider(
-                      color: Colors.blue.shade400,
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
-                        controller: pwdTec,
-                        style: const TextStyle(color: Colors.blue),
-                        decoration: InputDecoration(
-                            hintText: "Password",
-                            hintStyle: TextStyle(color: Colors.blue.shade200),
-                            border: InputBorder.none,
-                            icon: const Icon(
-                              Icons.lock,
-                              color: Colors.blue,
-                            )),
+                    )),
+                Visibility(
+                  visible: isClicked,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextField(
+                        controller: authTec,
+                        decoration: const InputDecoration(
+                          labelText: '인증코드',
+                          hintText: '코드를 입력하세요',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                        ),
                         keyboardType: TextInputType.visiblePassword,
-                        obscureText: true,
-                      )),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
-                    child: Divider(
-                      color: Colors.blue.shade400,
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
-                        controller: pwdTec2,
-                        style: const TextStyle(color: Colors.blue),
-                        decoration: InputDecoration(
-                            hintText: "Confirm password",
-                            hintStyle: TextStyle(color: Colors.blue.shade200),
-                            border: InputBorder.none,
-                            icon: const Icon(
-                              Icons.lock,
-                              color: Colors.blue,
-                            )),
-                        obscureText: true,
-                      )),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
-                    child: Divider(
-                      color: Colors.blue.shade400,
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
-                        controller: classnumTec,
-                        style: const TextStyle(color: Colors.blue),
-                        decoration: InputDecoration(
-                            hintText: "학번(ex, 20xx9200xx)",
-                            hintStyle: TextStyle(color: Colors.blue.shade200),
-                            border: InputBorder.none,
-                            icon: const Icon(
-                              Icons.school,
-                              color: Colors.blue,
-                            )),
-                        keyboardType: TextInputType.visiblePassword,
-                      )),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
-                    child: Divider(
-                      color: Colors.blue.shade400,
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
-                        controller: nameTec,
-                        style: const TextStyle(color: Colors.blue),
-                        decoration: InputDecoration(
-                            hintText: "이름",
-                            hintStyle: TextStyle(color: Colors.blue.shade200),
-                            border: InputBorder.none,
-                            icon: const Icon(
-                              Icons.person,
-                              color: Colors.blue,
-                            )),
-                        keyboardType: TextInputType.visiblePassword,
-                      )),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
-                    child: Divider(
-                      color: Colors.blue.shade400,
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: TextField(
-                        controller: nicknameTec,
-                        style: const TextStyle(color: Colors.blue),
-                        decoration: InputDecoration(
-                            hintText: "닉네임",
-                            hintStyle: TextStyle(color: Colors.blue.shade200),
-                            border: InputBorder.none,
-                            icon: const Icon(
-                              Icons.person_off,
-                              color: Colors.blue,
-                            )),
-                        keyboardType: TextInputType.visiblePassword,
-                      )),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 10.0),
-                    child: Divider(
-                      color: Colors.blue.shade400,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-
-                      side: const BorderSide(color: Colors.blue,width: 1.8),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                    onPressed: postSignUp,
-                    child: const Text("Sign Up",
-                      style: TextStyle(
-                        //fontFamily: 'NimbusSanL',
-                        fontSize: 15,
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //전송, 재전송버튼
+                      OutlinedButton(
+                        onPressed: () {
+                          if (authTec.text == authResponse) {
+                            Fluttertoast.showToast(msg: '인증되었습니다');
+                            isauthed = true;
+                            setState(() {
+                              isClicked = false;
+                            });
+                          } else {
+                            Fluttertoast.showToast(msg: '코드가 다릅니다');
+                          }
+                        },
+                        child: const Text(
+                          '확인',
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "남은시간 : $_time",
+                        style: const TextStyle(color: Colors.red),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: pwdTec,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.lock,
+                            color: Colors.blue,
+                          )),
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: pwdTec2,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "Confirm password",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.lock,
+                            color: Colors.blue,
+                          )),
+                      obscureText: true,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: classnumTec,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "학번(ex, 20xx9200xx)",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.school,
+                            color: Colors.blue,
+                          )),
+                      keyboardType: TextInputType.visiblePassword,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: nameTec,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "이름",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.person,
+                            color: Colors.blue,
+                          )),
+                      keyboardType: TextInputType.name,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: nicknameTec,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "닉네임",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.person_off,
+                            color: Colors.blue,
+                          )),
+                      keyboardType: TextInputType.name,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.blue, width: 1.8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  ),
+                  onPressed: postSignUp,
+                  child: const Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      //fontFamily: 'NimbusSanL',
+                      fontSize: 15,
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
         ],
       ),
     );
