@@ -91,10 +91,11 @@ class ScheduleInfo {
   String? body;
   bool? periodicType;
   String? category;
+  String? subCategory;
   Group? groupInfo;
   String? timeData;
 
-  ScheduleInfo({this.id, this.name, this.body, this.periodicType, this.category, this.groupInfo, this.timeData});
+  ScheduleInfo({this.id, this.name, this.body, this.periodicType, this.category, this.subCategory, this.groupInfo, this.timeData});
 
   ScheduleInfo.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -102,6 +103,7 @@ class ScheduleInfo {
     body = json["body"];
     periodicType = json["periodicType"];
     category = json["category"];
+    subCategory = json["subCategory"];
     groupInfo = json["groupInfo"] == null ? null : Group.fromJson(json["groupInfo"]);
     timeData = json["timeData"];
   }
@@ -113,6 +115,7 @@ class ScheduleInfo {
     data["body"] = body;
     data["periodicType"] = periodicType;
     data["category"] = category;
+    data["subCategory"] = subCategory;
     if (groupInfo != null) {
       data["groupInfo"] = groupInfo?.toJson();
     }

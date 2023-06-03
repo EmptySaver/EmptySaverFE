@@ -11,6 +11,7 @@ import 'package:emptysaver_fe/screen/notifications_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:emptysaver_fe/screen/tutorial_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -119,7 +120,32 @@ class _BarScreenState extends ConsumerState<BarScreen> {
           icon: const Icon(Icons.logout),
         ),
       ),
-      body: bodyWidgets.elementAt(selectedIndex),
+      body: WillPopScope(
+          onWillPop: () async {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('앱 종료'),
+                content: const Text('앱을 종료하시겠습니까?'),
+                actions: [
+                  TextButton(
+                    child: const Text('취소'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false); // 앱 종료 취소
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('확인'),
+                    onPressed: () {
+                      SystemNavigator.pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+            return false; // 앱 종료 막음
+          },
+          child: bodyWidgets.elementAt(selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
           elevation: 100,
           type: BottomNavigationBarType.fixed,

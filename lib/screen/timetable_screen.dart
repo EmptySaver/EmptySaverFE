@@ -459,22 +459,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                     labelText: '시작시간',
                   ),
                   keyboardType: TextInputType.none,
-                  // onTap: () async {
-                  //   {
-                  //     DateTime? pickeddate = await showDatePicker(
-                  //       context: context,
-                  //       initialDate: DateTime.now().toUtc().add(const Duration(hours: 9)),
-                  //       firstDate: DateTime(2000),
-                  //       lastDate: DateTime(2030),
-                  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
-                  //     );
-                  //     if (pickeddate != null) {
-                  //       setState(() {
-                  //         findScheduleStartTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                  //       });
-                  //     }
-                  //   }
-                  // }
+                  readOnly: true,
                 ),
                 TextField(
                   controller: findScheduleEndTec,
@@ -483,34 +468,20 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                     labelText: '종료시간',
                   ),
                   keyboardType: TextInputType.none,
-                  // onTap: () async {
-                  //   {
-                  //     DateTime? pickeddate = await showDatePicker(
-                  //       context: context,
-                  //       initialDate: DateTime.now().toUtc().add(const Duration(hours: 9)),
-                  //       firstDate: DateTime(2000),
-                  //       lastDate: DateTime(2030),
-                  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
-                  //     );
-                  //     if (pickeddate != null) {
-                  //       setState(() {
-                  //         findScheduleEndTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                  //       });
-                  //     }
-                  //   }
-                  // }
+                  readOnly: true,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 OutlinedButton(
                     onPressed: () async {
-                      onTap:
                       List<DateTime>? dates = await showOmniDateTimeRangePicker(
                         context: context,
                         is24HourMode: true,
                         isForce2Digits: true,
                         minutesInterval: 30,
+                        startInitialDate: DateTime.now().add(const Duration(hours: 9)),
+                        endInitialDate: DateTime.now().add(const Duration(hours: 10)),
                       );
                       if (dates != null) {
                         setState(() {
@@ -549,6 +520,9 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                       }
                     },
                     child: const Text('공개 스케줄 검색')),
+                const SizedBox(
+                  height: 20,
+                ),
                 if (isSearched)
                   SizedBox(
                     height: 500,
@@ -565,18 +539,26 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                 ));
                           },
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
                                 width: double.infinity,
                                 child: Column(
                                   children: [
+                                    Text(
+                                      scheduleInfoList[index].groupInfo!.groupName!,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                    ),
                                     Text(scheduleInfoList[index].name!),
                                     Text(scheduleInfoList[index].body!),
-                                    // Text(scheduleInfoList[index].category!),
+                                    Text('${scheduleInfoList[index].category} - ${scheduleInfoList[index].subCategory}'),
+                                    Text(scheduleInfoList[index].timeData!),
                                   ],
                                 ),
                               ),
-                              const Divider()
+                              const Divider(
+                                thickness: 1.2,
+                              )
                             ],
                           ),
                         );
