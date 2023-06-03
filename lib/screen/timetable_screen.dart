@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/lecture_search_result_screen.dart';
+import 'package:emptysaver_fe/screen/today_movie_screen.dart';
 import 'package:emptysaver_fe/screen/update_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -268,6 +269,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                           !(lectureInfo['groupType'] == true)
                                                               ? TextButton(
                                                                   onPressed: () {
+                                                                    Navigator.pop(context);
                                                                     Navigator.push(
                                                                         context,
                                                                         MaterialPageRoute(
@@ -313,7 +315,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      Text(memberNameListsTotal[h][i]),
+                                                      Text(memberNameListsTotal[h][i] ?? 'null'),
                                                     ],
                                                   ),
                                                 ),
@@ -392,40 +394,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                     label: '오늘 영화',
                     backgroundColor: Colors.deepPurple.shade100,
                     onTap: () {
-                      todayMovieListFuture = getTodayMovie();
-                      showDialog(
-                        context: context,
-                        builder: (context) => SimpleDialog(
-                          children: [
-                            FutureBuilder(
-                              future: todayMovieListFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  var todayMovieList = snapshot.data!;
-                                  return SizedBox(
-                                    height: 500,
-                                    width: 400,
-                                    child: ListView.builder(
-                                      itemCount: todayMovieList.length,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          child: Column(
-                                            children: [Text('${todayMovieList[index].name}'), Text('${todayMovieList[index].timeData}')],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                              },
-                            )
-                          ],
-                        ),
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) => const TodayMovieScreen(),
+                          ));
                     },
                   ),
                 ],
@@ -571,20 +544,6 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         );
       },
     );
-  }
-
-  Future<List<ScheduleText>> todayMovieListFuture = Future(() => []);
-  Future<List<ScheduleText>> getTodayMovie() async {
-    var url = Uri.http(baseUri, '/timetable/getMovieScheduleList');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-    if (response.statusCode == 200) {
-      var data = (jsonDecode(utf8.decode(response.bodyBytes)) as List).map((e) => ScheduleText.fromJson(e)).toList();
-      print(data);
-      return data;
-    } else {
-      print(utf8.decode(response.bodyBytes));
-      throw Exception('오늘 영화 불러오기 실패');
-    }
   }
 }
 
