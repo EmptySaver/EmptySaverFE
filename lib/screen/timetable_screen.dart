@@ -16,7 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-const double defaultBoxWidth = 75;
+const double defaultBoxWidth = 73;
 const double defaultBoxHeight = 35;
 
 class TimeTableScreen extends ConsumerStatefulWidget {
@@ -96,6 +96,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                       },
                       child: SingleChildScrollView(
                         child: Container(
+                          width: 388,
                           // height: MediaQuery.of(context).size.height,
                           decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(10)),
                           child: Row(children: [
@@ -631,7 +632,7 @@ class DefaultHeaderBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 75,
+      width: 73,
       height: 20,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.blueGrey, width: 0.2),
