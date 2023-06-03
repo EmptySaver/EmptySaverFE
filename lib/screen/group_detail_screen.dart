@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
+import 'package:emptysaver_fe/screen/add_group_schedule_new.dart';
 import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
 import 'package:emptysaver_fe/screen/make_post_screen.dart';
@@ -647,7 +647,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AddGroupScheduleScreen(groupData: groupData),
+          builder: (context) => AddGroupScheduleScreenNew(groupData: groupData),
         )).then((value) => setState(
           () {
             groupScheduleTextListFuture = getGroupScheduleTextList();
