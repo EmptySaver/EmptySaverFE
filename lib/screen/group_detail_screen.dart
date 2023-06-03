@@ -308,7 +308,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) => UpdateGroupScheduleScreen(
                                                           groupData: groupData,
-                                                          scheduleId: snapshot.data![index].id,
+                                                          scheduleText: snapshot.data![index],
                                                         ),
                                                       )).then((value) => setState(
                                                         () {
