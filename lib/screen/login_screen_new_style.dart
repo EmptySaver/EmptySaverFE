@@ -96,10 +96,10 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
       },
     );
     if (response.statusCode == 200) {
-      if (isAutoLogin) {
-        await storage.write(key: 'login', value: jsonEncode(loginInfo));
-        print('유저정보 저장');
-      }
+      // if (isAutoLogin) {
+      await storage.write(key: 'login', value: jsonEncode(loginInfo));
+      print('유저정보 저장');
+      // }
       await storage.write(key: 'jwtToken', value: response.body);
       var jwtToken = await storage.read(key: 'jwtToken');
       AutoLoginController.to.addToken(jwtToken!);
@@ -214,26 +214,26 @@ class _LoginScreenStateNew extends ConsumerState<NewLoginScreen> {
                     color: Colors.blue.shade400,
                   ),
                 ),
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Checkbox(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                      value: isAutoLogin,
-                      onChanged: (value) {
-                        setState(() {
-                          isAutoLogin = value!;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    const Text('자동 로그인'),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     const SizedBox(
+                //       width: 10,
+                //     ),
+                //     Checkbox(
+                //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                //       value: isAutoLogin,
+                //       onChanged: (value) {
+                //         setState(() {
+                //           isAutoLogin = value!;
+                //         });
+                //       },
+                //     ),
+                //     const SizedBox(
+                //       width: 5,
+                //     ),
+                //     const Text('자동 로그인'),
+                //   ],
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

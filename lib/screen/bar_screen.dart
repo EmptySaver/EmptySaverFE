@@ -87,8 +87,10 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         actions: [

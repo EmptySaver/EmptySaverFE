@@ -192,9 +192,8 @@ void routeSwitching(String? routeValue, {String? idType, String? idType2, int? i
   switch (routeValue) {
     case 'notification':
       switch (idType) {
-        case 'x': // 공지사항 등록시 알림인데 따로 이동해야하나? postId, groupId 필요
+        case 'x': 
           Get.to(() => GroupDetailScreen(
-                // groupId 필요
                 groupId: idValue,
               ));
           break;
@@ -202,7 +201,6 @@ void routeSwitching(String? routeValue, {String? idType, String? idType2, int? i
           print('스케줄아이디 : $idValue');
           print('그룹id : $idValue2');
           Get.to(() => GroupDetailScreen(
-                // groupId 필요
                 groupId: idValue2,
               ));
           break;

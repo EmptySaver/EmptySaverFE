@@ -62,14 +62,17 @@ class _UpdateScheduleScreenState extends State<UpdateScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          '일정 변경',
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text(
+            '일정 변경',
+          ),
         ),
+        body: _buildPageContent(context),
       ),
-      body: _buildPageContent(context),
     );
   }
 
