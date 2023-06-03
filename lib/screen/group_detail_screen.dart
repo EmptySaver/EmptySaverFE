@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
-import 'package:emptysaver_fe/screen/add_group_schedule_screen.dart';
+import 'package:emptysaver_fe/screen/add_group_schedule_new.dart';
 import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
 import 'package:emptysaver_fe/screen/make_post_screen.dart';
@@ -57,34 +57,27 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       appBar: AppBar(
         title: const Text('그룹 상세'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz)),
           IconButton(
-              onPressed: () async {
-                var url = Uri.http(baseUri, '/group/deleteMe/${widget.groupId}');
-                var response = await http.delete(url, headers: {
-                  'authorization': 'Bearer $jwtToken',
+              onPressed: () {
+                showMenu(context: context, position: const RelativeRect.fromLTRB(1, 0, 0, 0), items: <PopupMenuEntry>[
+                  if (amIOwner)
+                    const PopupMenuItem(
+                      value: 0,
+                      child: Text('그룹 삭제'),
+                    ),
+                  const PopupMenuItem(
+                    value: 1,
+                    child: Text('그룹 탈퇴'),
+                  ),
+                ]).then((value) {
+                  if (value == 0) {
+                    deleteGroup(context);
+                  } else if (value == 1) {
+                    withdrawalGroup();
+                  }
                 });
-                if (response.statusCode == 200) {
-                  Fluttertoast.showToast(msg: '탈퇴되었습니다');
-                } else {
-                  print(utf8.decode(response.bodyBytes));
-                }
               },
-              icon: const Icon(Icons.outbond_outlined)),
-          IconButton(
-              onPressed: () async {
-                var url = Uri.http(baseUri, '/group/delete/${widget.groupId}');
-                var response = await http.delete(url, headers: {
-                  'authorization': 'Bearer $jwtToken',
-                });
-                if (response.statusCode == 200) {
-                  Fluttertoast.showToast(msg: '그룹이 삭제되었습니다');
-                  Navigator.pop(context, '');
-                } else {
-                  print(utf8.decode(response.bodyBytes));
-                }
-              },
-              icon: const Icon(Icons.delete_forever_outlined))
+              icon: const Icon(Icons.more_horiz)),
         ],
       ),
       body: Padding(
@@ -315,7 +308,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                                       MaterialPageRoute(
                                                         builder: (context) => UpdateGroupScheduleScreen(
                                                           groupData: groupData,
-                                                          scheduleId: snapshot.data![index].id,
+                                                          scheduleText: snapshot.data![index],
                                                         ),
                                                       )).then((value) => setState(
                                                         () {
@@ -561,6 +554,32 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
+  void deleteGroup(BuildContext context) async {
+    var url = Uri.http(baseUri, '/group/delete/${widget.groupId}');
+    var response = await http.delete(url, headers: {
+      'authorization': 'Bearer $jwtToken',
+    });
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: '그룹이 삭제되었습니다');
+      Navigator.pop(context, '');
+    } else {
+      print(utf8.decode(response.bodyBytes));
+    }
+  }
+
+  void withdrawalGroup() async {
+    var url = Uri.http(baseUri, '/group/deleteMe/${widget.groupId}');
+    var response = await http.delete(url, headers: {
+      'authorization': 'Bearer $jwtToken',
+    });
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: '탈퇴되었습니다');
+      Navigator.pop(context);
+    } else {
+      print(utf8.decode(response.bodyBytes));
+    }
+  }
+
   Future<Group> getGroupDetail() async {
     var url = Uri.http(baseUri, '/group/getGroupDetail/${widget.groupId}');
     var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
@@ -628,7 +647,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AddGroupScheduleScreen(groupData: groupData),
+          builder: (context) => AddGroupScheduleScreenNew(groupData: groupData),
         )).then((value) => setState(
           () {
             groupScheduleTextListFuture = getGroupScheduleTextList();

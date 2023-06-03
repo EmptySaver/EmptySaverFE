@@ -1,78 +1,186 @@
 import 'dart:convert';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:interval_time_picker/interval_time_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:time_range_picker/time_range_picker.dart';
 import 'package:http/http.dart' as http;
 
-class UpdateGroupScheduleScreen extends ConsumerStatefulWidget {
+class UpdateGroupScheduleScreen extends StatefulWidget {
   Group? groupData;
-  int? scheduleId;
-  UpdateGroupScheduleScreen({super.key, this.groupData, this.scheduleId});
+  ScheduleText? scheduleText;
+
+  UpdateGroupScheduleScreen({super.key, this.groupData, this.scheduleText});
 
   @override
-  ConsumerState<UpdateGroupScheduleScreen> createState() => _UpdateGroupScheduleScreenState();
+  State<UpdateGroupScheduleScreen> createState() => _AddGroupScheduleScreenNewState();
 }
 
-class _UpdateGroupScheduleScreenState extends ConsumerState<UpdateGroupScheduleScreen> {
+class _AddGroupScheduleScreenNewState extends State<UpdateGroupScheduleScreen> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
-
   final List<bool> _selections = List.generate(2, (_) => false);
   bool isPeriodic = false;
-  var dateTec = TextEditingController(text: '');
+  bool isChecked = false;
   var nameTec = TextEditingController(text: '');
   var bodyTec = TextEditingController(text: '');
-  var daysTec1 = TextEditingController();
-  var daysTec2 = TextEditingController();
-  var timeTec1 = TextEditingController();
-  var timeTec2 = TextEditingController();
-  var timeTec3 = TextEditingController();
-  var timeTec4 = TextEditingController();
   bool isAdded = false;
   String? startTime;
   String? endTime;
-  List<DropdownMenuEntry<String>> days = [
-    const DropdownMenuEntry(value: '월', label: '월'),
-    const DropdownMenuEntry(value: '화', label: '화'),
-    const DropdownMenuEntry(value: '수', label: '수'),
-    const DropdownMenuEntry(value: '목', label: '목'),
-    const DropdownMenuEntry(value: '금', label: '금'),
-    const DropdownMenuEntry(value: '토', label: '토'),
-    const DropdownMenuEntry(value: '일', label: '일'),
+  String dateInfo = "일정을 선택해주세요";
+  String timeInfo = "시간을 선택해주세요";
+  String perTimeInfo = "시간 선택";
+  List<String> items = [
+    '월',
+    '화',
+    '수',
+    '목',
+    '금',
+    '토',
+    '일',
   ];
+  String? selectedValue;
+  TimeOfDay? startDayTime;
+  TimeOfDay? endDayTime;
+  bool isSelectPlan = false;
+  List<Item> itemList = [];
+  DateTime? nonDate;
+  TimeOfDay? nonPeriodicStartTime;
+  TimeOfDay? nonPeriodicEndTime;
+
+  @override
+  void initState() {
+    super.initState();
+    nameTec.text = widget.scheduleText!.name!;
+    bodyTec.text = widget.scheduleText!.body!;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('그룹 일정 추가'),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          // elevation: 0,
+          // systemOverlayStyle: SystemUiOverlayStyle.light,
+          // iconTheme: const IconThemeData(color: Colors.black),
+          // backgroundColor: Colors.transparent,
+          title: const Text(
+            '그룹 일정 변경',
+          ),
+        ),
+        body: _buildPageContent(context),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Center(
-          child: GestureDetector(
-            // behavior: HitTestBehavior.opaque,
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 30,
+    );
+  }
+
+  Widget _buildPageContent(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: ListView(
+        children: <Widget>[
+          const Image(
+            image: AssetImage('assets/logoVer2.png'),
+            width: 250,
+            height: 150,
+            color: Colors.blueAccent,
+          ),
+          // const SizedBox(
+          //   height: 30.0,
+          // ),
+          // const CircleAvatar(
+          //   maxRadius: 50,
+          //   backgroundColor: Colors.transparent,
+          //   child: PNetworkImage(origami),
+          // ),
+          // const SizedBox(
+          //   height: 20.0,
+          // ),
+          _buildAddScheduleForm(context),
+        ],
+      ),
+    );
+  }
+
+  Container _buildAddScheduleForm(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      child: Stack(
+        children: <Widget>[
+          Container(
+            //height: 700,
+            padding: const EdgeInsets.all(10.0),
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: nameTec,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "일정 제목",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.school,
+                            color: Colors.blue,
+                          )),
+                      keyboardType: TextInputType.name,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
                   ),
-                  ToggleButtons(
+                ),
+                Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextField(
+                      controller: bodyTec,
+                      style: const TextStyle(color: Colors.blue),
+                      decoration: InputDecoration(
+                          hintText: "간단한 내용",
+                          hintStyle: TextStyle(color: Colors.blue.shade200),
+                          border: InputBorder.none,
+                          icon: const Icon(
+                            Icons.textsms,
+                            color: Colors.blue,
+                          )),
+                      keyboardType: TextInputType.text,
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: ToggleButtons(
                     isSelected: _selections,
                     children: const [
-                      Text('비주기적'),
-                      Text('주기적'),
+                      Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text("이번에만 할래요"),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text("매주 할래요"),
+                      )
                     ],
                     onPressed: (index) async {
+                      isChecked = true;
                       for (int i = 0; i < _selections.length; i++) {
                         _selections[i] = (i == index);
                       }
@@ -86,285 +194,552 @@ class _UpdateGroupScheduleScreenState extends ConsumerState<UpdateGroupScheduleS
                       setState(() {});
                     },
                   ),
-                  const SizedBox(
-                    height: 30,
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
                   ),
-                  Visibility(
-                    visible: !isPeriodic,
-                    child: TextField(
-                        controller: dateTec,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.calendar_month_outlined),
-                          labelText: '날짜 선택',
+                ),
+                Visibility(
+                    visible: isChecked && !isPeriodic,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.calendar_month),
+                              onPressed: () async {
+                                DateTime currentTime = await NTP.now();
+                                currentTime = currentTime.toUtc().add(const Duration(hours: 9));
+                                DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
+                                if (result != null) {
+                                  setState(() {
+                                    nonDate = result;
+                                    print("nonDate: ${nonDate.toString()}");
+                                    dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                  });
+                                }
+                              },
+                            ),
+                            TextButton(
+                                onPressed: () async {
+                                  DateTime currentTime = await NTP.now();
+                                  currentTime = currentTime.toUtc().add(const Duration(hours: 9));
+                                  DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
+                                  if (result != null) {
+                                    setState(() {
+                                      nonDate = result;
+                                      print("nonDate: ${nonDate.toString()}");
+                                      dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                    });
+                                  }
+                                },
+                                child: Text(dateInfo))
+                          ],
                         ),
-                        onTap: () async {
-                          {
-                            DateTime? pickeddate = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2024));
-
-                            if (pickeddate != null) {
-                              setState(() {
-                                dateTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                              });
-                            }
-                          }
-                        }),
-                  ),
-                  TextField(
-                    controller: nameTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.title),
-                      labelText: '제목',
-                    ),
-                  ),
-                  TextField(
-                    controller: bodyTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.text_snippet_outlined),
-                      labelText: '내용',
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Visibility(
-                    // 첫번째 요일 시간 선택 row
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.timer),
+                              onPressed: () async {
+                                TimeRange? result = await showTimeRangePicker(
+                                    context: context,
+                                    interval: const Duration(minutes: 30),
+                                    disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                    start: const TimeOfDay(hour: 12, minute: 0),
+                                    end: const TimeOfDay(hour: 15, minute: 0));
+                                if (result != null) {
+                                  setState(() {
+                                    if ((result.startTime.hour > result.endTime.hour)) {
+                                      Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                      return;
+                                    }
+                                    nonPeriodicStartTime = result.startTime;
+                                    nonPeriodicEndTime = result.endTime;
+                                    timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                  });
+                                }
+                              },
+                            ),
+                            TextButton(
+                                onPressed: () async {
+                                  TimeRange? result = await showTimeRangePicker(
+                                      context: context,
+                                      interval: const Duration(minutes: 30),
+                                      disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                      start: const TimeOfDay(hour: 12, minute: 0),
+                                      end: const TimeOfDay(hour: 15, minute: 0));
+                                  if (result != null) {
+                                    setState(() {
+                                      if ((result.startTime.hour > result.endTime.hour)) {
+                                        Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                        return;
+                                      }
+                                      nonPeriodicStartTime = result.startTime;
+                                      nonPeriodicEndTime = result.endTime;
+                                      timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                    });
+                                  }
+                                },
+                                child: Text(timeInfo))
+                          ],
+                        )
+                      ],
+                    )),
+                Visibility(
                     visible: isPeriodic,
                     child: Row(
                       children: [
-                        DropdownMenu(
-                          dropdownMenuEntries: days,
-                          label: const Text('요일'),
-                          controller: daysTec1,
-                          onSelected: (value) {
-                            print(value);
-                          },
-                        ),
-                        Expanded(
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  content: TimePickerSpinner(
-                                    is24HourMode: true,
-                                    minutesInterval: 30,
-                                    isForce2Digits: true,
-                                    isShowSeconds: false,
-                                    onTimeChange: (time) {
-                                      var pickedTime = DateFormat('HH:mm').format(time);
-                                      timeTec1.text = pickedTime;
-                                      setState(() {});
-                                    },
+                        Container(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                              isExpanded: true,
+                              hint: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.list,
+                                    size: 16,
+                                    color: Colors.white,
                                   ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      '요일 선택',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              items: items
+                                  .map((item) => DropdownMenuItem<String>(
+                                        value: item,
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ))
+                                  .toList(),
+                              value: selectedValue,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedValue = value as String;
+                                  if (startDayTime != null && endDayTime != null) isSelectPlan = true;
+                                });
+                              },
+                              buttonStyleData: ButtonStyleData(
+                                height: 40,
+                                width: 120,
+                                padding: const EdgeInsets.only(left: 14, right: 14),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.black26,
+                                  ),
+                                  color: const Color.fromARGB(255, 73, 190, 244),
                                 ),
-                              );
-                              // TimeOfDay? pickedTime =
-                              //     await showIntervalTimePicker(
-                              //         context: context,
-                              //         initialTime: TimeOfDay.now(),
-                              //         interval: 30,
-                              //         visibleStep: VisibleStep.thirtieths);
-                              // if (pickedTime != null) {
-                              //   setState(() {
-                              //     var df = DateFormat("a h:mm", "ko");
-                              //     var dt = df.parse(pickedTime.format(context));
-                              //     var finaltime =
-                              //         DateFormat("HH:mm").format(dt);
-                              //     timeTec1.text = finaltime;
-                              //   });
-                              // }
-                            },
-                            controller: timeTec1,
+                                elevation: 2,
+                              ),
+                              iconStyleData: const IconStyleData(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                ),
+                                iconSize: 14,
+                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
+                                iconDisabledColor: Colors.grey,
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                  maxHeight: 200,
+                                  width: 200,
+                                  padding: null,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: Colors.blueAccent,
+                                  ),
+                                  elevation: 8,
+                                  offset: const Offset(-20, 0),
+                                  scrollbarTheme: ScrollbarThemeData(
+                                    radius: const Radius.circular(40),
+                                    thickness: MaterialStateProperty.all(6),
+                                    thumbVisibility: MaterialStateProperty.all(true),
+                                  )),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 40,
+                                padding: EdgeInsets.only(left: 14, right: 14),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            onTap: () async {
-                              TimeOfDay? pickedTime = await showIntervalTimePicker(context: context, initialTime: TimeOfDay.now(), interval: 30, visibleStep: VisibleStep.thirtieths);
-                              if (pickedTime != null) {
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
+                          width: 200,
+                          height: 40,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.lightBlue,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                                padding: const EdgeInsets.only(left: 14, right: 14)),
+                            onPressed: () async {
+                              TimeRange? result = await showTimeRangePicker(
+                                  context: context,
+                                  interval: const Duration(minutes: 30),
+                                  disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                  start: const TimeOfDay(hour: 12, minute: 0),
+                                  end: const TimeOfDay(hour: 15, minute: 0));
+
+                              if (result != null) {
+                                startDayTime = result.startTime;
+                                endDayTime = result.endTime;
                                 setState(() {
-                                  var df = DateFormat("a h:mm", "ko");
-                                  var dt = df.parse(pickedTime.format(context));
-                                  var finaltime = DateFormat("HH:mm").format(dt);
-                                  timeTec2.text = finaltime;
+                                  if ((result.startTime.hour > result.endTime.hour)) {
+                                    Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                    return;
+                                  }
+                                  startDayTime = result.startTime;
+                                  endDayTime = result.endTime;
+                                  perTimeInfo = '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
+                                  if (selectedValue != null) {
+                                    isSelectPlan = true;
+                                  }
                                 });
                               }
                             },
-                            controller: timeTec2,
+                            child: Text(
+                              perTimeInfo,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                  if (isAdded)
-                    Visibility(
-                      // 두번째 요일 시간 선택 row
-                      visible: isPeriodic,
-                      child: Row(
-                        children: [
-                          DropdownMenu(
-                            dropdownMenuEntries: days,
-                            label: const Text('요일'),
-                            controller: daysTec2,
-                            onSelected: (value) {
-                              print(value);
-                            },
-                          ),
-                          Expanded(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              onTap: () async {
-                                TimeOfDay? pickedTime = await showIntervalTimePicker(context: context, initialTime: TimeOfDay.now(), interval: 30, visibleStep: VisibleStep.thirtieths);
-                                if (pickedTime != null) {
-                                  setState(() {
-                                    var df = DateFormat("a h:mm", "ko");
-                                    var dt = df.parse(pickedTime.format(context));
-                                    var finaltime = DateFormat("HH:mm").format(dt);
-                                    timeTec3.text = finaltime;
-                                  });
-                                }
-                              },
-                              controller: timeTec3,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 30,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              textAlign: TextAlign.center,
-                              onTap: () async {
-                                TimeOfDay? pickedTime = await showIntervalTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                  interval: 30,
-                                  visibleStep: VisibleStep.thirtieths,
-                                );
-                                if (pickedTime != null) {
-                                  setState(() {
-                                    var df = DateFormat("a h:mm", "ko");
-                                    var dt = df.parse(pickedTime.format(context));
-                                    var finaltime = DateFormat("HH:mm").format(dt);
-                                    timeTec4.text = finaltime;
-                                  });
-                                }
-                              },
-                              controller: timeTec4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  Visibility(
-                    visible: isPeriodic,
-                    child: TextButton(
-                        style: const ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.lightBlue)),
-                        onPressed: () {
-                          isAdded = !isAdded;
-                          setState(() {});
-                        },
-                        child: isAdded ? const Text('날짜 및 시간 제거') : const Text('날짜 및 시간 추가')),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Visibility(
-                    visible: !isPeriodic,
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+                Visibility(
+                    visible: isSelectPlan && isPeriodic,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Container(
-                          child: TimePickerSpinner(
-                            is24HourMode: true,
-                            minutesInterval: 30,
-                            isForce2Digits: true,
-                            isShowSeconds: false,
-                            onTimeChange: (time) {
-                              if (dateTec != '') {
-                                var pickedTime = DateFormat('HH:mm:ss').format(time);
-                                startTime = ('${dateTec.text}T$pickedTime').split(' ')[0];
-                              }
-                            },
+                        AbsorbPointer(
+                          absorbing: true,
+                          child: Text(
+                            "설정된 일시 :  $selectedValue요일 ${startDayTime?.hour}시 ${startDayTime?.minute}분 ~ ${endDayTime?.hour}시 ${endDayTime?.minute}분",
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),
                           ),
                         ),
-                        Container(
-                          child: TimePickerSpinner(
-                            is24HourMode: true,
-                            minutesInterval: 30,
-                            isForce2Digits: true,
-                            isShowSeconds: false,
-                            onTimeChange: (time) {
-                              if (dateTec != '') {
-                                var pickedTime = DateFormat('HH:mm:ss').format(time);
-                                endTime = ('${dateTec.text}T$pickedTime').split(' ')[0];
-                              }
-                              print('Start : $startTime');
-                              print('End : $endTime');
+                        OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                itemList.add(Item(day: selectedValue, startDayInfo: startDayTime, endDayInfo: endDayTime));
+                                isSelectPlan = false;
+                                startDayTime = endDayTime = null;
+                                selectedValue = null;
+                                perTimeInfo = "";
+                              });
                             },
-                          ),
-                        )
+                            child: const Text("추가"))
                       ],
-                    ),
+                    )),
+                Container(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  child: Divider(
+                    color: Colors.blue.shade400,
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  OutlinedButton(
-                      onPressed: () async {
-                        var periodicTimeStringList = [
-                          if ((daysTec1.text != '') && (timeTec1.text != '') && (timeTec2.text != '')) "${daysTec1.text},${timeTec1.text}-${timeTec2.text}",
-                          if (((daysTec2.text != '') && (timeTec3.text != '') && (timeTec4.text != ''))) "${daysTec2.text},${timeTec3.text}-${timeTec4.text}",
-                        ];
-                        print('pSL : $periodicTimeStringList');
-                        var postBody = isPeriodic
-                            ? {
-                                'name': (nameTec.text == '') ? '제목' : nameTec.text,
-                                'body': (bodyTec.text == '') ? '내용' : bodyTec.text,
-                                'periodicType': isPeriodic,
-                                'periodicTimeStringList': periodicTimeStringList,
-                              }
-                            : {
-                                'name': (nameTec.text == '') ? '제목' : nameTec.text,
-                                'body': (bodyTec.text == '') ? '내용' : bodyTec.text,
-                                'periodicType': isPeriodic,
-                                'startTime': startTime,
-                                'endTime': endTime,
-                              };
-                        var url = Uri.http(baseUri, '/timetable/team/updateSchedule', {
-                          'groupId': '${widget.groupData!.groupId}',
-                          'scheduleId': '${widget.scheduleId}',
-                        });
-                        print(url);
-                        var response = await http.put(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
-                        if (response.statusCode == 200) {
-                          print('success!');
-                          print(response.body);
-                          Fluttertoast.showToast(msg: '변경되었습니다');
-                          Navigator.pop(context, true);
-                        } else {
-                          print('fail..');
-                          print(response.body);
-                          Fluttertoast.showToast(msg: '변경 실패, 입력을 확인하세요');
-                        }
-                      },
-                      style: OutlinedButton.styleFrom(
-                          // shape: const StadiumBorder(),
-                          side: const BorderSide(color: Colors.grey)),
+                ),
+                Visibility(
+                    visible: isPeriodic,
+                    child: Container(
+                      alignment: Alignment.center,
                       child: const Text(
-                        '변경하기',
-                        style: TextStyle(color: Colors.black),
-                      )),
-                ],
-              ),
+                        "추가된 일시",
+                        style: TextStyle(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    )),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Visibility(
+                    visible: isPeriodic,
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2.0, spreadRadius: 1.0)],
+                        ),
+                        child: SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                              padding: const EdgeInsets.all(6),
+                              itemCount: itemList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                if (itemList.isEmpty) {
+                                  return const Text("추가된 일정이 없습니다");
+                                }
+                                Item item = itemList[index];
+                                return Card(
+                                  elevation: 3,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Colors.blueAccent)),
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                                    Container(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Text("${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                                              padding: const EdgeInsets.all(5),
+                                              side: const BorderSide(
+                                                color: Colors.cyan,
+                                              )),
+                                          onPressed: () {},
+                                          child: const Text("삭제")),
+                                    ),
+                                  ]),
+                                );
+                              }),
+                        ))),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(onPressed: findEmptyTime, child: const Text('빈 시간 찾기')),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        registerGroupSchedule(context);
+                      },
+                      child: const Text("변경하기"),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Transform.translate(
+                offset: const Offset(0.0, -30),
+                child: CircleAvatar(
+                  radius: 35.0,
+                  backgroundColor: Colors.blue.shade600,
+                  child: const Icon(Icons.calendar_month),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
+
+  var findEmptyStartTec = TextEditingController();
+  var findEmptyEndTec = TextEditingController();
+  bool isFinded = false;
+  var findedEmptyTimeList = [];
+  void findEmptyTime() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SimpleDialog(
+              contentPadding: const EdgeInsets.all(8),
+              children: [
+                TextField(
+                  controller: findEmptyStartTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '시작시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  readOnly: true,
+                ),
+                TextField(
+                  controller: findEmptyEndTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '종료시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  readOnly: true,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                OutlinedButton(
+                    onPressed: () async {
+                      List<DateTime>? dates = await showOmniDateTimeRangePicker(
+                        context: context,
+                        is24HourMode: true,
+                        isForce2Digits: true,
+                        minutesInterval: 30,
+                        startInitialDate: DateTime.now().add(const Duration(hours: 9)),
+                        endInitialDate: DateTime.now().add(const Duration(hours: 10)),
+                      );
+                      if (dates != null) {
+                        setState(() {
+                          findEmptyStartTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[0]);
+                          findEmptyEndTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[1]);
+                        });
+                      }
+                    },
+                    child: const Text('시간 선택')),
+                OutlinedButton(
+                    onPressed: () async {
+                      if (findEmptyStartTec.text == '' || findEmptyEndTec.text == '') {
+                        Fluttertoast.showToast(msg: '시간을 선택해주세요');
+                        return;
+                      }
+                      var url = Uri.http(baseUri, '/timetable/team/findEmptyTime', {'groupId': '${widget.groupData!.groupId}'});
+                      var response = await http.post(url,
+                          headers: {
+                            'authorization': 'Bearer $jwtToken',
+                            'Content-Type': 'application/json; charset=UTF-8',
+                          },
+                          body: jsonEncode({
+                            'startTime': findEmptyStartTec.text,
+                            'endTime': findEmptyEndTec.text,
+                          }));
+                      if (response.statusCode == 200) {
+                        isFinded = true;
+                        setState(
+                          () {
+                            findedEmptyTimeList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                          },
+                        );
+                      } else {
+                        print(utf8.decode(response.bodyBytes));
+                      }
+                    },
+                    child: const Text('그룹원들의 빈 시간 찾기')),
+                const SizedBox(
+                  height: 20,
+                ),
+                Visibility(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    for (int i = 0; i < findedEmptyTimeList.length; i++) Text(findedEmptyTimeList[i]),
+                  ],
+                ))
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void registerGroupSchedule(BuildContext context) async {
+    if (!isChecked) {
+      Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
+      return;
+    }
+    if (nameTec.text.isEmpty) {
+      Fluttertoast.showToast(msg: '일정 제목을 입력해주세요');
+      return;
+    }
+    if (bodyTec.text.isEmpty) {
+      Fluttertoast.showToast(msg: '내용을 입력해주세요');
+      return;
+    }
+
+    Map<String, dynamic> postBody;
+    if (isPeriodic) {
+      if (itemList.isEmpty) {
+        Fluttertoast.showToast(msg: '일시를 1개 이상 추가해야 합니다.');
+        return;
+      } else {
+        List<String> periodicList = [];
+        for (var element in itemList) {
+          String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
+          print(target);
+          periodicList.add(target);
+        }
+        postBody = {
+          'name': nameTec.text,
+          'body': bodyTec.text,
+          'periodicType': isPeriodic,
+          'periodicTimeStringList': periodicList,
+          'groupType': true,
+          'groupId': widget.groupData!.groupId,
+          'groupName': widget.groupData!.groupName
+        };
+        print(postBody);
+      }
+    } else {
+      print(nonDate.toString());
+      if (nonDate == null) {
+        print("it is null");
+        Fluttertoast.showToast(msg: '날짜를 선택해주세요');
+        return;
+      }
+      if (nonPeriodicStartTime == null) {
+        Fluttertoast.showToast(msg: '시간을 선택해주세요');
+        return;
+      }
+      print(nonDate.toString().split(" ")[0]);
+      print(nonPeriodicStartTime);
+      var startMin = nonPeriodicStartTime!.minute.toString();
+      if (startMin == "0") startMin = "00";
+      var endMin = nonPeriodicEndTime!.minute.toString();
+      if (endMin == "0") endMin = "00";
+      postBody = {
+        'name': nameTec.text,
+        'body': bodyTec.text,
+        'periodicType': isPeriodic,
+        'startTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicStartTime!.hour}:$startMin:00",
+        'endTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicEndTime!.hour}:$endMin:00",
+        'groupType': true,
+        'groupId': widget.groupData!.groupId,
+        'groupName': widget.groupData!.groupName
+      };
+    }
+    print(postBody);
+    var url = Uri.http(baseUri, '/timetable/team/updateSchedule', {
+      'groupId': '${widget.groupData!.groupId}',
+      'scheduleId': '${widget.scheduleText!.id}',
+    });
+    print(url);
+    var response = await http.put(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: '추가되었습니다');
+      Navigator.pop(context);
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
+    }
+  }
+}
+
+class Item {
+  final String? day;
+  final TimeOfDay? startDayInfo;
+  final TimeOfDay? endDayInfo;
+
+  Item({this.day, this.startDayInfo, this.endDayInfo});
 }

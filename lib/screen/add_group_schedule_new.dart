@@ -1,34 +1,27 @@
 import 'dart:convert';
 
-import 'package:emptysaver_fe/element/controller.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import 'package:ntp/ntp.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:time_range_picker/time_range_picker.dart';
+import 'package:emptysaver_fe/element/controller.dart';
+import 'package:emptysaver_fe/element/factory_fromjson.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:time_range_picker/time_range_picker.dart';
+import 'package:http/http.dart' as http;
 
-class AddScheduleScreen extends ConsumerStatefulWidget {
-  const AddScheduleScreen({
-    super.key,
-  });
+class AddGroupScheduleScreenNew extends StatefulWidget {
+  Group? groupData;
+
+  AddGroupScheduleScreenNew({super.key, this.groupData});
 
   @override
-  ConsumerState<AddScheduleScreen> createState() => _AddScheduleScreenState();
+  State<AddGroupScheduleScreenNew> createState() => _AddGroupScheduleScreenNewState();
 }
 
-class Item {
-  final String? day;
-  final TimeOfDay? startDayInfo;
-  final TimeOfDay? endDayInfo;
-
-  Item({this.day, this.startDayInfo, this.endDayInfo});
-}
-
-class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
+class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
   final List<bool> _selections = List.generate(2, (_) => false);
@@ -59,6 +52,25 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
   DateTime? nonDate;
   TimeOfDay? nonPeriodicStartTime;
   TimeOfDay? nonPeriodicEndTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          // elevation: 0,
+          // systemOverlayStyle: SystemUiOverlayStyle.light,
+          // iconTheme: const IconThemeData(color: Colors.black),
+          // backgroundColor: Colors.transparent,
+          title: const Text(
+            '그룹 일정 추가',
+          ),
+        ),
+        body: _buildPageContent(context),
+      ),
+    );
+  }
 
   Widget _buildPageContent(BuildContext context) {
     return Container(
@@ -500,80 +512,20 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
                 const SizedBox(
                   height: 10.0,
                 ),
-                SizedBox(
-                  //height: 380,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: OutlinedButton(
-                      onPressed: () async {
-                        if (!isChecked) {
-                          Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
-                          return;
-                        }
-                        if (nameTec.text.isEmpty) {
-                          Fluttertoast.showToast(msg: '일정 제목을 입력해주세요');
-                          return;
-                        }
-                        if (bodyTec.text.isEmpty) {
-                          Fluttertoast.showToast(msg: '내용을 입력해주세요');
-                          return;
-                        }
-
-                        Map<String, Object> postBody;
-                        if (isPeriodic) {
-                          if (itemList.isEmpty) {
-                            Fluttertoast.showToast(msg: '일시를 1개 이상 추가해야 합니다.');
-                            return;
-                          } else {
-                            List<String> periodicList = [];
-                            for (var element in itemList) {
-                              String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
-                              print(target);
-                              periodicList.add(target);
-                            }
-                            postBody = {'name': nameTec.text, 'body': bodyTec.text, 'periodicType': isPeriodic, 'periodicTimeStringList': periodicList};
-                            print(postBody);
-                          }
-                        } else {
-                          print(nonDate.toString());
-                          if (nonDate == null) {
-                            print("it is null");
-                            Fluttertoast.showToast(msg: '날짜를 선택해주세요');
-                            return;
-                          }
-                          if (nonPeriodicStartTime == null) {
-                            Fluttertoast.showToast(msg: '시간을 선택해주세요');
-                            return;
-                          }
-                          print(nonDate.toString().split(" ")[0]);
-                          print(nonPeriodicStartTime);
-                          var startMin = nonPeriodicStartTime!.minute.toString();
-                          if (startMin == "0") startMin = "00";
-                          var endMin = nonPeriodicEndTime!.minute.toString();
-                          if (endMin == "0") endMin = "00";
-                          postBody = {
-                            'name': nameTec.text,
-                            'body': bodyTec.text,
-                            'periodicType': isPeriodic,
-                            'startTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicStartTime!.hour}:$startMin:00",
-                            'endTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicEndTime!.hour}:$endMin:00",
-                          };
-                        }
-                        print(postBody);
-                        var url = Uri.http(baseUri, '/timetable/saveSchedule');
-                        var response = await http.post(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
-                        if (response.statusCode == 200) {
-                          print(response.body);
-                          Fluttertoast.showToast(msg: '추가되었습니다');
-                          Navigator.popAndPushNamed(context, '/bar');
-                        } else {
-                          print(utf8.decode(response.bodyBytes));
-                          Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
-                        }
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(onPressed: findEmptyTime, child: const Text('빈 시간 찾기')),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        registerGroupSchedule(context);
                       },
                       child: const Text("등록하기"),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -596,21 +548,187 @@ class _AddScheduleScreenState extends ConsumerState<AddScheduleScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
-        title: const Text(
-          '일정 추가',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: _buildPageContent(context),
+  var findEmptyStartTec = TextEditingController();
+  var findEmptyEndTec = TextEditingController();
+  bool isFinded = false;
+  var findedEmptyTimeList = [];
+  void findEmptyTime() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SimpleDialog(
+              contentPadding: const EdgeInsets.all(8),
+              children: [
+                TextField(
+                  controller: findEmptyStartTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '시작시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  readOnly: true,
+                ),
+                TextField(
+                  controller: findEmptyEndTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '종료시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  readOnly: true,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                OutlinedButton(
+                    onPressed: () async {
+                      List<DateTime>? dates = await showOmniDateTimeRangePicker(
+                        context: context,
+                        is24HourMode: true,
+                        isForce2Digits: true,
+                        minutesInterval: 30,
+                        startInitialDate: DateTime.now().add(const Duration(hours: 9)),
+                        endInitialDate: DateTime.now().add(const Duration(hours: 10)),
+                      );
+                      if (dates != null) {
+                        setState(() {
+                          findEmptyStartTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[0]);
+                          findEmptyEndTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[1]);
+                        });
+                      }
+                    },
+                    child: const Text('시간 선택')),
+                OutlinedButton(
+                    onPressed: () async {
+                      if (findEmptyStartTec.text == '' || findEmptyEndTec.text == '') {
+                        Fluttertoast.showToast(msg: '시간을 선택해주세요');
+                        return;
+                      }
+                      var url = Uri.http(baseUri, '/timetable/team/findEmptyTime', {'groupId': '${widget.groupData!.groupId}'});
+                      var response = await http.post(url,
+                          headers: {
+                            'authorization': 'Bearer $jwtToken',
+                            'Content-Type': 'application/json; charset=UTF-8',
+                          },
+                          body: jsonEncode({
+                            'startTime': findEmptyStartTec.text,
+                            'endTime': findEmptyEndTec.text,
+                          }));
+                      if (response.statusCode == 200) {
+                        isFinded = true;
+                        setState(
+                          () {
+                            findedEmptyTimeList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+                          },
+                        );
+                      } else {
+                        print(utf8.decode(response.bodyBytes));
+                      }
+                    },
+                    child: const Text('그룹원들의 빈 시간 찾기')),
+                const SizedBox(
+                  height: 20,
+                ),
+                Visibility(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    for (int i = 0; i < findedEmptyTimeList.length; i++) Text(findedEmptyTimeList[i]),
+                  ],
+                ))
+              ],
+            );
+          },
+        );
+      },
     );
   }
+
+  void registerGroupSchedule(BuildContext context) async {
+    if (!isChecked) {
+      Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
+      return;
+    }
+    if (nameTec.text.isEmpty) {
+      Fluttertoast.showToast(msg: '일정 제목을 입력해주세요');
+      return;
+    }
+    if (bodyTec.text.isEmpty) {
+      Fluttertoast.showToast(msg: '내용을 입력해주세요');
+      return;
+    }
+
+    Map<String, dynamic> postBody;
+    if (isPeriodic) {
+      if (itemList.isEmpty) {
+        Fluttertoast.showToast(msg: '일시를 1개 이상 추가해야 합니다.');
+        return;
+      } else {
+        List<String> periodicList = [];
+        for (var element in itemList) {
+          String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
+          print(target);
+          periodicList.add(target);
+        }
+        postBody = {
+          'name': nameTec.text,
+          'body': bodyTec.text,
+          'periodicType': isPeriodic,
+          'periodicTimeStringList': periodicList,
+          'groupType': true,
+          'groupId': widget.groupData!.groupId,
+          'groupName': widget.groupData!.groupName
+        };
+        print(postBody);
+      }
+    } else {
+      print(nonDate.toString());
+      if (nonDate == null) {
+        print("it is null");
+        Fluttertoast.showToast(msg: '날짜를 선택해주세요');
+        return;
+      }
+      if (nonPeriodicStartTime == null) {
+        Fluttertoast.showToast(msg: '시간을 선택해주세요');
+        return;
+      }
+      print(nonDate.toString().split(" ")[0]);
+      print(nonPeriodicStartTime);
+      var startMin = nonPeriodicStartTime!.minute.toString();
+      if (startMin == "0") startMin = "00";
+      var endMin = nonPeriodicEndTime!.minute.toString();
+      if (endMin == "0") endMin = "00";
+      postBody = {
+        'name': nameTec.text,
+        'body': bodyTec.text,
+        'periodicType': isPeriodic,
+        'startTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicStartTime!.hour}:$startMin:00",
+        'endTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicEndTime!.hour}:$endMin:00",
+        'groupType': true,
+        'groupId': widget.groupData!.groupId,
+        'groupName': widget.groupData!.groupName
+      };
+    }
+    print(postBody);
+    var url = Uri.http(baseUri, '/timetable/team/saveSchedule', {'groupId': '${widget.groupData!.groupId}', 'isPublicTypeSchedule': 'true'});
+    print(url);
+    var response = await http.post(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: '추가되었습니다');
+      Navigator.pop(context);
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
+    }
+  }
+}
+
+class Item {
+  final String? day;
+  final TimeOfDay? startDayInfo;
+  final TimeOfDay? endDayInfo;
+
+  Item({this.day, this.startDayInfo, this.endDayInfo});
 }

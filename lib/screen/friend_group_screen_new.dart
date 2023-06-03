@@ -519,7 +519,6 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   Widget build(BuildContext context) {
     print('친구그룹');
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 227, 244, 248),
       body: Column(
         children: [
           Row(

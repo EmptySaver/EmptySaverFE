@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/lecture_search_result_screen.dart';
+import 'package:emptysaver_fe/screen/today_movie_screen.dart';
 import 'package:emptysaver_fe/screen/update_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 const double defaultBoxWidth = 75;
 const double defaultBoxHeight = 35;
@@ -267,6 +269,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                           !(lectureInfo['groupType'] == true)
                                                               ? TextButton(
                                                                   onPressed: () {
+                                                                    Navigator.pop(context);
                                                                     Navigator.push(
                                                                         context,
                                                                         MaterialPageRoute(
@@ -312,7 +315,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                   child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      Text(memberNameListsTotal[h][i]),
+                                                      Text(memberNameListsTotal[h][i] ?? 'null'),
                                                     ],
                                                   ),
                                                 ),
@@ -391,40 +394,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                     label: '오늘 영화',
                     backgroundColor: Colors.deepPurple.shade100,
                     onTap: () {
-                      todayMovieListFuture = getTodayMovie();
-                      showDialog(
-                        context: context,
-                        builder: (context) => SimpleDialog(
-                          children: [
-                            FutureBuilder(
-                              future: todayMovieListFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  var todayMovieList = snapshot.data!;
-                                  return SizedBox(
-                                    height: 500,
-                                    width: 400,
-                                    child: ListView.builder(
-                                      itemCount: todayMovieList.length,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          child: Column(
-                                            children: [Text('${todayMovieList[index].name}'), Text('${todayMovieList[index].timeData}')],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                              },
-                            )
-                          ],
-                        ),
-                      );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) => const TodayMovieScreen(),
+                          ));
                     },
                   ),
                 ],
@@ -438,6 +412,7 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
 
   var findScheduleStartTec = TextEditingController();
   var findScheduleEndTec = TextEditingController();
+  var findScheduleTec = TextEditingController();
   bool isSearched = false;
   late List<ScheduleInfo> scheduleInfoList;
 
@@ -451,62 +426,59 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
               contentPadding: const EdgeInsets.all(8),
               children: [
                 TextField(
-                    controller: findScheduleStartTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_month_outlined),
-                      labelText: '시작일자',
-                    ),
-                    keyboardType: TextInputType.none,
-                    onTap: () async {
-                      {
-                        DateTime? pickeddate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2030),
-                          initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        );
-                        if (pickeddate != null) {
-                          setState(() {
-                            findScheduleStartTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                          });
-                        }
-                      }
-                    }),
+                  controller: findScheduleStartTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '시작시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  readOnly: true,
+                ),
                 TextField(
-                    controller: findScheduleEndTec,
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_month_outlined),
-                      labelText: '종료일자',
-                    ),
-                    keyboardType: TextInputType.none,
-                    onTap: () async {
-                      {
-                        DateTime? pickeddate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2030),
-                          initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        );
-                        if (pickeddate != null) {
-                          setState(() {
-                            findScheduleEndTec.text = DateFormat('yyyy-MM-dd').format(pickeddate);
-                          });
-                        }
-                      }
-                    }),
+                  controller: findScheduleEndTec,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_month_outlined),
+                    labelText: '종료시간',
+                  ),
+                  keyboardType: TextInputType.none,
+                  readOnly: true,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 OutlinedButton(
                     onPressed: () async {
+                      List<DateTime>? dates = await showOmniDateTimeRangePicker(
+                        context: context,
+                        is24HourMode: true,
+                        isForce2Digits: true,
+                        minutesInterval: 30,
+                        startInitialDate: DateTime.now().add(const Duration(hours: 9)),
+                        endInitialDate: DateTime.now().add(const Duration(hours: 10)),
+                      );
+                      if (dates != null) {
+                        setState(() {
+                          findScheduleStartTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[0]);
+                          findScheduleEndTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[1]);
+                        });
+                      }
+                    },
+                    child: const Text('시간 선택')),
+                OutlinedButton(
+                    onPressed: () async {
+                      if (findScheduleStartTec.text == '' || findScheduleEndTec.text == '') {
+                        Fluttertoast.showToast(msg: '시간을 선택해주세요');
+                        return;
+                      }
                       var url = Uri.http(baseUri, '/timetable/findSchedule');
                       var response = await http.post(url,
                           headers: {
                             'authorization': 'Bearer $jwtToken',
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json; charset=UTF-8',
                           },
                           body: jsonEncode({
-                            'startTime': '${findScheduleStartTec.text}T00:00:00',
-                            'endTime': '${findScheduleEndTec.text}T00:00:00',
+                            'startTime': findScheduleStartTec.text,
+                            'endTime': findScheduleEndTec.text,
                           }));
                       if (response.statusCode == 200) {
                         isSearched = true;
@@ -521,6 +493,9 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                       }
                     },
                     child: const Text('공개 스케줄 검색')),
+                const SizedBox(
+                  height: 20,
+                ),
                 if (isSearched)
                   SizedBox(
                     height: 500,
@@ -537,18 +512,26 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                 ));
                           },
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
                                 width: double.infinity,
                                 child: Column(
                                   children: [
+                                    Text(
+                                      scheduleInfoList[index].groupInfo!.groupName!,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                    ),
                                     Text(scheduleInfoList[index].name!),
                                     Text(scheduleInfoList[index].body!),
-                                    // Text(scheduleInfoList[index].category!),
+                                    Text('${scheduleInfoList[index].category} - ${scheduleInfoList[index].subCategory}'),
+                                    Text(scheduleInfoList[index].timeData!),
                                   ],
                                 ),
                               ),
-                              const Divider()
+                              const Divider(
+                                thickness: 1.2,
+                              )
                             ],
                           ),
                         );
@@ -561,20 +544,6 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
         );
       },
     );
-  }
-
-  Future<List<ScheduleText>> todayMovieListFuture = Future(() => []);
-  Future<List<ScheduleText>> getTodayMovie() async {
-    var url = Uri.http(baseUri, '/timetable/getMovieScheduleList');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-    if (response.statusCode == 200) {
-      var data = (jsonDecode(utf8.decode(response.bodyBytes)) as List).map((e) => ScheduleText.fromJson(e)).toList();
-      print(data);
-      return data;
-    } else {
-      print(utf8.decode(response.bodyBytes));
-      throw Exception('오늘 영화 불러오기 실패');
-    }
   }
 }
 
