@@ -32,7 +32,13 @@ class ScheduleText {
   String? timeData;
   bool? read;
 
-  ScheduleText({this.id, this.name, this.body, this.periodicType, this.timeData, this.read});
+  ScheduleText(
+      {this.id,
+      this.name,
+      this.body,
+      this.periodicType,
+      this.timeData,
+      this.read});
 
   factory ScheduleText.fromJson(Map<String, dynamic> parsedJson) {
     return ScheduleText(
@@ -94,7 +100,14 @@ class ScheduleInfo {
   Group? groupInfo;
   String? timeData;
 
-  ScheduleInfo({this.id, this.name, this.body, this.periodicType, this.category, this.groupInfo, this.timeData});
+  ScheduleInfo(
+      {this.id,
+      this.name,
+      this.body,
+      this.periodicType,
+      this.category,
+      this.groupInfo,
+      this.timeData});
 
   ScheduleInfo.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -102,7 +115,8 @@ class ScheduleInfo {
     body = json["body"];
     periodicType = json["periodicType"];
     category = json["category"];
-    groupInfo = json["groupInfo"] == null ? null : Group.fromJson(json["groupInfo"]);
+    groupInfo =
+        json["groupInfo"] == null ? null : Group.fromJson(json["groupInfo"]);
     timeData = json["timeData"];
   }
 
@@ -132,8 +146,9 @@ class Group {
   bool? isAnonymous;
   String? categoryLabel;
   bool? amIOwner;
-  List<dynamic>? commentList;
+  List<CommentList>? commentList;
   String? categoryName;
+  String? memberStatus;
 
   Group(
       {this.groupId,
@@ -147,7 +162,8 @@ class Group {
       this.categoryLabel,
       this.amIOwner,
       this.commentList,
-      this.categoryName});
+      this.categoryName,
+      this.memberStatus});
 
   // Group.fromJson(Map<String, dynamic> parsedJson)
   //     : groupId = parsedJson['groupId'],
@@ -171,8 +187,13 @@ class Group {
         isAnonymous: parsedJson['isAnonymous'],
         categoryLabel: parsedJson['categoryLabel'],
         amIOwner: parsedJson['amIOwner'],
-        commentList: parsedJson['commentList'] == null ? null : (parsedJson["commentList"] as List).map((e) => CommentList.fromJson(e)).toList(),
-        categoryName: parsedJson['categoryName']);
+        commentList: parsedJson['commentList'] == null
+            ? null
+            : (parsedJson["commentList"] as List)
+                .map((e) => CommentList.fromJson(e))
+                .toList(),
+        categoryName: parsedJson['categoryName'],
+        memberStatus: parsedJson['memberStatus']);
   }
 
   Map<String, dynamic> toJson() {
@@ -190,6 +211,7 @@ class Group {
       data["commentList"] = commentList?.map((e) => e.toJson()).toList();
     }
     data["amIOwner"] = amIOwner;
+    data['memberStatus'] = memberStatus;
     return data;
   }
 }
@@ -202,7 +224,11 @@ class CommentList {
 
   CommentList.fromJson(Map<String, dynamic> json) {
     parent = json["parent"] == null ? null : Parent.fromJson(json["parent"]);
-    childList = json["childList"] == null ? null : (json["childList"] as List).map((e) => ChildList.fromJson(e)).toList();
+    childList = json["childList"] == null
+        ? null
+        : (json["childList"] as List)
+            .map((e) => ChildList.fromJson(e))
+            .toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -223,8 +249,15 @@ class ChildList {
   String? dateTime;
   bool? isOwner;
   String? writerName;
+  bool? amIWriter;
 
-  ChildList({this.commentId, this.text, this.dateTime, this.isOwner, this.writerName});
+  ChildList(
+      {this.commentId,
+      this.text,
+      this.dateTime,
+      this.isOwner,
+      this.writerName,
+      this.amIWriter});
 
   ChildList.fromJson(Map<String, dynamic> json) {
     commentId = json["commentId"];
@@ -232,6 +265,7 @@ class ChildList {
     dateTime = json["dateTime"];
     isOwner = json["isOwner"];
     writerName = json["writerName"];
+    amIWriter = json["amIWriter"];
   }
 
   Map<String, dynamic> toJson() {
@@ -241,6 +275,7 @@ class ChildList {
     data["dateTime"] = dateTime;
     data["isOwner"] = isOwner;
     data["writerName"] = writerName;
+    data["amIWriter"] = amIWriter;
     return data;
   }
 }
@@ -251,8 +286,15 @@ class Parent {
   String? dateTime;
   bool? isOwner;
   String? writerName;
+  bool? amIWriter;
 
-  Parent({this.commentId, this.text, this.dateTime, this.isOwner, this.writerName});
+  Parent(
+      {this.commentId,
+      this.text,
+      this.dateTime,
+      this.isOwner,
+      this.writerName,
+      this.amIWriter});
 
   Parent.fromJson(Map<String, dynamic> json) {
     commentId = json["commentId"];
@@ -260,6 +302,7 @@ class Parent {
     dateTime = json["dateTime"];
     isOwner = json["isOwner"];
     writerName = json["writerName"];
+    amIWriter = json["amIWriter"];
   }
 
   Map<String, dynamic> toJson() {
@@ -269,6 +312,7 @@ class Parent {
     data["dateTime"] = dateTime;
     data["isOwner"] = isOwner;
     data["writerName"] = writerName;
+    data["amIWriter"] = amIWriter;
     return data;
   }
 }
@@ -281,7 +325,13 @@ class Info {
   String? targetGrade;
   String? url;
 
-  Info({this.courseName, this.applyDate, this.runDate, this.targetDepartment, this.targetGrade, this.url});
+  Info(
+      {this.courseName,
+      this.applyDate,
+      this.runDate,
+      this.targetDepartment,
+      this.targetGrade,
+      this.url});
 
   factory Info.fromJson(Map<String, dynamic> parsedJson) {
     return Info(
@@ -316,7 +366,13 @@ class Ticket {
   String? memberName;
   String? inviteDate;
 
-  Ticket({this.memberTeamId, this.memberId, this.groupId, this.groupName, this.memberName, this.inviteDate});
+  Ticket(
+      {this.memberTeamId,
+      this.memberId,
+      this.groupId,
+      this.groupName,
+      this.memberName,
+      this.inviteDate});
 
   factory Ticket.fromJson(Map<String, dynamic> parsedJson) {
     return Ticket(
@@ -361,7 +417,18 @@ class Lecture {
   String? class_type;
   String? class_nm;
 
-  Lecture({this.id, this.dept, this.subject_div, this.subject_div2, this.class_div, this.subjectname, this.shyr, this.credit, this.prof_nm, this.class_type, this.class_nm});
+  Lecture(
+      {this.id,
+      this.dept,
+      this.subject_div,
+      this.subject_div2,
+      this.class_div,
+      this.subjectname,
+      this.shyr,
+      this.credit,
+      this.prof_nm,
+      this.class_type,
+      this.class_nm});
 
   factory Lecture.fromJson(Map<String, dynamic> parsedJson) {
     return Lecture(
@@ -385,7 +452,9 @@ class Dept {
   List<dynamic>? deptNameList;
   Dept({this.upperName, this.deptNameList});
   factory Dept.fromJson(Map<String, dynamic> parsedJson) {
-    return Dept(upperName: parsedJson['upperDivName'], deptNameList: parsedJson['deptNameList']);
+    return Dept(
+        upperName: parsedJson['upperDivName'],
+        deptNameList: parsedJson['deptNameList']);
   }
 }
 
@@ -401,7 +470,15 @@ class Noti {
   String? receiveTime;
   bool? isRead;
 
-  Noti({this.id, this.title, this.body, this.routeValue, this.idType, this.idValue, this.receiveTime, this.isRead});
+  Noti(
+      {this.id,
+      this.title,
+      this.body,
+      this.routeValue,
+      this.idType,
+      this.idValue,
+      this.receiveTime,
+      this.isRead});
 
   Noti.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -436,7 +513,11 @@ class FullCategoryInfo {
   List<dynamic>? tagList;
   FullCategoryInfo({this.type, this.typeName, this.tagList});
   factory FullCategoryInfo.fromJson(Map<String, dynamic> parsedJson) {
-    return FullCategoryInfo(type: parsedJson['type'], typeName: parsedJson['typeName'], tagList: parsedJson['result']);
+    return FullCategoryInfo(
+        type: parsedJson['type'],
+        typeName: parsedJson['typeName'],
+        tagList: parsedJson['result']);
   }
-  Map<String, dynamic> toJson() => {'type': type, 'typeName': typeName, 'tagList': tagList};
+  Map<String, dynamic> toJson() =>
+      {'type': type, 'typeName': typeName, 'tagList': tagList};
 }
