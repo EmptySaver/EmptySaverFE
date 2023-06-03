@@ -275,6 +275,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                                         MaterialPageRoute(
                                                                           builder: (context) => UpdateScheduleScreen(
                                                                             scheduleId: memberIdListsTotal[h][i],
+                                                                            name: memberNameListsTotal[h][i],
+                                                                            body: memberBodyListsTotal[h][i],
                                                                             groupId: lectureInfo['groupId'],
                                                                           ),
                                                                         ));

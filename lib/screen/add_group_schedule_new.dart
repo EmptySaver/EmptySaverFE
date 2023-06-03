@@ -696,16 +696,24 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
       }
       print(nonDate.toString().split(" ")[0]);
       print(nonPeriodicStartTime);
+      dynamic startHour = nonPeriodicStartTime!.hour;
       var startMin = nonPeriodicStartTime!.minute.toString();
+      if (startHour < 10) {
+        startHour = '0$startHour';
+      }
       if (startMin == "0") startMin = "00";
+      dynamic endHour = nonPeriodicEndTime!.hour;
+      if (endHour < 10) {
+        endHour = '0$endHour';
+      }
       var endMin = nonPeriodicEndTime!.minute.toString();
       if (endMin == "0") endMin = "00";
       postBody = {
         'name': nameTec.text,
         'body': bodyTec.text,
         'periodicType': isPeriodic,
-        'startTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicStartTime!.hour}:$startMin:00",
-        'endTime': "${nonDate.toString().split(" ")[0]}T${nonPeriodicEndTime!.hour}:$endMin:00",
+        'startTime': "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
+        'endTime': "${nonDate.toString().split(" ")[0]}T$endHour:$endMin:00",
         'groupType': true,
         'groupId': widget.groupData!.groupId,
         'groupName': widget.groupData!.groupName
