@@ -59,6 +59,27 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
   TimeOfDay? nonPeriodicStartTime;
   TimeOfDay? nonPeriodicEndTime;
 
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: Colors.transparent,
+          title: const Text(
+            '일정 추가',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+        body: _buildPageContent(context),
+      ),
+    );
+  }
+
   Widget _buildPageContent(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -605,28 +626,10 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
     if (response.statusCode == 200) {
       print(response.body);
       Fluttertoast.showToast(msg: '추가되었습니다');
-      Navigator.pop(context);
+      Navigator.pop(context, '');
     } else {
       print(utf8.decode(response.bodyBytes));
       Fluttertoast.showToast(msg: '등록 실패, 입력을 확인하세요');
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
-        title: const Text(
-          '일정 추가',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: _buildPageContent(context),
-    );
   }
 }

@@ -617,7 +617,7 @@ class _UpdateScheduleScreenState extends State<UpdateScheduleScreen> {
     if (response.statusCode == 200) {
       print(response.body);
       Fluttertoast.showToast(msg: '변경되었습니다');
-      Navigator.pop(context);
+      Navigator.pop(context, '');
     } else {
       print(utf8.decode(response.bodyBytes));
       Fluttertoast.showToast(msg: '변경 실패, 입력을 확인하세요');

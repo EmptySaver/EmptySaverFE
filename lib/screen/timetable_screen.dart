@@ -164,7 +164,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                                                 body: memberBodyListsTotal[h][i],
                                                                                 groupId: lectureInfo['groupId'],
                                                                               ),
-                                                                            ));
+                                                                            )).then((value) {
+                                                                          setState(() {
+                                                                            memberScheduleFuture = getMemberSchedule();
+                                                                          });
+                                                                        });
                                                                       },
                                                                       child: const Text('변경'))
                                                                   : const Center(
@@ -244,7 +248,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const AddScheduleScreen(),
-                              ));
+                              )).then((value) {
+                            setState(() {
+                              memberScheduleFuture = getMemberSchedule();
+                            });
+                          });
                         },
                       ),
                       SpeedDialChild(
