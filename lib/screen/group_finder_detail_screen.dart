@@ -78,6 +78,19 @@ class _GroupFinderDetailScreenState
     }
   }
 
+  _setTag(bool amIOwner, bool amIWriter) {
+    if (amIOwner)
+      return const Text(
+        "   (그룹장)",
+        style: TextStyle(color: Colors.blue, fontSize: 14),
+      );
+    else if (amIWriter)
+      const Text(
+        "   (내 댓글)",
+        style: TextStyle(color: Colors.blue, fontSize: 14),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -248,13 +261,9 @@ class _GroupFinderDetailScreenState
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
-                                                  if (parentComment.isOwner!)
-                                                    const Text(
-                                                      "   (그룹장)",
-                                                      style: TextStyle(
-                                                          color: Colors.blue,
-                                                          fontSize: 14),
-                                                    )
+                                                  _setTag(
+                                                      parentComment.isOwner!,
+                                                      parentComment.amIWriter!)
                                                 ],
                                               ),
                                               const SizedBox(
@@ -616,17 +625,13 @@ class _GroupFinderDetailScreenState
                                                                       FontWeight
                                                                           .bold),
                                                             ),
-                                                            if (childCommentList[
-                                                                    i]
-                                                                .isOwner!)
-                                                              const Text(
-                                                                "   (그룹장)",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .blue,
-                                                                    fontSize:
-                                                                        14),
-                                                              )
+                                                            _setTag(
+                                                                childCommentList[
+                                                                        i]
+                                                                    .isOwner!,
+                                                                childCommentList[
+                                                                        i]
+                                                                    .amIWriter!)
                                                           ],
                                                         ),
                                                         const SizedBox(
