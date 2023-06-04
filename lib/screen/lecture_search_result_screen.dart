@@ -78,6 +78,7 @@ class _LectureSearchResultScreenState
     );
     dynamic data;
     if (response.statusCode == 200) {
+      print("got data from div name list : ${utf8.decode(response.bodyBytes)}");
       var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       data = parsedJson.map((e) => Dept.fromJson(e)).toList();
       return data;
@@ -127,9 +128,13 @@ class _LectureSearchResultScreenState
     discriminateList.add("선수");
     isDiscTablList = List.filled(discriminateList.length, true);
 
+    //의사소통 교실 -> 상위 부서가 없음 == 그냥 이걸 상위 부서라고 합시더..
     getDivNameList().then((value) => setState(() {
           deptList.add(Dept(upperName: "전체", deptNameList: List.empty()));
+          print("before Value :${value}");
+          value[0] = Dept(upperName: "의사소통교실", deptNameList: ["의사소통교실"]);
           deptList.addAll(value);
+          print("now Value :${value}");
         }));
 
     super.initState();
@@ -157,153 +162,125 @@ class _LectureSearchResultScreenState
   }
 
   lectureComponent({required Lecture lecture, required int num}) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          isTapList![num] = !isTapList![num];
-        });
-      },
-      child: Container(
-          padding: const EdgeInsets.all(10),
-          margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: const Color.fromARGB(255, 255, 255, 255),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 2,
-                  offset: const Offset(0, 1),
-                ),
-              ]),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              // child: Image.asset(job.companyLogo),
-                              child: const Icon(FontAwesomeIcons.book),
-                            )),
-                        const SizedBox(width: 10),
-                        Flexible(
-                            child: Column(
-                          children: [
-                            Text('${lecture.subjectname}',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              '${lecture.prof_nm}',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              '${lecture.class_nm}',
-                              style: TextStyle(color: Colors.grey[500]),
-                            ),
-                          ],
-                        )),
-                      ],
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              isTapList![num] = !isTapList![num];
+            });
+          },
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${lecture.subjectname}',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    Text(
+                      '${lecture.prof_nm}',
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade200),
-                        child: Text(
-                          '${lecture.shyr}학년',
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade200),
-                        child: Text(
-                          '${lecture.subject_div}',
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 15),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey.shade200),
-                        child: Text(
-                          '${lecture.dept}',
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Visibility(
-                  visible: isTapList![num],
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      OutlinedButton(
-                        onPressed: () {
-                          saveToSchedule(lecture.id);
-                        },
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color.fromARGB(255, 82, 195, 248)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '${lecture.class_nm}',
+                  style: TextStyle(color: Colors.grey[500]),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                            ))),
-                        child: const Text(
-                          "강의 추가",
-                          style: TextStyle(color: Colors.white),
+                              color: Colors.grey.shade200),
+                          child: Text(
+                            '${lecture.shyr}학년',
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 14),
+                          ),
                         ),
-                      )
-                    ],
-                  ))
-            ],
-          )),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: Colors.grey.shade200),
+                          child: Text(
+                            '${lecture.subject_div}',
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 14),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: Colors.grey.shade200),
+                          child: Text(
+                            '${lecture.dept}',
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Visibility(
+                    visible: isTapList![num],
+                    child: Center(
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          OutlinedButton(
+                            onPressed: () {
+                              saveToSchedule(lecture.id);
+                            },
+                            child: const Text(
+                              "강의 추가",
+                            ),
+                          )
+                        ],
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ),
+        Divider(
+          thickness: 1.0,
+        )
+      ],
     );
   }
 
@@ -739,7 +716,7 @@ class _LectureSearchResultScreenState
                                       });
                                     },
                                     child: Text(isUpper
-                                        ? deptList[index].upperName!
+                                        ? deptList[index].upperName
                                         : deptList[deptSubIndex]
                                             .deptNameList![index]),
                                   ),
@@ -758,7 +735,7 @@ class _LectureSearchResultScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 227, 244, 248),
+      backgroundColor: Colors.white,
       appBar: AppBar(),
       body: Column(
         children: [
@@ -787,13 +764,14 @@ class _LectureSearchResultScreenState
                   cursorColor: Colors.grey,
                   decoration: InputDecoration(
                     contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        borderSide: BorderSide.none),
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    prefixIcon:
+                        const Icon(Icons.search, color: Colors.lightBlue),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: const BorderSide(
+                          color: Colors.blueAccent, width: 1.5),
+                    ),
                     hintText: "과목 이름을 입력해주세요",
                     hintStyle: const TextStyle(fontSize: 14),
                   ),
@@ -813,6 +791,11 @@ class _LectureSearchResultScreenState
               ),
             ],
           ),
+          Visibility(
+              visible: isFilter,
+              child: SizedBox(
+                height: 10,
+              )),
           Visibility(
               visible: isFilter,
               child: Container(
@@ -862,17 +845,23 @@ class _LectureSearchResultScreenState
                   ])),
                 ),
               )),
+          SizedBox(
+            height: 10,
+          ),
+          Divider(
+            thickness: 1,
+          ),
           Expanded(
               child: lectureList.length > 0
                   ? ListView.builder(
-                      padding: EdgeInsets.all(20),
+                      // padding: EdgeInsets.all(20),
                       itemCount: lectureList.length,
                       itemBuilder: (context, index) {
                         return lectureComponent(
                             lecture: lectureList[index], num: index);
                       })
                   : Center(
-                      child: CircularProgressIndicator(),
+                      child: Text("불러온 과목이 없습니다"),
                     ))
         ],
       ),
