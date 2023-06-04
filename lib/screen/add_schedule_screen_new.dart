@@ -59,6 +59,37 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
   TimeOfDay? nonPeriodicStartTime;
   TimeOfDay? nonPeriodicEndTime;
 
+  List<DropdownMenuItem<String>> _addDividersAfterItems(List<String> items) {
+    List<DropdownMenuItem<String>> menuItems = [];
+    for (var item in items) {
+      menuItems.addAll(
+        [
+          DropdownMenuItem<String>(
+            value: item,
+            child: Center(
+              child: Text(
+                item,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ),
+          ),
+          //If it's last item, we will not add Divider after it.
+          if (item != items.last)
+            const DropdownMenuItem<String>(
+              enabled: false,
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+        ],
+      );
+    }
+    return menuItems;
+  }
+
   Widget _buildPageContent(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -95,7 +126,9 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
           Container(
             //height: 700,
             padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                border: Border.all(color: Colors.blueAccent)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -118,7 +151,8 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                       keyboardType: TextInputType.name,
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -139,7 +173,8 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                       keyboardType: TextInputType.text,
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -174,12 +209,12 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                     },
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
-                  child: Divider(
-                    color: Colors.blue.shade400,
-                  ),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                //   child: Divider(
+                //     color: Colors.blue.shade400,
+                //   ),
+                // ),
                 Visibility(
                     visible: isChecked && !isPeriodic,
                     child: Column(
@@ -190,13 +225,20 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                               icon: const Icon(Icons.calendar_month),
                               onPressed: () async {
                                 DateTime currentTime = await NTP.now();
-                                currentTime = currentTime.toUtc().add(const Duration(hours: 9));
-                                DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
+                                currentTime = currentTime
+                                    .toUtc()
+                                    .add(const Duration(hours: 9));
+                                DateTime? result = await showRoundedDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    borderRadius: 16,
+                                    locale: const Locale('ko', 'KR'));
                                 if (result != null) {
                                   setState(() {
                                     nonDate = result;
                                     print("nonDate: ${nonDate.toString()}");
-                                    dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                    dateInfo =
+                                        "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
                                   });
                                 }
                               },
@@ -204,13 +246,21 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                             TextButton(
                                 onPressed: () async {
                                   DateTime currentTime = await NTP.now();
-                                  currentTime = currentTime.toUtc().add(const Duration(hours: 9));
-                                  DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
+                                  currentTime = currentTime
+                                      .toUtc()
+                                      .add(const Duration(hours: 9));
+                                  DateTime? result =
+                                      await showRoundedDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          borderRadius: 16,
+                                          locale: const Locale('ko', 'KR'));
                                   if (result != null) {
                                     setState(() {
                                       nonDate = result;
                                       print("nonDate: ${nonDate.toString()}");
-                                      dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                      dateInfo =
+                                          "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
                                     });
                                   }
                                 },
@@ -225,18 +275,25 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                                 TimeRange? result = await showTimeRangePicker(
                                     context: context,
                                     interval: const Duration(minutes: 30),
-                                    disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                    disabledTime: TimeRange(
+                                        startTime:
+                                            const TimeOfDay(hour: 0, minute: 0),
+                                        endTime: const TimeOfDay(
+                                            hour: 8, minute: 0)),
                                     start: const TimeOfDay(hour: 12, minute: 0),
                                     end: const TimeOfDay(hour: 15, minute: 0));
                                 if (result != null) {
                                   setState(() {
-                                    if ((result.startTime.hour > result.endTime.hour)) {
-                                      Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                    if ((result.startTime.hour >
+                                        result.endTime.hour)) {
+                                      Fluttertoast.showToast(
+                                          msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                       return;
                                     }
                                     nonPeriodicStartTime = result.startTime;
                                     nonPeriodicEndTime = result.endTime;
-                                    timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                    timeInfo =
+                                        '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                   });
                                 }
                               },
@@ -246,18 +303,27 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                                   TimeRange? result = await showTimeRangePicker(
                                       context: context,
                                       interval: const Duration(minutes: 30),
-                                      disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
-                                      start: const TimeOfDay(hour: 12, minute: 0),
-                                      end: const TimeOfDay(hour: 15, minute: 0));
+                                      disabledTime: TimeRange(
+                                          startTime: const TimeOfDay(
+                                              hour: 0, minute: 0),
+                                          endTime: const TimeOfDay(
+                                              hour: 8, minute: 0)),
+                                      start:
+                                          const TimeOfDay(hour: 12, minute: 0),
+                                      end:
+                                          const TimeOfDay(hour: 15, minute: 0));
                                   if (result != null) {
                                     setState(() {
-                                      if ((result.startTime.hour > result.endTime.hour)) {
-                                        Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                      if ((result.startTime.hour >
+                                          result.endTime.hour)) {
+                                        Fluttertoast.showToast(
+                                            msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                         return;
                                       }
                                       nonPeriodicStartTime = result.startTime;
                                       nonPeriodicEndTime = result.endTime;
-                                      timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                      timeInfo =
+                                          '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                     });
                                   }
                                 },
@@ -268,145 +334,139 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                     )),
                 Visibility(
                     visible: isPeriodic,
-                    child: Row(
+                    child: Column(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton2(
-                              isExpanded: true,
-                              hint: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.list,
-                                    size: 16,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      '요일 선택',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              items: items
-                                  .map((item) => DropdownMenuItem<String>(
-                                        value: item,
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  isExpanded: true,
+                                  hint: const Row(
+                                    children: [
+                                      Expanded(
+                                          child: Center(
                                         child: Text(
-                                          item,
-                                          style: const TextStyle(
+                                          '요일 선택',
+                                          style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Color.fromARGB(
+                                                255, 45, 115, 235),
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                      ))
-                                  .toList(),
-                              value: selectedValue,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue = value as String;
-                                  if (startDayTime != null && endDayTime != null) isSelectPlan = true;
-                                });
-                              },
-                              buttonStyleData: ButtonStyleData(
-                                height: 40,
-                                width: 120,
-                                padding: const EdgeInsets.only(left: 14, right: 14),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: Colors.black26,
+                                      )),
+                                    ],
                                   ),
-                                  color: const Color.fromARGB(255, 73, 190, 244),
-                                ),
-                                elevation: 2,
-                              ),
-                              iconStyleData: const IconStyleData(
-                                icon: Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                ),
-                                iconSize: 14,
-                                iconEnabledColor: Color.fromARGB(255, 255, 255, 255),
-                                iconDisabledColor: Colors.grey,
-                              ),
-                              dropdownStyleData: DropdownStyleData(
-                                  maxHeight: 200,
-                                  width: 200,
-                                  padding: null,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color: Colors.blueAccent,
+                                  items: _addDividersAfterItems(items).toList(),
+                                  value: selectedValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedValue = value as String;
+                                      if (startDayTime != null &&
+                                          endDayTime != null) {
+                                        isSelectPlan = true;
+                                      }
+                                    });
+                                  },
+                                  buttonStyleData: ButtonStyleData(
+                                    height: 35,
+                                    width: 100,
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(
+                                          color: Colors.blue, width: 1.5),
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                    ),
+                                    // elevation: 2,
                                   ),
-                                  elevation: 8,
-                                  offset: const Offset(-20, 0),
-                                  scrollbarTheme: ScrollbarThemeData(
-                                    radius: const Radius.circular(40),
-                                    thickness: MaterialStateProperty.all(6),
-                                    thumbVisibility: MaterialStateProperty.all(true),
-                                  )),
-                              menuItemStyleData: const MenuItemStyleData(
-                                height: 40,
-                                padding: EdgeInsets.only(left: 14, right: 14),
+                                  iconStyleData: const IconStyleData(
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                    ),
+                                    iconSize: 14,
+                                    iconEnabledColor: Colors.blue,
+                                    iconDisabledColor: Colors.grey,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                      maxHeight: 200,
+                                      width: 100,
+                                      padding: null,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255),
+                                      ),
+                                      elevation: 8,
+                                      offset: const Offset(0, 0),
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        radius: const Radius.circular(40),
+                                        thickness: MaterialStateProperty.all(6),
+                                        thumbVisibility:
+                                            MaterialStateProperty.all(true),
+                                      )),
+                                  menuItemStyleData: const MenuItemStyleData(
+                                      height: 20,
+                                      padding:
+                                          EdgeInsets.only(left: 14, right: 14),
+                                      overlayColor: MaterialStatePropertyAll(
+                                          Color.fromARGB(255, 178, 225, 247))),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
-                          width: 200,
-                          height: 40,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.lightBlue,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                                padding: const EdgeInsets.only(left: 14, right: 14)),
-                            onPressed: () async {
-                              TimeRange? result = await showTimeRangePicker(
-                                  context: context,
-                                  interval: const Duration(minutes: 30),
-                                  disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
-                                  start: const TimeOfDay(hour: 12, minute: 0),
-                                  end: const TimeOfDay(hour: 15, minute: 0));
+                            OutlinedButton(
+                              onPressed: () async {
+                                TimeRange? result = await showTimeRangePicker(
+                                    context: context,
+                                    interval: const Duration(minutes: 30),
+                                    disabledTime: TimeRange(
+                                        startTime:
+                                            const TimeOfDay(hour: 0, minute: 0),
+                                        endTime: const TimeOfDay(
+                                            hour: 8, minute: 0)),
+                                    start: const TimeOfDay(hour: 12, minute: 0),
+                                    end: const TimeOfDay(hour: 15, minute: 0));
 
-                              if (result != null) {
-                                startDayTime = result.startTime;
-                                endDayTime = result.endTime;
-                                setState(() {
-                                  if ((result.startTime.hour > result.endTime.hour)) {
-                                    Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
-                                    return;
-                                  }
+                                if (result != null) {
                                   startDayTime = result.startTime;
                                   endDayTime = result.endTime;
-                                  perTimeInfo = '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
-                                  if (selectedValue != null) {
-                                    isSelectPlan = true;
-                                  }
-                                });
-                              }
-                            },
-                            child: Text(
-                              perTimeInfo,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                  setState(() {
+                                    if ((result.startTime.hour >
+                                        result.endTime.hour)) {
+                                      Fluttertoast.showToast(
+                                          msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                      return;
+                                    }
+                                    startDayTime = result.startTime;
+                                    endDayTime = result.endTime;
+                                    perTimeInfo =
+                                        '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
+                                    if (selectedValue != null) {
+                                      isSelectPlan = true;
+                                    }
+                                  });
+                                }
+                              },
+                              child: Text(
+                                perTimeInfo,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          ],
+                        )
                       ],
                     )),
                 const SizedBox(
@@ -421,24 +481,30 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                           absorbing: true,
                           child: Text(
                             "설정된 일시 :  $selectedValue요일 ${startDayTime?.hour}시 ${startDayTime?.minute}분 ~ ${endDayTime?.hour}시 ${endDayTime?.minute}분",
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.lightBlue),
                           ),
                         ),
                         OutlinedButton(
                             onPressed: () {
                               setState(() {
-                                itemList.add(Item(day: selectedValue, startDayInfo: startDayTime, endDayInfo: endDayTime));
+                                itemList.add(Item(
+                                    day: selectedValue,
+                                    startDayInfo: startDayTime,
+                                    endDayInfo: endDayTime));
                                 isSelectPlan = false;
                                 startDayTime = endDayTime = null;
                                 selectedValue = null;
-                                perTimeInfo = "";
+                                perTimeInfo = "시간 선택";
                               });
                             },
                             child: const Text("추가"))
                       ],
                     )),
                 Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -449,7 +515,10 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                       alignment: Alignment.center,
                       child: const Text(
                         "추가된 일시",
-                        style: TextStyle(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 20),
+                        style: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     )),
                 const SizedBox(
@@ -460,7 +529,12 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                     child: Container(
                         decoration: const BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2.0, spreadRadius: 1.0)],
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 2.0,
+                                spreadRadius: 1.0)
+                          ],
                         ),
                         child: SizedBox(
                           height: 200,
@@ -474,25 +548,42 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                                 Item item = itemList[index];
                                 return Card(
                                   elevation: 3,
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Colors.blueAccent)),
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                                    Container(
-                                      padding: const EdgeInsets.only(left: 20),
-                                      child: Text("${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                                              padding: const EdgeInsets.all(5),
-                                              side: const BorderSide(
-                                                color: Colors.cyan,
-                                              )),
-                                          onPressed: () {},
-                                          child: const Text("삭제")),
-                                    ),
-                                  ]),
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(12)),
+                                      side:
+                                          BorderSide(color: Colors.blueAccent)),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 20),
+                                          child: Text(
+                                              "${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: OutlinedButton(
+                                              style: OutlinedButton.styleFrom(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          12))),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  side: const BorderSide(
+                                                    color: Colors.cyan,
+                                                  )),
+                                              onPressed: () {},
+                                              child: const Text("삭제")),
+                                        ),
+                                      ]),
                                 );
                               }),
                         ))),
@@ -554,7 +645,8 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
       } else {
         List<String> periodicList = [];
         for (var element in itemList) {
-          String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
+          String target =
+              "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
           print(target);
           periodicList.add(target);
         }
@@ -595,13 +687,19 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
         'name': nameTec.text,
         'body': bodyTec.text,
         'periodicType': isPeriodic,
-        'startTime': "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
+        'startTime':
+            "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
         'endTime': "${nonDate.toString().split(" ")[0]}T$endHour:$endMin:00",
       };
     }
     print(postBody);
     var url = Uri.http(baseUri, '/timetable/saveSchedule');
-    var response = await http.post(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
+    var response = await http.post(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer $jwtToken'
+        },
+        body: jsonEncode(postBody));
     if (response.statusCode == 200) {
       print(response.body);
       Fluttertoast.showToast(msg: '추가되었습니다');

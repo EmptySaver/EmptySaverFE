@@ -493,7 +493,9 @@ class Noti {
     idType2 = json["idType2"];
     idValue = int.parse(json["idValue"]);
     idValue2 = int.parse(json["idValue2"]);
-    receiveTime = json["receiveTime"];
+    var splitTime = json["receiveTime"].toString().split('T');
+    var detailTime = splitTime[1].split('.');
+    receiveTime = "${splitTime[0]} ${detailTime[0]}";
     isRead = json["isRead"];
   }
 
