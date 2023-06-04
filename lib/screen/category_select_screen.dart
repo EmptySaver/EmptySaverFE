@@ -56,7 +56,27 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
         child: Column(
           children: [
             const SizedBox(
-              height: 50,
+              height: 30,
+            ),
+            const Text('직접 만들기'
+              ,style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text('카테고리를 선택해서 그룹을 만들어 보세요.'
+              ,style: TextStyle(
+                fontSize: 15,
+                //fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(
+              height: 5,
             ),
             OutlinedButton(
               onPressed: () async {
@@ -97,24 +117,43 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
               child: const Text('카테고리 고르기'),
             ),
             const SizedBox(
-              height: 30,
+              height: 50,
             ),
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
+                  decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(25.0))
+                      , border: Border.all(color: Colors.blueAccent)),
+                  /*
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.blueGrey.shade200),
                     borderRadius: BorderRadius.circular(15),
-                  ),
+                  ),*/
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          const Text('추천목록'),
+                          const Text('공강 시간 스케줄 추천'
+                            ,style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
                           const SizedBox(
-                            height: 10,
+                            height: 5,
+                          ),
+                          const Text('다른 유저들의 그룹에 참가해서 활동해 보세요!'
+                            ,style: TextStyle(
+                              fontSize: 15,
+                              //fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -172,10 +211,19 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                                                 children: [
                                                   Text(
                                                     '${snapshot.data![index].name}',
-                                                    style: Theme.of(context).textTheme.titleLarge,
+                                                    //style: Theme.of(context).textTheme.titleLarge,
+                                                    style: const TextStyle(
+                                                      fontSize: 25,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.blueAccent,
+                                                      decoration: TextDecoration.underline,
+                                                    ),
                                                   ),
                                                   Text('${snapshot.data![index].body}'),
-                                                  (eachCategory != null) ? Text(eachCategory) : const Text('카테고리 없음'),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  (eachCategory != null) ? Text("활동: "+eachCategory) : const Text('카테고리 없음'),
                                                   Text('${snapshot.data![index].timeData}'),
                                                 ],
                                               ),
