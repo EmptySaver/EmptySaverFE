@@ -4,6 +4,7 @@ import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationsScreen extends StatefulWidget {
@@ -22,6 +23,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   void initState() {
     super.initState();
     notiListFuture = getAllNotification();
+  }
+
+  _setAlertIcon(String routeValue, String type1, String type2) {
+    //기본 아이콘으로 표현하기 빡셀거같긴하네
+    //에타 알림 처럼 앞에 아이콘 달고 싶은디..
+    if (routeValue == "groupDetail" || routeValue == "post") {
+      return Icon(FontAwesomeIcons.pencil);
+    } else if (routeValue == "friend") {
+      return Icon(FontAwesomeIcons.person);
+    } else if (routeValue == "group") {
+      return Icon(FontAwesomeIcons.userGroup);
+    } else {
+      if (type1 == "friend") return Icon(Icons.person_add);
+      return Icon(Icons.abc);
+    }
   }
 
   @override
@@ -58,8 +74,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             return GestureDetector(
                               onTap: () async {
                                 if (isRead == false) {
-                                  var url = Uri.http(baseUri, '/notification/check/${notiList[index].id}');
-                                  var response = await http.put(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                  var url = Uri.http(baseUri,
+                                      '/notification/check/${notiList[index].id}');
+                                  var response = await http.put(url, headers: {
+                                    'authorization': 'Bearer $jwtToken'
+                                  });
                                   if (response.statusCode == 200) {
                                     print('알림 읽음');
                                   } else {
@@ -68,37 +87,56 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 }
                                 setState(() {
                                   notiListFuture = getAllNotification();
-                                  routeSwitching(routeValue, idType: idType, idType2: idType2, idValue: idValue, idValue2: idValue2);
+                                  routeSwitching(routeValue,
+                                      idType: idType,
+                                      idType2: idType2,
+                                      idValue: idValue,
+                                      idValue2: idValue2);
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.all(5),
-                                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                // padding: const EdgeInsets.all(5),
+                                // margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                 decoration: BoxDecoration(
-                                  color: (isRead == true) ? Colors.blueGrey.withAlpha(30) : null,
+                                  color: (isRead == true)
+                                      ? Colors.blueGrey.withAlpha(30)
+                                      : null,
                                 ),
                                 child: Row(
                                   children: [
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    const Icon(
-                                      Icons.messenger_outline,
-                                      size: 30,
-                                    ),
+                                    // const Icon(
+                                    //   Icons.messenger_outline,
+                                    //   size: 30,
+                                    // ),
+                                    _setAlertIcon(routeValue, idType, idType2),
                                     const SizedBox(
                                       width: 20,
                                     ),
                                     Expanded(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
+                                          SizedBox(
+                                            height: 15,
+                                          ),
                                           Text(
                                             '${notiList[index].title}',
-                                            style: const TextStyle(fontWeight: FontWeight.w600),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
                                           ),
                                           Text('${notiList[index].body}'),
-                                          Text('${notiList[index].receiveTime}'),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                              '${notiList[index].receiveTime}'),
                                         ],
                                       ),
                                     )
@@ -109,7 +147,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           }),
                     );
                   } else {
-                    return const Text('알림이 없습니다');
+                    return Center(
+                      child: const Text('알림이 없습니다'),
+                    );
                   }
                 } else {
                   return const Center(
@@ -126,7 +166,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   Future<List<Noti>> getAllNotification() async {
     var url = Uri.http(baseUri, '/notification/getAll');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var response =
+        await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var decodedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       var data = decodedJson.map((e) => Noti.fromJson(e)).toList();
