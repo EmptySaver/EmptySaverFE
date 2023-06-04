@@ -74,16 +74,17 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
   }
 
   _setTag(bool amIOwner, bool amIWriter) {
-    if (amIOwner)
+    if (amIOwner) {
       return const Text(
         "   (그룹장)",
         style: TextStyle(color: Colors.blue, fontSize: 14),
       );
-    else if (amIWriter)
-      const Text(
+    } else if (amIWriter) {
+      return const Text(
         "   (내 댓글)",
         style: TextStyle(color: Colors.blue, fontSize: 14),
       );
+    }
   }
 
   @override
@@ -193,249 +194,104 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                               ],
                             ),
 
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            '${groupDetail.groupDescription}',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          //widget s
-                          _setButton(groupDetail),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Divider(
-                            thickness: 2.0,
-                            color: Colors.blue,
-                          ),
-                          (commentList != null)
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  itemCount: commentList!.length,
-                                  itemBuilder: (context, index) {
-                                    var parentComment =
-                                        commentList[index].parent;
-                                    List<ChildList>? childCommentList =
-                                        commentList[index].childList;
-                                    bool hasChild = (childCommentList != null);
-                                    return Column(
-                                      children: [
-                                        if (index != 0)
-                                          Divider(
-                                            thickness: 1.0,
-                                          ),
-                                        Container(
-                                          padding:
-                                              const EdgeInsets.only(top: 5),
-                                          height: 105,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  const Icon(
-                                                    FontAwesomeIcons.comment,
-                                                    size: 20,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    '${parentComment!.writerName}',
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  _setTag(
-                                                      parentComment.isOwner!,
-                                                      parentComment.amIWriter!)
-                                                  // if (parentComment.isOwner!)
-                                                  //   const Text(
-                                                  //     "   (그룹장)",
-                                                  //     style: TextStyle(
-                                                  //         color: Colors.blue,
-                                                  //         fontSize: 14),
-                                                  //   )
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(parentComment.text!),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    '${parentComment.dateTime.toString().substring(0, 10)} ${parentComment.dateTime.toString().substring(11, 19)}',
-                                                    style: TextStyle(
-                                                        color: Colors.grey[500],
-                                                        fontSize: 14),
-                                                  ),
-                                                  Row(
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              '${groupDetail.groupDescription}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            //widget s
+                            _setButton(groupDetail),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Divider(
+                              thickness: 2.0,
+                              color: Colors.blue,
+                            ),
+                            (commentList != null)
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    itemCount: commentList.length,
+                                    itemBuilder: (context, index) {
+                                      var parentComment = commentList[index].parent;
+                                      List<ChildList>? childCommentList = commentList[index].childList;
+                                      bool hasChild = (childCommentList != null);
+                                      return Column(
+                                        children: [
+                                          if (index != 0)
+                                            const Divider(
+                                              thickness: 1.0,
+                                            ),
+                                          Container(
+                                            padding: const EdgeInsets.only(top: 5),
+                                            // height: 105,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Icon(
+                                                      FontAwesomeIcons.comment,
+                                                      size: 20,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      '${parentComment!.writerName}',
+                                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                                    ),
+                                                    _setTag(parentComment.isOwner!, parentComment.amIWriter!)
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(parentComment.text!),
+                                                ConstrainedBox(
+                                                  constraints: const BoxConstraints(maxHeight: 30),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                var childCommentTec =
-                                                                    TextEditingController();
-                                                                return AlertDialog(
-                                                                    insetPadding:
-                                                                        EdgeInsets.all(
-                                                                            10),
-                                                                    title:
-                                                                        const Text(
-                                                                      '대댓글 남기기',
-                                                                      style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .bold,
-                                                                          fontSize:
-                                                                              17),
-                                                                    ),
-                                                                    content:
-                                                                        Container(
-                                                                      width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width,
-                                                                      height:
-                                                                          135,
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.end,
-                                                                        children: [
-                                                                          TextField(
-                                                                            controller:
-                                                                                childCommentTec,
-                                                                            decoration: InputDecoration(
-                                                                                hintText: "대댓글을 입력해주세요",
-                                                                                hintStyle: TextStyle(color: Colors.grey[500]),
-                                                                                border: InputBorder.none),
-                                                                            maxLines:
-                                                                                3,
-                                                                          ),
-                                                                          Align(
-                                                                            alignment:
-                                                                                Alignment.centerRight,
-                                                                            child:
-                                                                                Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.end,
-                                                                              children: [
-                                                                                OutlinedButton(
-                                                                                    onPressed: () {
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                    style: OutlinedButton.styleFrom(
-                                                                                      side: BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
-                                                                                    ),
-                                                                                    child: Text(
-                                                                                      "취소",
-                                                                                      style: TextStyle(color: const Color.fromARGB(255, 72, 72, 72)),
-                                                                                    )),
-                                                                                SizedBox(
-                                                                                  width: 10,
-                                                                                ),
-                                                                                OutlinedButton(
-                                                                                    onPressed: () async {
-                                                                                      {
-                                                                                        var url = Uri.http(baseUri, '/board/addGroupComment');
-                                                                                        var response = await http.post(url,
-                                                                                            headers: {
-                                                                                              'authorization': 'Bearer $jwtToken',
-                                                                                              'Content-Type': 'application/json; charset=UTF-8'
-                                                                                            },
-                                                                                            body: jsonEncode({
-                                                                                              'groupId': groupDetail.groupId,
-                                                                                              'parentCommentId': parentComment.commentId,
-                                                                                              'text': childCommentTec.text,
-                                                                                            }));
-                                                                                        if (response.statusCode == 200) {
-                                                                                          print(utf8.decode(response.bodyBytes));
-                                                                                          // commentTec.clear();
-                                                                                          Navigator.pop(context);
-                                                                                          setState(() {
-                                                                                            groupDetailFuture = getGroupDetail();
-                                                                                          });
-                                                                                        } else {
-                                                                                          print(utf8.decode(response.bodyBytes));
-                                                                                          return;
-                                                                                        }
-                                                                                      }
-                                                                                    },
-                                                                                    child: const Text('완료')),
-                                                                              ],
-                                                                            ),
-                                                                          )
-                                                                        ],
+                                                      Text(
+                                                        '${parentComment.dateTime.toString().substring(0, 10)} ${parentComment.dateTime.toString().substring(11, 19)}',
+                                                        style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          TextButton(
+                                                            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                                            onPressed: () {
+                                                              showDialog(
+                                                                context: context,
+                                                                builder: (context) {
+                                                                  var childCommentTec = TextEditingController();
+                                                                  return AlertDialog(
+                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                                                                      // insetPadding: const EdgeInsets.all(0),
+                                                                      title: const Text(
+                                                                        '대댓글 남기기',
+                                                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                                                                       ),
-                                                                    ));
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Text(
-                                                            "대댓글",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .grey[500],
-                                                                fontSize: 14),
-                                                          )),
-                                                      Visibility(
-                                                        visible: groupDetail
-                                                                .amIOwner! ||
-                                                            parentComment
-                                                                .amIWriter!,
-                                                        child: Row(
-                                                          children: [
-                                                            TextButton(
-                                                                onPressed: () {
-                                                                  var updateTec =
-                                                                      TextEditingController(
-                                                                          text:
-                                                                              parentComment.text);
-                                                                  showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) =>
-                                                                            AlertDialog(
-                                                                      insetPadding:
-                                                                          EdgeInsets.all(
-                                                                              10),
-                                                                      title:
-                                                                          Text(
-                                                                        "댓글 수정",
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                            fontSize: 17),
-                                                                      ),
-                                                                      content:
-                                                                          Container(
-                                                                        width: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width,
-                                                                        height:
-                                                                            135,
-                                                                        child:
-                                                                            Column(
+                                                                      content: SizedBox(
+                                                                        width: MediaQuery.of(context).size.width,
+                                                                        height: 160,
+                                                                        child: Column(
+                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment: CrossAxisAlignment.end,
                                                                           children: [
                                                                             TextField(
-                                                                              controller: updateTec,
-                                                                              decoration: const InputDecoration(border: InputBorder.none),
+                                                                              controller: childCommentTec,
+                                                                              decoration:
+                                                                                  InputDecoration(hintText: "대댓글을 입력해주세요", hintStyle: TextStyle(color: Colors.grey[500]), border: InputBorder.none),
                                                                               maxLines: 3,
+                                                                              maxLength: 1000,
                                                                             ),
                                                                             Align(
                                                                               alignment: Alignment.centerRight,
@@ -447,444 +303,472 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                                                                                         Navigator.pop(context);
                                                                                       },
                                                                                       style: OutlinedButton.styleFrom(
-                                                                                        side: BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
+                                                                                        side: const BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
                                                                                       ),
-                                                                                      child: Text(
+                                                                                      child: const Text(
                                                                                         "취소",
-                                                                                        style: TextStyle(color: const Color.fromARGB(255, 72, 72, 72)),
+                                                                                        style: TextStyle(color: Color.fromARGB(255, 72, 72, 72)),
                                                                                       )),
-                                                                                  SizedBox(
+                                                                                  const SizedBox(
                                                                                     width: 10,
                                                                                   ),
                                                                                   OutlinedButton(
                                                                                       onPressed: () async {
-                                                                                        var url = Uri.http(baseUri, '/board/updateComment');
-                                                                                        var response = await http.put(url,
-                                                                                            headers: {
-                                                                                              'authorization': 'Bearer $jwtToken',
-                                                                                              'Content-Type': 'application/json; charset=UTF-8'
-                                                                                            },
-                                                                                            body: jsonEncode({
-                                                                                              'commentId': parentComment.commentId,
-                                                                                              'text': updateTec.text,
-                                                                                            }));
-                                                                                        if (response.statusCode == 200) {
-                                                                                          setState(() {
+                                                                                        {
+                                                                                          var url = Uri.http(baseUri, '/board/addGroupComment');
+                                                                                          var response = await http.post(url,
+                                                                                              headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                                                                                              body: jsonEncode({
+                                                                                                'groupId': groupDetail.groupId,
+                                                                                                'parentCommentId': parentComment.commentId,
+                                                                                                'text': childCommentTec.text,
+                                                                                              }));
+                                                                                          if (response.statusCode == 200) {
                                                                                             print(utf8.decode(response.bodyBytes));
-                                                                                            groupDetailFuture = getGroupDetail();
+                                                                                            // commentTec.clear();
                                                                                             Navigator.pop(context);
-                                                                                            // Navigator.pop(context);
-                                                                                          });
-                                                                                        } else {
-                                                                                          print(utf8.decode(response.bodyBytes));
-                                                                                          return;
+                                                                                            setState(() {
+                                                                                              groupDetailFuture = getGroupDetail();
+                                                                                            });
+                                                                                          } else {
+                                                                                            print(utf8.decode(response.bodyBytes));
+                                                                                            return;
+                                                                                          }
                                                                                         }
                                                                                       },
-                                                                                      child: const Text('수정'))
+                                                                                      child: const Text('완료')),
                                                                                 ],
                                                                               ),
                                                                             )
                                                                           ],
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                  );
+                                                                      ));
                                                                 },
-                                                                child: Text(
-                                                                  '수정',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                              .grey[
-                                                                          500],
-                                                                      fontSize:
-                                                                          14),
-                                                                )),
-                                                            TextButton(
-                                                                onPressed: () {
-                                                                  showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder: (context) => AlertDialog(
-                                                                        insetPadding: EdgeInsets.all(10),
-                                                                        title: const Center(
-                                                                          child:
-                                                                              Text(
-                                                                            "정말 삭제하시겠습니까?",
-                                                                            style:
-                                                                                TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                                                                          ),
-                                                                        ),
-                                                                        content: Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceEvenly,
-                                                                          children: [
-                                                                            OutlinedButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                style: OutlinedButton.styleFrom(
-                                                                                  side: BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
-                                                                                ),
-                                                                                child: const Text(
-                                                                                  "아니오",
-                                                                                  style: TextStyle(color: const Color.fromARGB(255, 72, 72, 72)),
-                                                                                )),
-                                                                            const SizedBox(
-                                                                              width: 10,
-                                                                            ),
-                                                                            OutlinedButton(
-                                                                                onPressed: () async {
-                                                                                  var url = Uri.http(baseUri, '/board/deleteComment/${parentComment.commentId}');
-                                                                                  var response = await http.delete(url, headers: {
-                                                                                    'authorization': 'Bearer $jwtToken'
-                                                                                  });
-                                                                                  if (response.statusCode == 200) {
-                                                                                    print(utf8.decode(response.bodyBytes));
-                                                                                    Fluttertoast.showToast(msg: '삭제되었습니다');
-                                                                                    setState(() {
-                                                                                      groupDetailFuture = getGroupDetail();
-                                                                                    });
-                                                                                    Navigator.pop(context);
-                                                                                  } else {
-                                                                                    print(utf8.decode(response.bodyBytes));
-                                                                                    print('실패');
-                                                                                  }
-                                                                                },
-                                                                                child: const Text('예'))
-                                                                          ],
-                                                                        )),
-                                                                  );
-                                                                  // final result = await FlutterPlatformAlert.showCustomAlert(
-                                                                  //     windowTitle:
-                                                                  //         'title',
-                                                                  //     text:
-                                                                  //         'text',
-                                                                  //     positiveButtonTitle:
-                                                                  //         'yy',
-                                                                  //     negativeButtonTitle:
-                                                                  //         'nn');
-                                                                  // print(
-                                                                  //     'result : $result');
-                                                                },
-                                                                child: Text(
-                                                                  '삭제',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                              .grey[
-                                                                          500],
-                                                                      fontSize:
-                                                                          14),
-                                                                ))
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Visibility(
-                                            visible: hasChild,
-                                            child: Column(
-                                              children: [
-                                                for (int i = 0;
-                                                    i <
-                                                        childCommentList!
-                                                            .length;
-                                                    i++)
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(20, 0, 0, 0),
-                                                    // decoration: BoxDecoration(
-                                                    //     color: Colors
-                                                    //         .grey.shade200),
-                                                    height: 100,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            const Icon(
-                                                              CustomIconES
-                                                                  .level_down,
-                                                              size: 20,
+                                                              );
+                                                            },
+                                                            child: Text(
+                                                              "대댓글",
+                                                              style: TextStyle(color: Colors.grey[500], fontSize: 14),
                                                             ),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              '${childCommentList[i].writerName}',
-                                                              style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            _setTag(
-                                                                childCommentList[
-                                                                        i]
-                                                                    .isOwner!,
-                                                                childCommentList[
-                                                                        i]
-                                                                    .amIWriter!)
-                                                            // if (childCommentList[
-                                                            //         i]
-                                                            //     .isOwner!)
-                                                            //   const Text(
-                                                            //     "   (그룹장)",
-                                                            //     style: TextStyle(
-                                                            //         color: Colors
-                                                            //             .blue,
-                                                            //         fontSize:
-                                                            //             14),
-                                                            //   )
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        Text(childCommentList[i]
-                                                            .text!),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              '${childCommentList[i].dateTime.toString().substring(0, 10)} ${childCommentList[i].dateTime.toString().substring(11, 19)}',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                          .grey[
-                                                                      500],
-                                                                  fontSize: 14),
-                                                            ),
-                                                            Row(
+                                                          ),
+                                                          Visibility(
+                                                            visible: groupDetail.amIOwner! || parentComment.amIWriter!,
+                                                            child: Row(
                                                               children: [
-                                                                Visibility(
-                                                                  visible: groupDetail
-                                                                          .amIOwner! ||
-                                                                      childCommentList[
-                                                                              i]
-                                                                          .amIWriter!,
-                                                                  child: Row(
-                                                                    children: [
-                                                                      TextButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            var updateTec =
-                                                                                TextEditingController(text: childCommentList[i].text);
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              builder: (context) => AlertDialog(
-                                                                                insetPadding: EdgeInsets.all(10),
-                                                                                title: Text(
-                                                                                  "댓글 수정",
-                                                                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                                                TextButton(
+                                                                    style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+                                                                    onPressed: () {
+                                                                      var updateTec = TextEditingController(text: parentComment.text);
+                                                                      showDialog(
+                                                                        context: context,
+                                                                        builder: (context) => AlertDialog(
+                                                                          contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                                                                          // insetPadding: const EdgeInsets.all(0),
+                                                                          title: const Text(
+                                                                            "댓글 수정",
+                                                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                                                          ),
+                                                                          content: SizedBox(
+                                                                            width: MediaQuery.of(context).size.width,
+                                                                            height: 160,
+                                                                            child: Column(
+                                                                              children: [
+                                                                                TextField(
+                                                                                  controller: updateTec,
+                                                                                  decoration: const InputDecoration(border: InputBorder.none),
+                                                                                  maxLines: 3,
                                                                                 ),
-                                                                                content: Container(
-                                                                                  width: MediaQuery.of(context).size.width,
-                                                                                  height: 135,
-                                                                                  child: Column(
-                                                                                    children: [
-                                                                                      TextField(
-                                                                                        controller: updateTec,
-                                                                                        decoration: const InputDecoration(border: InputBorder.none),
-                                                                                        maxLines: 3,
-                                                                                      ),
-                                                                                      Align(
-                                                                                        alignment: Alignment.centerRight,
-                                                                                        child: Row(
-                                                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                                                          children: [
-                                                                                            OutlinedButton(
-                                                                                                onPressed: () {
-                                                                                                  Navigator.pop(context);
-                                                                                                },
-                                                                                                style: OutlinedButton.styleFrom(
-                                                                                                  side: BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
-                                                                                                ),
-                                                                                                child: Text(
-                                                                                                  "취소",
-                                                                                                  style: TextStyle(color: const Color.fromARGB(255, 72, 72, 72)),
-                                                                                                )),
-                                                                                            SizedBox(
-                                                                                              width: 10,
-                                                                                            ),
-                                                                                            OutlinedButton(
-                                                                                                onPressed: () async {
-                                                                                                  var url = Uri.http(baseUri, '/board/updateComment');
-                                                                                                  var response = await http.put(url,
-                                                                                                      headers: {
-                                                                                                        'authorization': 'Bearer $jwtToken',
-                                                                                                        'Content-Type': 'application/json; charset=UTF-8'
-                                                                                                      },
-                                                                                                      body: jsonEncode({
-                                                                                                        'commentId': childCommentList[i].commentId,
-                                                                                                        'text': updateTec.text,
-                                                                                                      }));
-                                                                                                  if (response.statusCode == 200) {
-                                                                                                    setState(() {
-                                                                                                      print(utf8.decode(response.bodyBytes));
-                                                                                                      groupDetailFuture = getGroupDetail();
-                                                                                                      Navigator.pop(context);
-                                                                                                      // Navigator.pop(context);
-                                                                                                    });
-                                                                                                  } else {
-                                                                                                    print(utf8.decode(response.bodyBytes));
-                                                                                                    return;
-                                                                                                  }
-                                                                                                },
-                                                                                                child: const Text('수정'))
-                                                                                          ],
-                                                                                        ),
-                                                                                      )
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            '수정',
-                                                                            style:
-                                                                                TextStyle(color: Colors.grey[500], fontSize: 14),
-                                                                          )),
-                                                                      TextButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              builder: (context) => AlertDialog(
-                                                                                  insetPadding: EdgeInsets.all(10),
-                                                                                  title: const Center(
-                                                                                    child: Text(
-                                                                                      "정말 삭제하시겠습니까?",
-                                                                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                                                                                    ),
-                                                                                  ),
-                                                                                  content: Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                Align(
+                                                                                  alignment: Alignment.centerRight,
+                                                                                  child: Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.end,
                                                                                     children: [
                                                                                       OutlinedButton(
                                                                                           onPressed: () {
                                                                                             Navigator.pop(context);
                                                                                           },
                                                                                           style: OutlinedButton.styleFrom(
-                                                                                            side: BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
+                                                                                            side: const BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
                                                                                           ),
                                                                                           child: const Text(
-                                                                                            "아니오",
-                                                                                            style: TextStyle(color: const Color.fromARGB(255, 72, 72, 72)),
+                                                                                            "취소",
+                                                                                            style: TextStyle(color: Color.fromARGB(255, 72, 72, 72)),
                                                                                           )),
                                                                                       const SizedBox(
                                                                                         width: 10,
                                                                                       ),
                                                                                       OutlinedButton(
                                                                                           onPressed: () async {
-                                                                                            var url = Uri.http(baseUri, '/board/deleteComment/${childCommentList[i].commentId}');
-                                                                                            var response = await http.delete(url, headers: {
-                                                                                              'authorization': 'Bearer $jwtToken'
-                                                                                            });
+                                                                                            var url = Uri.http(baseUri, '/board/updateComment');
+                                                                                            var response = await http.put(url,
+                                                                                                headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                                                                                                body: jsonEncode({
+                                                                                                  'commentId': parentComment.commentId,
+                                                                                                  'text': updateTec.text,
+                                                                                                }));
                                                                                             if (response.statusCode == 200) {
-                                                                                              print(utf8.decode(response.bodyBytes));
-                                                                                              Fluttertoast.showToast(msg: '삭제되었습니다');
                                                                                               setState(() {
+                                                                                                print(utf8.decode(response.bodyBytes));
                                                                                                 groupDetailFuture = getGroupDetail();
+                                                                                                Navigator.pop(context);
+                                                                                                // Navigator.pop(context);
                                                                                               });
-                                                                                              Navigator.pop(context);
                                                                                             } else {
                                                                                               print(utf8.decode(response.bodyBytes));
-                                                                                              print('실패');
+                                                                                              return;
                                                                                             }
                                                                                           },
-                                                                                          child: const Text('예'))
+                                                                                          child: const Text('수정'))
                                                                                     ],
-                                                                                  )),
-                                                                            );
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            '삭제',
-                                                                            style:
-                                                                                TextStyle(color: Colors.grey[500], fontSize: 14),
-                                                                          ))
-                                                                    ],
-                                                                  ),
-                                                                )
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                    child: Text(
+                                                                      '수정',
+                                                                      style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                                                                    )),
+                                                                TextButton(
+                                                                    style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+                                                                    onPressed: () {
+                                                                      showDialog(
+                                                                        context: context,
+                                                                        builder: (context) => AlertDialog(
+                                                                            insetPadding: const EdgeInsets.all(10),
+                                                                            title: const Center(
+                                                                              child: Text(
+                                                                                "정말 삭제하시겠습니까?",
+                                                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                                                              ),
+                                                                            ),
+                                                                            content: Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                              children: [
+                                                                                OutlinedButton(
+                                                                                    onPressed: () {
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    style: OutlinedButton.styleFrom(
+                                                                                      side: const BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
+                                                                                    ),
+                                                                                    child: const Text(
+                                                                                      "아니오",
+                                                                                      style: TextStyle(color: Color.fromARGB(255, 72, 72, 72)),
+                                                                                    )),
+                                                                                const SizedBox(
+                                                                                  width: 10,
+                                                                                ),
+                                                                                OutlinedButton(
+                                                                                    onPressed: () async {
+                                                                                      var url = Uri.http(baseUri, '/board/deleteComment/${parentComment.commentId}');
+                                                                                      var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                                                      if (response.statusCode == 200) {
+                                                                                        print(utf8.decode(response.bodyBytes));
+                                                                                        Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                                                        setState(() {
+                                                                                          groupDetailFuture = getGroupDetail();
+                                                                                        });
+                                                                                        Navigator.pop(context);
+                                                                                      } else {
+                                                                                        print(utf8.decode(response.bodyBytes));
+                                                                                        print('실패');
+                                                                                      }
+                                                                                    },
+                                                                                    child: const Text('예'))
+                                                                              ],
+                                                                            )),
+                                                                      );
+                                                                      // final result = await FlutterPlatformAlert.showCustomAlert(
+                                                                      //     windowTitle:
+                                                                      //         'title',
+                                                                      //     text:
+                                                                      //         'text',
+                                                                      //     positiveButtonTitle:
+                                                                      //         'yy',
+                                                                      //     negativeButtonTitle:
+                                                                      //         'nn');
+                                                                      // print(
+                                                                      //     'result : $result');
+                                                                    },
+                                                                    child: Text(
+                                                                      '삭제',
+                                                                      style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                                                                    ))
                                                               ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
+                                                )
                                               ],
-                                            ))
-                                      ],
-                                    );
-                                  },
-                                )
-                              : Center(
-                                  child: const Text('댓글 없음'),
-                                ),
-                        ],
+                                            ),
+                                          ),
+                                          Visibility(
+                                              visible: hasChild,
+                                              child: Column(
+                                                children: [
+                                                  for (int i = 0; i < childCommentList!.length; i++)
+                                                    Container(
+                                                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                                      // decoration: BoxDecoration(
+                                                      //     color: Colors
+                                                      //         .grey.shade200),
+                                                      // height: 100,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              const Icon(
+                                                                CustomIconES.level_down,
+                                                                size: 20,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                '${childCommentList[i].writerName}',
+                                                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                                              ),
+                                                              _setTag(childCommentList[i].isOwner!, childCommentList[i].amIWriter!)
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Text(childCommentList[i].text!),
+                                                          ConstrainedBox(
+                                                            constraints: const BoxConstraints(minHeight: 30, maxHeight: 30),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  '${childCommentList[i].dateTime.toString().substring(0, 10)} ${childCommentList[i].dateTime.toString().substring(11, 19)}',
+                                                                  style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Visibility(
+                                                                      visible: groupDetail.amIOwner! || childCommentList[i].amIWriter!,
+                                                                      child: Row(
+                                                                        children: [
+                                                                          TextButton(
+                                                                              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                                                              onPressed: () {
+                                                                                var updateTec = TextEditingController(text: childCommentList[i].text);
+                                                                                showDialog(
+                                                                                  context: context,
+                                                                                  builder: (context) => AlertDialog(
+                                                                                    // contentPadding: EdgeInsets.zero,
+                                                                                    // insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                    title: const Text(
+                                                                                      "댓글 수정",
+                                                                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                                                                    ),
+                                                                                    content: SizedBox(
+                                                                                      width: MediaQuery.of(context).size.width,
+                                                                                      height: 160,
+                                                                                      child: Column(
+                                                                                        children: [
+                                                                                          TextField(
+                                                                                            controller: updateTec,
+                                                                                            decoration: const InputDecoration(border: InputBorder.none),
+                                                                                            maxLines: 3,
+                                                                                            maxLength: 1000,
+                                                                                          ),
+                                                                                          Align(
+                                                                                            alignment: Alignment.centerRight,
+                                                                                            child: Row(
+                                                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                                                              children: [
+                                                                                                OutlinedButton(
+                                                                                                    onPressed: () {
+                                                                                                      Navigator.pop(context);
+                                                                                                    },
+                                                                                                    style: OutlinedButton.styleFrom(
+                                                                                                      side: const BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
+                                                                                                    ),
+                                                                                                    child: const Text(
+                                                                                                      "취소",
+                                                                                                      style: TextStyle(color: Color.fromARGB(255, 72, 72, 72)),
+                                                                                                    )),
+                                                                                                const SizedBox(
+                                                                                                  width: 10,
+                                                                                                ),
+                                                                                                OutlinedButton(
+                                                                                                    onPressed: () async {
+                                                                                                      var url = Uri.http(baseUri, '/board/updateComment');
+                                                                                                      var response = await http.put(url,
+                                                                                                          headers: {
+                                                                                                            'authorization': 'Bearer $jwtToken',
+                                                                                                            'Content-Type': 'application/json; charset=UTF-8'
+                                                                                                          },
+                                                                                                          body: jsonEncode({
+                                                                                                            'commentId': childCommentList[i].commentId,
+                                                                                                            'text': updateTec.text,
+                                                                                                          }));
+                                                                                                      if (response.statusCode == 200) {
+                                                                                                        setState(() {
+                                                                                                          print(utf8.decode(response.bodyBytes));
+                                                                                                          groupDetailFuture = getGroupDetail();
+                                                                                                          Navigator.pop(context);
+                                                                                                          // Navigator.pop(context);
+                                                                                                        });
+                                                                                                      } else {
+                                                                                                        print(utf8.decode(response.bodyBytes));
+                                                                                                        return;
+                                                                                                      }
+                                                                                                    },
+                                                                                                    child: const Text('수정'))
+                                                                                              ],
+                                                                                            ),
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              },
+                                                                              child: Text(
+                                                                                '수정',
+                                                                                style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                                                                              )),
+                                                                          TextButton(
+                                                                              style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),
+                                                                              onPressed: () {
+                                                                                showDialog(
+                                                                                  context: context,
+                                                                                  builder: (context) => AlertDialog(
+                                                                                      insetPadding: const EdgeInsets.all(10),
+                                                                                      title: const Center(
+                                                                                        child: Text(
+                                                                                          "정말 삭제하시겠습니까?",
+                                                                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                                                                        ),
+                                                                                      ),
+                                                                                      content: Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                        children: [
+                                                                                          OutlinedButton(
+                                                                                              onPressed: () {
+                                                                                                Navigator.pop(context);
+                                                                                              },
+                                                                                              style: OutlinedButton.styleFrom(
+                                                                                                side: const BorderSide(color: Color.fromARGB(192, 181, 181, 181), width: 1.5),
+                                                                                              ),
+                                                                                              child: const Text(
+                                                                                                "아니오",
+                                                                                                style: TextStyle(color: Color.fromARGB(255, 72, 72, 72)),
+                                                                                              )),
+                                                                                          const SizedBox(
+                                                                                            width: 10,
+                                                                                          ),
+                                                                                          OutlinedButton(
+                                                                                              onPressed: () async {
+                                                                                                var url = Uri.http(baseUri, '/board/deleteComment/${childCommentList[i].commentId}');
+                                                                                                var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                                                                if (response.statusCode == 200) {
+                                                                                                  print(utf8.decode(response.bodyBytes));
+                                                                                                  Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                                                                  setState(() {
+                                                                                                    groupDetailFuture = getGroupDetail();
+                                                                                                  });
+                                                                                                  Navigator.pop(context);
+                                                                                                } else {
+                                                                                                  print(utf8.decode(response.bodyBytes));
+                                                                                                  print('실패');
+                                                                                                }
+                                                                                              },
+                                                                                              child: const Text('예'))
+                                                                                        ],
+                                                                                      )),
+                                                                                );
+                                                                              },
+                                                                              child: Text(
+                                                                                '삭제',
+                                                                                style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                                                                              ))
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                ],
+                                              ))
+                                        ],
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: Text('댓글 없음'),
+                                  ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        minLines: 1,
-                        maxLines: 5,
-                        maxLength: 1000,
-                        // expands: true,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(hintText: '댓글을 입력하세요'),
-                        controller: commentTec,
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () async {
-                          var url = Uri.http(baseUri, '/board/addGroupComment');
-                          var response = await http.post(url,
-                              headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
-                              body: jsonEncode({
-                                'groupId': widget.id,
-                                'parentCommentId': -1,
-                                'text': commentTec.text,
-                              }));
-                          if (response.statusCode == 200) {
-                            print(utf8.decode(response.bodyBytes));
-                            commentTec.clear();
-                            setState(() {
-                              groupDetailFuture = getGroupDetail();
-                            });
-                          } else {
-                            print(utf8.decode(response.bodyBytes));
-                          }
-                        },
-                        icon: const Icon(Icons.send_rounded))
-                  ],
-                ),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
               ),
-          )],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  // height: 50,
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: TextField(
+                          minLines: 1,
+                          maxLines: 5,
+                          maxLength: 1000,
+                          // expands: true,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(hintText: '댓글을 입력하세요'),
+                          controller: commentTec,
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            var url = Uri.http(baseUri, '/board/addGroupComment');
+                            var response = await http.post(url,
+                                headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                                body: jsonEncode({
+                                  'groupId': widget.id,
+                                  'parentCommentId': -1,
+                                  'text': commentTec.text,
+                                }));
+                            if (response.statusCode == 200) {
+                              print(utf8.decode(response.bodyBytes));
+                              commentTec.clear();
+                              setState(() {
+                                groupDetailFuture = getGroupDetail();
+                              });
+                            } else {
+                              print(utf8.decode(response.bodyBytes));
+                            }
+                          },
+                          icon: const Icon(Icons.send_rounded))
+                    ],
+                  ),
+                ),
+              )
+            ],
           ),
         ),
       ),
