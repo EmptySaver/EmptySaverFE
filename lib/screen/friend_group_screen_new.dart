@@ -31,46 +31,6 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
   late Future<List<Group>> myGroupListFuture;
   late Future<List<Friend>> friendListFuture;
 
-  Future<List<Group>> getMyGroup(String? jwtToken) async {
-    var url = Uri.http(baseUri, '/group/getMyGroup');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-    dynamic data;
-    if (response.statusCode == 200) {
-      print('getmygroupsuccess');
-      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-      data = parsedJson.map((e) => Group.fromJson(e)).toList();
-    } else {
-      print('fail ${response.statusCode}');
-    }
-    return data;
-  }
-
-  void addFriend() async {
-    var url = Uri.http(baseUri, '/friend/request/${addFriendTec.text}');
-    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
-    if (response.statusCode == 200) {
-      print('친추 성공');
-      Fluttertoast.showToast(msg: '친구 추가 요청을 보냈습니다');
-    } else {
-      var result = jsonDecode(utf8.decode(response.bodyBytes));
-      Fluttertoast.showToast(msg: result['message']);
-    }
-    addFriendTec.text = "";
-  }
-
-  Future<List<Friend>> getFriendList() async {
-    var url = Uri.http(baseUri, '/friend/getList');
-    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
-    if (response.statusCode == 200) {
-      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
-      var data = rawData.map((e) => Friend.fromJson(e)).toList();
-      return data;
-    } else {
-      print(utf8.decode(response.bodyBytes));
-      throw Exception('친구목록 get 실패');
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -85,6 +45,85 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
     //   myGroupListFuture = getMyGroup(jwtToken);
     //   friendListFuture = getFriendList();
     // });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('친구그룹');
+    return Scaffold(
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    widget.isGroup = true;
+                  });
+                },
+                child: Container(
+                  height: 60,
+                  // width: 200,
+                  decoration: BoxDecoration(
+                      // color: widget.isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
+                      border: Border.all(color: widget.isGroup ? Colors.blueAccent : Colors.blueGrey.shade200),
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "그룹",
+                          style: TextStyle(color: widget.isGroup ? Colors.blueAccent : Colors.blueGrey.shade200, fontSize: 30, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )),
+              Expanded(
+                  child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    widget.isGroup = false;
+                  });
+                },
+                child: Container(
+                  height: 60,
+                  // width: 200,
+                  decoration: BoxDecoration(
+                      // color: widget.isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
+                      border: Border.all(color: widget.isGroup ? Colors.blueGrey.shade200 : Colors.blueAccent),
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "친구",
+                          style: TextStyle(color: widget.isGroup ? Colors.blueGrey.shade200 : Colors.blueAccent, fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ))
+            ],
+          ),
+          widget.isGroup ? groupView1() : friendView1(),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(
+            thickness: 1,
+          ),
+          widget.isGroup ? groupView2() : friendView2(),
+        ],
+      ),
+    );
   }
 
   void emptyEmailToast() {
@@ -515,82 +554,43 @@ class _FriendGroupScreenState extends ConsumerState<FriendGroupScreen> {
             )));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print('친구그룹');
-    return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                  child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.isGroup = true;
-                  });
-                },
-                child: Container(
-                  height: 60,
-                  // width: 200,
-                  decoration: BoxDecoration(
-                      // color: widget.isGroup ? Colors.blue : const Color.fromARGB(255, 176, 220, 240),
-                      border: Border.all(color: widget.isGroup ? Colors.blueAccent : Colors.blueGrey.shade200),
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "그룹",
-                          style: TextStyle(color: widget.isGroup ? Colors.blueAccent : Colors.blueGrey.shade200, fontSize: 30, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              )),
-              Expanded(
-                  child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    widget.isGroup = false;
-                  });
-                },
-                child: Container(
-                  height: 60,
-                  // width: 200,
-                  decoration: BoxDecoration(
-                      // color: widget.isGroup ? const Color.fromARGB(255, 176, 220, 240) : Colors.blue,
-                      border: Border.all(color: widget.isGroup ? Colors.blueGrey.shade200 : Colors.blueAccent),
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "친구",
-                          style: TextStyle(color: widget.isGroup ? Colors.blueGrey.shade200 : Colors.blueAccent, fontSize: 30, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ))
-            ],
-          ),
-          widget.isGroup ? groupView1() : friendView1(),
-          const SizedBox(
-            height: 10,
-          ),
-          const Divider(
-            thickness: 1,
-          ),
-          widget.isGroup ? groupView2() : friendView2(),
-        ],
-      ),
-    );
+  Future<List<Group>> getMyGroup(String? jwtToken) async {
+    var url = Uri.http(baseUri, '/group/getMyGroup');
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    dynamic data;
+    if (response.statusCode == 200) {
+      print('getmygroupsuccess');
+      var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+      data = parsedJson.map((e) => Group.fromJson(e)).toList();
+    } else {
+      print('fail ${response.statusCode}');
+    }
+    return data;
+  }
+
+  void addFriend() async {
+    var url = Uri.http(baseUri, '/friend/request/${addFriendTec.text}');
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      print('친추 성공');
+      Fluttertoast.showToast(msg: '친구 추가 요청을 보냈습니다');
+    } else {
+      var result = jsonDecode(utf8.decode(response.bodyBytes));
+      Fluttertoast.showToast(msg: result['message']);
+    }
+    addFriendTec.text = "";
+  }
+
+  Future<List<Friend>> getFriendList() async {
+    var url = Uri.http(baseUri, '/friend/getList');
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var data = rawData.map((e) => Friend.fromJson(e)).toList();
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('친구목록 get 실패');
+    }
   }
 }

@@ -424,7 +424,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                       Visibility(
                         visible: amIOwner,
                         child: OutlinedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            List<Friend> friendList = await getFriendList();
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -444,7 +445,35 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    OutlinedButton(onPressed: sendInvite, child: const Text('초대하기'))
+                                    OutlinedButton(onPressed: sendInviteByEmail, child: const Text('초대하기')),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.blueAccent),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            for (int i = 0; i < friendList.length; i++)
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('${friendList[i].friendName}'),
+                                                  OutlinedButton(
+                                                      onPressed: () {
+                                                        sendInvite(friendList[i].friendMemberId!);
+                                                      },
+                                                      child: const Text('초대')),
+                                                ],
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 );
                               },
@@ -558,6 +587,19 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     );
   }
 
+  Future<List<Friend>> getFriendList() async {
+    var url = Uri.http(baseUri, '/friend/getList');
+    var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
+    if (response.statusCode == 200) {
+      var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
+      var data = rawData.map((e) => Friend.fromJson(e)).toList();
+      return data;
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      throw Exception('친구목록 get 실패');
+    }
+  }
+
   void deleteGroup(BuildContext context) async {
     var url = Uri.http(baseUri, '/group/delete/${widget.groupId}');
     var response = await http.delete(url, headers: {
@@ -622,7 +664,19 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     }
   }
 
-  void sendInvite() async {
+  void sendInvite(int friendMemberId) async {
+    var url = Uri.http(baseUri, '/group/sendInvite');
+    var response = await http.post(url,
+        headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'memberId': friendMemberId, 'groupId': widget.groupId}));
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: '초대를 보냈습니다');
+    } else {
+      print(utf8.decode(response.bodyBytes));
+      Fluttertoast.showToast(msg: jsonDecode(utf8.decode(response.bodyBytes))['message']);
+    }
+  }
+
+  void sendInviteByEmail() async {
     var url = Uri.http(baseUri, '/group/sendInviteByEmail');
     var response =
         await http.post(url, headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'email': emailTec.text, 'groupId': widget.groupId}));
