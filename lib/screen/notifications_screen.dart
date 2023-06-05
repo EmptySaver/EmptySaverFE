@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:emptysaver_fe/element/controller.dart';
 import 'package:emptysaver_fe/element/factory_fromjson.dart';
 import 'package:emptysaver_fe/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -25,18 +26,61 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     notiListFuture = getAllNotification();
   }
 
-  _setAlertIcon(String routeValue, String type1, String type2) {
-    //기본 아이콘으로 표현하기 빡셀거같긴하네
-    //에타 알림 처럼 앞에 아이콘 달고 싶은디..
+  // _setAlertIcon(String routeValue, String type1, String type2, String title) {
+  //   if (routeValue == "groupDetail" || routeValue == "post") {
+  //     if (title.contains("댓글"))
+  //       return Icon(CupertinoIcons.chat_bubble);
+  //     else
+  //       return Icon(CupertinoIcons.pencil_ellipsis_rectangle);
+  //   } else if (routeValue == "friend") {
+  //     return Icon(CupertinoIcons.person);
+  //   } else if (routeValue == "group") {
+  //     return Icon(CupertinoIcons.group);
+  //   } else {
+  //     if (type1 == "friend")
+  //       return Icon(CupertinoIcons.person_add);
+  //     else if (type1 == "group")
+  //       return Icon(Icons.group_add_outlined);
+  //     else if (type1 == "Schedule")
+  //       return Icon(CupertinoIcons.clock);
+  //     else
+  //       return Icon(CupertinoIcons.info);
+  //   }
+  // }
+  _setAlertIcon(String routeValue, String type1, String type2, String title) {
     if (routeValue == "groupDetail" || routeValue == "post") {
-      return Icon(FontAwesomeIcons.pencil);
+      return Icon(
+        CupertinoIcons.chat_bubble,
+        color: Colors.amber,
+      );
     } else if (routeValue == "friend") {
-      return Icon(FontAwesomeIcons.person);
+      return Icon(
+        CupertinoIcons.person,
+        color: Colors.green,
+      );
     } else if (routeValue == "group") {
-      return Icon(FontAwesomeIcons.userGroup);
+      return Icon(
+        CupertinoIcons.person_2,
+        color: Colors.lightBlue,
+      );
     } else {
-      if (type1 == "friend") return Icon(Icons.person_add);
-      return Icon(Icons.abc);
+      if (type1 == "friend")
+        return Icon(
+          CupertinoIcons.person,
+          color: Colors.green,
+        );
+      else if (type1 == "group")
+        return Icon(
+          CupertinoIcons.person_2,
+          color: Colors.lightBlue,
+        );
+      else if (type1 == "Schedule")
+        return Icon(
+          CupertinoIcons.person_2,
+          color: Colors.lightBlue,
+        );
+      else
+        return Icon(CupertinoIcons.info);
     }
   }
 
@@ -111,7 +155,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                     //   Icons.messenger_outline,
                                     //   size: 30,
                                     // ),
-                                    _setAlertIcon(routeValue, idType, idType2),
+                                    _setAlertIcon(routeValue, idType, idType2,
+                                        notiList[index].title!),
                                     const SizedBox(
                                       width: 20,
                                     ),
