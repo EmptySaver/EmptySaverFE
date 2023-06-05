@@ -84,6 +84,8 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
         "   (내 댓글)",
         style: TextStyle(color: Colors.blue, fontSize: 14),
       );
+    } else {
+      return const SizedBox.shrink();
     }
   }
 

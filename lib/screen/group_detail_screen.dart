@@ -9,27 +9,26 @@ import 'package:emptysaver_fe/screen/make_post_screen.dart';
 import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:emptysaver_fe/screen/update_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-class GroupDetailScreen extends ConsumerStatefulWidget {
+class GroupDetailScreen extends StatefulWidget {
   int? groupId;
 
   GroupDetailScreen({super.key, this.groupId});
 
   @override
-  ConsumerState<GroupDetailScreen> createState() => _GroupDetailScreenState();
+  State<GroupDetailScreen> createState() => _GroupDetailScreenState();
 }
 
-class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
+class _GroupDetailScreenState extends State<GroupDetailScreen> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
   Group groupData = Group();
   late Future<List<Map<String, dynamic>>> groupMemberFuture;
   late Future<List<ScheduleText>> groupScheduleTextListFuture;
   late Future<List<dynamic>> groupPostListFuture;
-  var memberIdTec = TextEditingController();
+  var emailTec = TextEditingController();
   bool amIOwner = false;
   // void waitForGroupData() async {
   //   groupData = await getGroupDetail();
@@ -434,8 +433,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                   title: const Text('그룹에 초대'),
                                   children: [
                                     TextFormField(
-                                      decoration: const InputDecoration(icon: Icon(Icons.person), hintText: '멤버 id를 입력하세요', labelText: 'Member ID'),
-                                      controller: memberIdTec,
+                                      decoration: const InputDecoration(
+                                        icon: Icon(Icons.person),
+                                        hintText: '멤버 id를 입력하세요',
+                                        labelText: 'email',
+                                      ),
+                                      controller: emailTec,
+                                      keyboardType: TextInputType.emailAddress,
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -619,9 +623,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   void sendInvite() async {
-    var url = Uri.http(baseUri, '/group/sendInvite');
-    var response = await http.post(url,
-        headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'memberId': memberIdTec.text, 'groupId': widget.groupId}));
+    var url = Uri.http(baseUri, '/group/sendInviteByEmail');
+    var response =
+        await http.post(url, headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'}, body: jsonEncode({'email': emailTec.text, 'groupId': widget.groupId}));
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '초대를 보냈습니다');
       Navigator.pop(context);

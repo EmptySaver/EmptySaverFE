@@ -79,6 +79,7 @@ class _MyWidgetState extends State<TodayMovieScreen> {
                                     var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
                                     if (response.statusCode == 200) {
                                       Fluttertoast.showToast(msg: '추가되었습니다');
+                                      Navigator.pop(context, '');
                                     } else {
                                       print(utf8.decode(response.bodyBytes));
                                     }
