@@ -192,7 +192,7 @@ void routeSwitching(String? routeValue, {String? idType, String? idType2, int? i
   switch (routeValue) {
     case 'notification':
       switch (idType) {
-        case 'x': 
+        case 'x':
           Get.to(() => GroupDetailScreen(
                 groupId: idValue,
               ));
@@ -222,9 +222,14 @@ void routeSwitching(String? routeValue, {String? idType, String? idType2, int? i
           ));
       break;
     case 'friend':
-      Get.to(() => FriendGroupScreen(
-            isGroup: false,
-          ));
+      // Get.to(() => FriendGroupScreen(
+      //       isGroup: false,
+      //     ));
+      Get.offUntil(
+          MaterialPageRoute(
+            builder: (context) => BarScreen(routeIndex: 1),
+          ),
+          (route) => false);
     case 'group':
       Get.to(() => GroupDetailScreen(
             groupId: idValue,
@@ -305,7 +310,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         firebaseToken: widget.firebaseToken,
       ),
       routes: {
-        '/bar': (context) => const BarScreen(),
+        '/bar': (context) => BarScreen(),
         '/timetable': (context) => TimeTableScreen(),
         '/fg': (context) => FriendGroupScreen(),
         '/noti': (context) => const NotificationsScreen(),

@@ -18,17 +18,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class BarScreen extends ConsumerStatefulWidget {
+class BarScreen extends StatefulWidget {
+  int? routeIndex;
   // String? firebaseToken;
-  const BarScreen({
-    super.key,
-  });
+  BarScreen({super.key, this.routeIndex});
 
   @override
-  ConsumerState<BarScreen> createState() => _BarScreenState();
+  State<BarScreen> createState() => _BarScreenState();
 }
 
-class _BarScreenState extends ConsumerState<BarScreen> {
+class _BarScreenState extends State<BarScreen> {
   static const String isTutorialRead = "tutorialRead";
   int selectedIndex = 0;
   var bodyWidgets = [
@@ -76,6 +75,7 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       tutorialActive();
     });
+    selectedIndex = widget.routeIndex ?? 0;
   }
 
   tutorialActive() async {
@@ -87,10 +87,8 @@ class _BarScreenState extends ConsumerState<BarScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         actions: [
