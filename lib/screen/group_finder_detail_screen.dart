@@ -119,7 +119,12 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                                   '${groupDetail.groupName}',
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                                 ),
-                                Text('(${groupDetail.nowMember} / ${groupDetail.maxMember})')
+                                Row(
+                                  children: [
+                                    Text('(${groupDetail.nowMember} / ${groupDetail.maxMember})')
+                                    ,const Icon(Icons.person)
+                                  ],
+                                ),
                               ],
                             ),
                             const SizedBox(
