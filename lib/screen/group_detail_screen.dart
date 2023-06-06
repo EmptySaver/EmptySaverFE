@@ -6,7 +6,6 @@ import 'package:emptysaver_fe/screen/add_group_schedule_new.dart';
 import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
 import 'package:emptysaver_fe/screen/make_post_screen.dart';
-import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:emptysaver_fe/screen/update_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -545,25 +544,25 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                                       color: Colors.teal,
                                                     )),
                                               ),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => Scaffold(
-                                                            appBar: AppBar(
-                                                              title: Text('${snapshot.data![index]['name']} 시간표 조회'),
-                                                            ),
-                                                            body: TimeTableScreen(
-                                                              groupMemberId: snapshot.data![index]['memberId'],
-                                                            ),
-                                                          ),
-                                                        ));
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.schedule,
-                                                    color: Colors.blueAccent,
-                                                  )),
+                                              // IconButton(
+                                              //     onPressed: () {
+                                              //       Navigator.push(
+                                              //           context,
+                                              //           MaterialPageRoute(
+                                              //             builder: (context) => Scaffold(
+                                              //               appBar: AppBar(
+                                              //                 title: Text('${snapshot.data![index]['name']} 시간표 조회'),
+                                              //               ),
+                                              //               body: TimeTableScreen(
+                                              //                 groupMemberId: snapshot.data![index]['memberId'],
+                                              //               ),
+                                              //             ),
+                                              //           ));
+                                              //     },
+                                              //     icon: const Icon(
+                                              //       Icons.schedule,
+                                              //       color: Colors.blueAccent,
+                                              //     )),
                                               IconButton(
                                                   onPressed: () async {
                                                     var url = Uri.http(baseUri, '/group/deleteMember');
