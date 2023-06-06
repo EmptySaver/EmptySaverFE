@@ -18,8 +18,7 @@ class AddGroupScheduleScreenNew extends StatefulWidget {
   AddGroupScheduleScreenNew({super.key, this.groupData});
 
   @override
-  State<AddGroupScheduleScreenNew> createState() =>
-      _AddGroupScheduleScreenNewState();
+  State<AddGroupScheduleScreenNew> createState() => _AddGroupScheduleScreenNewState();
 }
 
 class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
@@ -140,9 +139,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
           Container(
             //height: 700,
             padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                border: Border.all(color: Colors.blueAccent)),
+            decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(40.0)), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -165,8 +162,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                       keyboardType: TextInputType.name,
                     )),
                 Container(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -187,8 +183,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                       keyboardType: TextInputType.text,
                     )),
                 Container(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -233,20 +228,13 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                               icon: const Icon(Icons.calendar_month),
                               onPressed: () async {
                                 DateTime currentTime = await NTP.now();
-                                currentTime = currentTime
-                                    .toUtc()
-                                    .add(const Duration(hours: 9));
-                                DateTime? result = await showRoundedDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    borderRadius: 16,
-                                    locale: const Locale('ko', 'KR'));
+                                currentTime = currentTime.toUtc().add(const Duration(hours: 9));
+                                DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
                                 if (result != null) {
                                   setState(() {
                                     nonDate = result;
                                     print("nonDate: ${nonDate.toString()}");
-                                    dateInfo =
-                                        "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                    dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
                                   });
                                 }
                               },
@@ -254,21 +242,13 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                             TextButton(
                                 onPressed: () async {
                                   DateTime currentTime = await NTP.now();
-                                  currentTime = currentTime
-                                      .toUtc()
-                                      .add(const Duration(hours: 9));
-                                  DateTime? result =
-                                      await showRoundedDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          borderRadius: 16,
-                                          locale: const Locale('ko', 'KR'));
+                                  currentTime = currentTime.toUtc().add(const Duration(hours: 9));
+                                  DateTime? result = await showRoundedDatePicker(context: context, initialDate: DateTime.now(), borderRadius: 16, locale: const Locale('ko', 'KR'));
                                   if (result != null) {
                                     setState(() {
                                       nonDate = result;
                                       print("nonDate: ${nonDate.toString()}");
-                                      dateInfo =
-                                          "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
+                                      dateInfo = "${nonDate!.year}년 ${nonDate!.month}월 ${nonDate!.day}일";
                                     });
                                   }
                                 },
@@ -283,25 +263,18 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                 TimeRange? result = await showTimeRangePicker(
                                     context: context,
                                     interval: const Duration(minutes: 30),
-                                    disabledTime: TimeRange(
-                                        startTime:
-                                            const TimeOfDay(hour: 0, minute: 0),
-                                        endTime: const TimeOfDay(
-                                            hour: 8, minute: 0)),
+                                    disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
                                     start: const TimeOfDay(hour: 12, minute: 0),
                                     end: const TimeOfDay(hour: 15, minute: 0));
                                 if (result != null) {
                                   setState(() {
-                                    if ((result.startTime.hour >
-                                        result.endTime.hour)) {
-                                      Fluttertoast.showToast(
-                                          msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                    if ((result.startTime.hour > result.endTime.hour)) {
+                                      Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                       return;
                                     }
                                     nonPeriodicStartTime = result.startTime;
                                     nonPeriodicEndTime = result.endTime;
-                                    timeInfo =
-                                        '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                    timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                   });
                                 }
                               },
@@ -311,27 +284,18 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                   TimeRange? result = await showTimeRangePicker(
                                       context: context,
                                       interval: const Duration(minutes: 30),
-                                      disabledTime: TimeRange(
-                                          startTime: const TimeOfDay(
-                                              hour: 0, minute: 0),
-                                          endTime: const TimeOfDay(
-                                              hour: 8, minute: 0)),
-                                      start:
-                                          const TimeOfDay(hour: 12, minute: 0),
-                                      end:
-                                          const TimeOfDay(hour: 15, minute: 0));
+                                      disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
+                                      start: const TimeOfDay(hour: 12, minute: 0),
+                                      end: const TimeOfDay(hour: 15, minute: 0));
                                   if (result != null) {
                                     setState(() {
-                                      if ((result.startTime.hour >
-                                          result.endTime.hour)) {
-                                        Fluttertoast.showToast(
-                                            msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                      if ((result.startTime.hour > result.endTime.hour)) {
+                                        Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                         return;
                                       }
                                       nonPeriodicStartTime = result.startTime;
                                       nonPeriodicEndTime = result.endTime;
-                                      timeInfo =
-                                          '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
+                                      timeInfo = '${nonPeriodicStartTime!.hour}시 ${nonPeriodicStartTime!.minute}분 ~ ${nonPeriodicEndTime!.hour}시 ${nonPeriodicEndTime!.minute}분';
                                     });
                                   }
                                 },
@@ -344,7 +308,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                     visible: isPeriodic,
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Row(
@@ -364,8 +328,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(
-                                                255, 45, 115, 235),
+                                            color: Color.fromARGB(255, 45, 115, 235),
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -377,22 +340,17 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                   onChanged: (value) {
                                     setState(() {
                                       selectedValue = value as String;
-                                      if (startDayTime != null &&
-                                          endDayTime != null)
-                                        isSelectPlan = true;
+                                      if (startDayTime != null && endDayTime != null) isSelectPlan = true;
                                     });
                                   },
                                   buttonStyleData: ButtonStyleData(
                                     height: 35,
                                     width: 100,
-                                    padding: const EdgeInsets.only(
-                                        left: 8, right: 8),
+                                    padding: const EdgeInsets.only(left: 8, right: 8),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
-                                      border: Border.all(
-                                          color: Colors.blue, width: 1.5),
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
+                                      border: Border.all(color: Colors.blue, width: 1.5),
+                                      color: const Color.fromARGB(255, 255, 255, 255),
                                     ),
                                     // elevation: 2,
                                   ),
@@ -410,23 +368,17 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                       padding: null,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
+                                        color: const Color.fromARGB(255, 255, 255, 255),
                                       ),
                                       elevation: 8,
                                       offset: const Offset(0, 0),
                                       scrollbarTheme: ScrollbarThemeData(
                                         radius: const Radius.circular(40),
                                         thickness: MaterialStateProperty.all(6),
-                                        thumbVisibility:
-                                            MaterialStateProperty.all(true),
+                                        thumbVisibility: MaterialStateProperty.all(true),
                                       )),
-                                  menuItemStyleData: const MenuItemStyleData(
-                                      height: 20,
-                                      padding:
-                                          EdgeInsets.only(left: 14, right: 14),
-                                      overlayColor: MaterialStatePropertyAll(
-                                          Color.fromARGB(255, 178, 225, 247))),
+                                  menuItemStyleData:
+                                      const MenuItemStyleData(height: 20, padding: EdgeInsets.only(left: 14, right: 14), overlayColor: MaterialStatePropertyAll(Color.fromARGB(255, 178, 225, 247))),
                                 ),
                               ),
                             ),
@@ -435,11 +387,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                 TimeRange? result = await showTimeRangePicker(
                                     context: context,
                                     interval: const Duration(minutes: 30),
-                                    disabledTime: TimeRange(
-                                        startTime:
-                                            const TimeOfDay(hour: 0, minute: 0),
-                                        endTime: const TimeOfDay(
-                                            hour: 8, minute: 0)),
+                                    disabledTime: TimeRange(startTime: const TimeOfDay(hour: 0, minute: 0), endTime: const TimeOfDay(hour: 8, minute: 0)),
                                     start: const TimeOfDay(hour: 12, minute: 0),
                                     end: const TimeOfDay(hour: 15, minute: 0));
 
@@ -447,16 +395,13 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                   startDayTime = result.startTime;
                                   endDayTime = result.endTime;
                                   setState(() {
-                                    if ((result.startTime.hour >
-                                        result.endTime.hour)) {
-                                      Fluttertoast.showToast(
-                                          msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
+                                    if ((result.startTime.hour > result.endTime.hour)) {
+                                      Fluttertoast.showToast(msg: '종료 시간이 시작 시간보다 앞설 수 없습니다');
                                       return;
                                     }
                                     startDayTime = result.startTime;
                                     endDayTime = result.endTime;
-                                    perTimeInfo =
-                                        '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
+                                    perTimeInfo = '${startDayTime!.hour}시 ${startDayTime!.minute}분 ~ ${endDayTime!.hour}시 ${endDayTime!.minute}분';
                                     if (selectedValue != null) {
                                       isSelectPlan = true;
                                     }
@@ -488,18 +433,13 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                           absorbing: true,
                           child: Text(
                             "설정된 일시 :  $selectedValue요일 ${startDayTime?.hour}시 ${startDayTime?.minute}분 ~ ${endDayTime?.hour}시 ${endDayTime?.minute}분",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.lightBlue),
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlue),
                           ),
                         ),
                         OutlinedButton(
                             onPressed: () {
                               setState(() {
-                                itemList.add(Item(
-                                    day: selectedValue,
-                                    startDayInfo: startDayTime,
-                                    endDayInfo: endDayTime));
+                                itemList.add(Item(day: selectedValue, startDayInfo: startDayTime, endDayInfo: endDayTime));
                                 isSelectPlan = false;
                                 startDayTime = endDayTime = null;
                                 selectedValue = null;
@@ -510,8 +450,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                       ],
                     )),
                 Container(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
                   child: Divider(
                     color: Colors.blue.shade400,
                   ),
@@ -522,10 +461,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                       alignment: Alignment.center,
                       child: const Text(
                         "추가된 일시",
-                        style: TextStyle(
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        style: TextStyle(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     )),
                 const SizedBox(
@@ -536,12 +472,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                     child: Container(
                         decoration: const BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 2.0,
-                                spreadRadius: 1.0)
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2.0, spreadRadius: 1.0)],
                         ),
                         child: SizedBox(
                           height: 200,
@@ -555,53 +486,49 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                                 Item item = itemList[index];
                                 return Card(
                                   elevation: 3,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(12)),
-                                      side:
-                                          BorderSide(color: Colors.blueAccent)),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(
-                                          padding:
-                                              const EdgeInsets.only(left: 20),
-                                          child: Text(
-                                              "${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
-                                        ),
-                                        Container(
-                                          padding:
-                                              const EdgeInsets.only(right: 10),
-                                          child: OutlinedButton(
-                                              style: OutlinedButton.styleFrom(
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          12))),
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  side: const BorderSide(
-                                                    color: Colors.cyan,
-                                                  )),
-                                              onPressed: () {},
-                                              child: const Text("삭제")),
-                                        ),
-                                      ]),
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Colors.blueAccent)),
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                                    Container(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Text("${item.day}요일 ${item.startDayInfo!.hour}시 ${item.startDayInfo!.minute}분 ~ ${item.endDayInfo!.hour}시 ${item.endDayInfo!.minute}분"),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                                              padding: const EdgeInsets.all(5),
+                                              side: const BorderSide(
+                                                color: Colors.cyan,
+                                              )),
+                                          onPressed: () {},
+                                          child: const Text("삭제")),
+                                    ),
+                                  ]),
                                 );
                               }),
                         ))),
+                Row(
+                  children: [
+                    Switch(
+                      activeColor: Colors.blueAccent,
+                      value: switchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchValue = value;
+                        });
+                      },
+                    ),
+                    const Text('친구에게 스케줄 보이기'),
+                  ],
+                ),
                 const SizedBox(
                   height: 10.0,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    OutlinedButton(
-                        onPressed: findEmptyTime, child: const Text('빈 시간 찾기')),
+                    OutlinedButton(onPressed: findEmptyTime, child: const Text('빈 시간 찾기')),
                     const SizedBox(
                       width: 20,
                     ),
@@ -675,32 +602,24 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                         is24HourMode: true,
                         isForce2Digits: true,
                         minutesInterval: 30,
-                        startInitialDate:
-                            DateTime.now().add(const Duration(hours: 9)),
-                        endInitialDate:
-                            DateTime.now().add(const Duration(hours: 10)),
+                        startInitialDate: DateTime.now().add(const Duration(hours: 9)),
+                        endInitialDate: DateTime.now().add(const Duration(hours: 10)),
                       );
                       if (dates != null) {
                         setState(() {
-                          findEmptyStartTec.text =
-                              DateFormat('yyyy-MM-ddTHH:mm').format(dates[0]);
-                          findEmptyEndTec.text =
-                              DateFormat('yyyy-MM-ddTHH:mm').format(dates[1]);
+                          findEmptyStartTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[0]);
+                          findEmptyEndTec.text = DateFormat('yyyy-MM-ddTHH:mm').format(dates[1]);
                         });
                       }
                     },
                     child: const Text('시간 선택')),
                 OutlinedButton(
                     onPressed: () async {
-                      if (findEmptyStartTec.text == '' ||
-                          findEmptyEndTec.text == '') {
+                      if (findEmptyStartTec.text == '' || findEmptyEndTec.text == '') {
                         Fluttertoast.showToast(msg: '시간을 선택해주세요');
                         return;
                       }
-                      var url = Uri.http(
-                          baseUri,
-                          '/timetable/team/findEmptyTime',
-                          {'groupId': '${widget.groupData!.groupId}'});
+                      var url = Uri.http(baseUri, '/timetable/team/findEmptyTime', {'groupId': '${widget.groupData!.groupId}'});
                       var response = await http.post(url,
                           headers: {
                             'authorization': 'Bearer $jwtToken',
@@ -714,9 +633,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                         isFinded = true;
                         setState(
                           () {
-                            findedEmptyTimeList =
-                                jsonDecode(utf8.decode(response.bodyBytes))
-                                    as List;
+                            findedEmptyTimeList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
                           },
                         );
                       } else {
@@ -731,8 +648,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    for (int i = 0; i < findedEmptyTimeList.length; i++)
-                      Text(findedEmptyTimeList[i]),
+                    for (int i = 0; i < findedEmptyTimeList.length; i++) Text(findedEmptyTimeList[i]),
                   ],
                 ))
               ],
@@ -743,6 +659,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
     );
   }
 
+  bool switchValue = false;
   void registerGroupSchedule(BuildContext context) async {
     if (!isChecked) {
       Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
@@ -765,8 +682,7 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
       } else {
         List<String> periodicList = [];
         for (var element in itemList) {
-          String target =
-              "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
+          String target = "${element.day},${element.startDayInfo!.hour}:${element.startDayInfo!.minute}-${element.endDayInfo!.hour}:${element.endDayInfo!.minute}";
           print(target);
           periodicList.add(target);
         }
@@ -777,7 +693,8 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
           'periodicTimeStringList': periodicList,
           'groupType': true,
           'groupId': widget.groupData!.groupId,
-          'groupName': widget.groupData!.groupName
+          'groupName': widget.groupData!.groupName,
+          'hideType': switchValue,
         };
         print(postBody);
       }
@@ -810,26 +727,18 @@ class _AddGroupScheduleScreenNewState extends State<AddGroupScheduleScreenNew> {
         'name': nameTec.text,
         'body': bodyTec.text,
         'periodicType': isPeriodic,
-        'startTime':
-            "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
+        'startTime': "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
         'endTime': "${nonDate.toString().split(" ")[0]}T$endHour:$endMin:00",
         'groupType': true,
         'groupId': widget.groupData!.groupId,
-        'groupName': widget.groupData!.groupName
+        'groupName': widget.groupData!.groupName,
+        'hideType': switchValue,
       };
     }
     print(postBody);
-    var url = Uri.http(baseUri, '/timetable/team/saveSchedule', {
-      'groupId': '${widget.groupData!.groupId}',
-      'isPublicTypeSchedule': 'true'
-    });
+    var url = Uri.http(baseUri, '/timetable/team/saveSchedule', {'groupId': '${widget.groupData!.groupId}', 'isPublicTypeSchedule': 'true'});
     print(url);
-    var response = await http.post(url,
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'authorization': 'Bearer $jwtToken'
-        },
-        body: jsonEncode(postBody));
+    var response = await http.post(url, headers: <String, String>{'Content-Type': 'application/json', 'authorization': 'Bearer $jwtToken'}, body: jsonEncode(postBody));
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '추가되었습니다');
       Navigator.pop(context);

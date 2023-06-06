@@ -58,6 +58,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
   DateTime? nonDate;
   TimeOfDay? nonPeriodicStartTime;
   TimeOfDay? nonPeriodicEndTime;
+  bool switchValue = false;
 
   @override
   Widget build(BuildContext context) {
@@ -524,6 +525,20 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                                 );
                               }),
                         ))),
+                Row(
+                  children: [
+                    Switch(
+                      activeColor: Colors.blueAccent,
+                      value: switchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchValue = value;
+                        });
+                      },
+                    ),
+                    const Text('친구에게 스케줄 보이기'),
+                  ],
+                ),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -591,6 +606,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
           'body': bodyTec.text,
           'periodicType': isPeriodic,
           'periodicTimeStringList': periodicList,
+          'hideType': switchValue,
         };
         print(postBody);
       }
@@ -625,6 +641,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
         'periodicType': isPeriodic,
         'startTime': "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
         'endTime': "${nonDate.toString().split(" ")[0]}T$endHour:$endMin:00",
+        'hideType': switchValue
       };
     }
     print(postBody);

@@ -73,16 +73,50 @@ class _MyWidgetState extends State<TodayMovieScreen> {
                                 width: 20,
                               ),
                               OutlinedButton(
-                                  onPressed: () async {
-                                    print(todayMovieList[index].id);
-                                    var url = Uri.http(baseUri, '/timetable/saveScheduleByCopy', {'scheduleId': '${todayMovieList[index].id}'});
-                                    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                    if (response.statusCode == 200) {
-                                      Fluttertoast.showToast(msg: '추가되었습니다');
-                                      Navigator.pop(context, '');
-                                    } else {
-                                      print(utf8.decode(response.bodyBytes));
-                                    }
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        content: const Text('친구에게 보이게 추가하시겠습니까?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              print(todayMovieList[index].id);
+                                              var url = Uri.http(baseUri, '/timetable/saveScheduleByCopy', {
+                                                'scheduleId': '${todayMovieList[index].id}',
+                                                'hideType': 'false',
+                                              });
+                                              var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                              if (response.statusCode == 200) {
+                                                Fluttertoast.showToast(msg: '친구에게 보이게 추가되었습니다');
+                                                Navigator.pop(context, '');
+                                              } else {
+                                                print(utf8.decode(response.bodyBytes));
+                                              }
+                                            },
+                                            child: const Text('예'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              print(todayMovieList[index].id);
+                                              var url = Uri.http(
+                                                baseUri,
+                                                '/timetable/saveScheduleByCopy',
+                                                {'scheduleId': '${todayMovieList[index].id}', 'hideType': 'true'},
+                                              );
+                                              var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                              if (response.statusCode == 200) {
+                                                Fluttertoast.showToast(msg: '친구에게 안 보이게 추가되었습니다');
+                                                Navigator.pop(context, '');
+                                              } else {
+                                                print(utf8.decode(response.bodyBytes));
+                                              }
+                                            },
+                                            child: const Text('아니요'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
                                   },
                                   child: const Text('시간표에 추가')),
                             ],
