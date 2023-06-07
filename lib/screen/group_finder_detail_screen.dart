@@ -120,10 +120,7 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                                 ),
                                 Row(
-                                  children: [
-                                    Text('(${groupDetail.nowMember} / ${groupDetail.maxMember})')
-                                    ,const Icon(Icons.person)
-                                  ],
+                                  children: [Text('(${groupDetail.nowMember} / ${groupDetail.maxMember})'), const Icon(Icons.person)],
                                 ),
                               ],
                             ),
@@ -143,7 +140,7 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                             ),
                             Row(
                               children: [
-                                SizedBox(width: 65, child: Text("공개 여부", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
+                                SizedBox(width: 75, child: Text("공개 여부", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -161,7 +158,7 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                SizedBox(width: 65, child: Text("실명 여부", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
+                                SizedBox(width: 75, child: Text("실명 여부", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -178,7 +175,7 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                             ),
                             Row(
                               children: [
-                                SizedBox(width: 65, child: Text("카테고리", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
+                                SizedBox(width: 75, child: Text("카테고리", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -190,7 +187,7 @@ class _GroupFinderDetailScreenState extends ConsumerState<GroupFinderDetailScree
                             ),
                             Row(
                               children: [
-                                SizedBox(width: 65, child: Text("세부 장르", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
+                                SizedBox(width: 75, child: Text("세부 장르", style: TextStyle(color: Colors.grey[500], fontSize: 16))),
                                 const SizedBox(
                                   width: 10,
                                 ),
