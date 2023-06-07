@@ -293,7 +293,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (ctx) => const TodayMovieScreen(),
-                              ));
+                              )).then((value) {
+                            setState(() {
+                              memberScheduleFuture = getMemberSchedule();
+                            });
+                          });
                         },
                       ),
                     ],

@@ -51,7 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreenLegacy> {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const BarScreen(),
+            builder: (context) =>  BarScreen(),
           ),
           (route) => false);
     } else {

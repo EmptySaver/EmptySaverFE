@@ -6,7 +6,6 @@ import 'package:emptysaver_fe/screen/add_group_schedule_new.dart';
 import 'package:emptysaver_fe/screen/each_post_screen.dart';
 import 'package:emptysaver_fe/screen/group_check_screen.dart';
 import 'package:emptysaver_fe/screen/make_post_screen.dart';
-import 'package:emptysaver_fe/screen/timetable_screen.dart';
 import 'package:emptysaver_fe/screen/update_group_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -364,7 +363,28 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                                   padding: EdgeInsets.zero,
                                                   constraints: const BoxConstraints(),
                                                   onPressed: () {
-                                                    okSchedule(snapshot.data![index].id, true);
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) => AlertDialog(
+                                                        content: const Text('친구에게 보이게 추가하시겠습니까?'),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              okSchedule(snapshot.data![index].id, true, false);
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: const Text('예'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              okSchedule(snapshot.data![index].id, true, true);
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: const Text('아니오'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
                                                   },
                                                   icon: const Icon(
                                                     Icons.check,
@@ -378,7 +398,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                                   padding: EdgeInsets.zero,
                                                   constraints: const BoxConstraints(),
                                                   onPressed: () {
-                                                    okSchedule(snapshot.data![index].id, false);
+                                                    okSchedule(snapshot.data![index].id, false, false);
                                                     setState(() {});
                                                   },
                                                   icon: const Icon(
@@ -425,7 +445,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                         visible: amIOwner,
                         child: OutlinedButton(
                           onPressed: () async {
-                            List<Friend> friendList = await getFriendList();
+                            List<Friend> friendList = await getPossibleFriendList();
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -524,25 +544,25 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                                       color: Colors.teal,
                                                     )),
                                               ),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => Scaffold(
-                                                            appBar: AppBar(
-                                                              title: Text('${snapshot.data![index]['name']} 시간표 조회'),
-                                                            ),
-                                                            body: TimeTableScreen(
-                                                              groupMemberId: snapshot.data![index]['memberId'],
-                                                            ),
-                                                          ),
-                                                        ));
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.schedule,
-                                                    color: Colors.blueAccent,
-                                                  )),
+                                              // IconButton(
+                                              //     onPressed: () {
+                                              //       Navigator.push(
+                                              //           context,
+                                              //           MaterialPageRoute(
+                                              //             builder: (context) => Scaffold(
+                                              //               appBar: AppBar(
+                                              //                 title: Text('${snapshot.data![index]['name']} 시간표 조회'),
+                                              //               ),
+                                              //               body: TimeTableScreen(
+                                              //                 groupMemberId: snapshot.data![index]['memberId'],
+                                              //               ),
+                                              //             ),
+                                              //           ));
+                                              //     },
+                                              //     icon: const Icon(
+                                              //       Icons.schedule,
+                                              //       color: Colors.blueAccent,
+                                              //     )),
                                               IconButton(
                                                   onPressed: () async {
                                                     var url = Uri.http(baseUri, '/group/deleteMember');
@@ -587,12 +607,13 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     );
   }
 
-  Future<List<Friend>> getFriendList() async {
-    var url = Uri.http(baseUri, '/friend/getList');
+  Future<List<Friend>> getPossibleFriendList() async {
+    var url = Uri.http(baseUri, '/friend/getNotGroupFriend/${widget.groupId}');
     var response = await http.get(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       var rawData = jsonDecode(utf8.decode(response.bodyBytes))['data'] as List;
       var data = rawData.map((e) => Friend.fromJson(e)).toList();
+      // print(data[1].friendName);
       return data;
     } else {
       print(utf8.decode(response.bodyBytes));
@@ -745,8 +766,12 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     );
   }
 
-  void okSchedule(int? memberId, bool? accept) async {
-    var url = Uri.http(baseUri, '/timetable/team/readSchedule', {'scheduleId': '$memberId', 'accept': '$accept'});
+  void okSchedule(int? memberId, bool? accept, bool hideType) async {
+    var url = Uri.http(baseUri, '/timetable/team/readSchedule', {
+      'scheduleId': '$memberId',
+      'accept': '$accept',
+      'hideType': '$hideType',
+    });
     var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '스케줄을 처리했습니다');

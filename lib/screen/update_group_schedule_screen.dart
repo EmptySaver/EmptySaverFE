@@ -517,6 +517,20 @@ class _AddGroupScheduleScreenNewState extends State<UpdateGroupScheduleScreen> {
                                 );
                               }),
                         ))),
+                Row(
+                  children: [
+                    Switch(
+                      activeColor: Colors.blueAccent,
+                      value: switchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchValue = value;
+                        });
+                      },
+                    ),
+                    const Text('친구에게 스케줄 보이기'),
+                  ],
+                ),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -654,6 +668,7 @@ class _AddGroupScheduleScreenNewState extends State<UpdateGroupScheduleScreen> {
     );
   }
 
+  bool switchValue = false;
   void registerGroupSchedule(BuildContext context) async {
     if (!isChecked) {
       Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
@@ -687,7 +702,8 @@ class _AddGroupScheduleScreenNewState extends State<UpdateGroupScheduleScreen> {
           'periodicTimeStringList': periodicList,
           'groupType': true,
           'groupId': widget.groupData!.groupId,
-          'groupName': widget.groupData!.groupName
+          'groupName': widget.groupData!.groupName,
+          'hideType': switchValue,
         };
         print(postBody);
       }
@@ -724,7 +740,8 @@ class _AddGroupScheduleScreenNewState extends State<UpdateGroupScheduleScreen> {
         'endTime': "${nonDate.toString().split(" ")[0]}T$endHour:$endMin:00",
         'groupType': true,
         'groupId': widget.groupData!.groupId,
-        'groupName': widget.groupData!.groupName
+        'groupName': widget.groupData!.groupName,
+        'hideType': switchValue,
       };
     }
     print(postBody);

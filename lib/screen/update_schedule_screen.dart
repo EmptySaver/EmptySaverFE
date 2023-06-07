@@ -513,6 +513,20 @@ class _UpdateScheduleScreenState extends State<UpdateScheduleScreen> {
                                 );
                               }),
                         ))),
+                Row(
+                  children: [
+                    Switch(
+                      activeColor: Colors.blueAccent,
+                      value: switchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchValue = value;
+                        });
+                      },
+                    ),
+                    const Text('친구에게 스케줄 보이기'),
+                  ],
+                ),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -549,6 +563,7 @@ class _UpdateScheduleScreenState extends State<UpdateScheduleScreen> {
     );
   }
 
+  bool switchValue = false;
   void registerSchedule(BuildContext context) async {
     if (!isChecked) {
       Fluttertoast.showToast(msg: '일정 타입을 선택해주세요');
@@ -575,7 +590,13 @@ class _UpdateScheduleScreenState extends State<UpdateScheduleScreen> {
           print(target);
           periodicList.add(target);
         }
-        postBody = {'name': nameTec.text, 'body': bodyTec.text, 'periodicType': isPeriodic, 'periodicTimeStringList': periodicList};
+        postBody = {
+          'name': nameTec.text,
+          'body': bodyTec.text,
+          'periodicType': isPeriodic,
+          'periodicTimeStringList': periodicList,
+          'hideType': switchValue,
+        };
         print(postBody);
       }
     } else {
@@ -609,6 +630,7 @@ class _UpdateScheduleScreenState extends State<UpdateScheduleScreen> {
         'periodicType': isPeriodic,
         'startTime': "${nonDate.toString().split(" ")[0]}T$startHour:$startMin:00",
         'endTime': "${nonDate.toString().split(" ")[0]}T$endHour:$endMin:00",
+        'hideType': switchValue,
       };
     }
     print(postBody);
