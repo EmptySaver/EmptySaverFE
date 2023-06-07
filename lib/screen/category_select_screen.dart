@@ -58,8 +58,9 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
             const SizedBox(
               height: 30,
             ),
-            const Text('직접 만들기'
-              ,style: TextStyle(
+            const Text(
+              '직접 만들기',
+              style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
                 color: Colors.blueAccent,
@@ -68,8 +69,9 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
             const SizedBox(
               height: 10,
             ),
-            const Text('카테고리를 선택해서 그룹을 만들어 보세요.'
-              ,style: TextStyle(
+            const Text(
+              '카테고리를 선택해서 그룹을 만들어 보세요.',
+              style: TextStyle(
                 fontSize: 15,
                 //fontWeight: FontWeight.bold,
                 color: Colors.grey,
@@ -122,8 +124,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(25.0))
-                      , border: Border.all(color: Colors.blueAccent)),
+                  decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(25.0)), border: Border.all(color: Colors.blueAccent)),
                   /*
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.blueGrey.shade200),
@@ -135,8 +136,9 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          const Text('공강 시간 스케줄 추천'
-                            ,style: TextStyle(
+                          const Text(
+                            '공강 시간 스케줄 추천',
+                            style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Colors.blueAccent,
@@ -145,8 +147,9 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                           const SizedBox(
                             height: 5,
                           ),
-                          const Text('다른 유저들의 그룹에 참가해서 활동해 보세요!'
-                            ,style: TextStyle(
+                          const Text(
+                            '다른 유저들의 그룹에 참가해서 활동해 보세요!',
+                            style: TextStyle(
                               fontSize: 15,
                               //fontWeight: FontWeight.bold,
                               color: Colors.grey,
@@ -204,7 +207,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                                             child: Container(
                                               padding: const EdgeInsets.all(5),
                                               margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                              height: 120,
+                                              // height: 120,
                                               decoration: const BoxDecoration(),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -223,7 +226,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                                                   const SizedBox(
                                                     height: 10,
                                                   ),
-                                                  (eachCategory != null) ? Text("활동: "+eachCategory) : const Text('카테고리 없음'),
+                                                  (eachCategory != null) ? Text("활동: $eachCategory") : const Text('카테고리 없음'),
                                                   Text('${snapshot.data![index].timeData}'),
                                                 ],
                                               ),
