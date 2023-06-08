@@ -18,7 +18,12 @@ class _TutorialScreen extends State<TutorialScreen>{
   Widget build(BuildContext context) {
     //ToDo: 이미지 개수에 맞춰서 설명 달기
     final List<String> descriptions = ["일정 추가와 그룹 생성도 간편하게!"
-      , "이미지 설명","","","",""];
+      , "자신의 시간표를 구성해 보세요."
+      ,"영화도 시간표에 빠르게 추가!"
+      ,"그룹과 친구 관리도 간단하게"
+      , "교내의 그룹도 빠르게 검색!"
+      , "취업과 비교과 정보도 확인해보세요."
+    ];
 
     final pages = List.generate(
         6,
@@ -40,9 +45,10 @@ class _TutorialScreen extends State<TutorialScreen>{
                   children: [
                     Center(
                       child: Image.asset(
-                        'assets/tuto$index.png',fit: BoxFit.fill,),
+                        'assets/tutor$index.png',fit: BoxFit.fill,),
                       //width: 250, height: 150
                     ),
+                    SizedBox(height: 20,),
                     Text(descriptions[index]
                       ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.black)
                     )
