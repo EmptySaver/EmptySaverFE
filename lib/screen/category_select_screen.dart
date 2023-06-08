@@ -116,7 +116,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                   ),
                 );
               },
-              child: const Text('카테고리 고르기'),
+              child: const Text('그룹 만들기'),
             ),
             const SizedBox(
               height: 50,
