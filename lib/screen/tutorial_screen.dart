@@ -2,65 +2,71 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class TutorialScreen extends StatefulWidget{
+class TutorialScreen extends StatefulWidget {
   TutorialScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _TutorialScreen();
-
 }
 
-class _TutorialScreen extends State<TutorialScreen>{
+class _TutorialScreen extends State<TutorialScreen> {
   //int _counter = 0;
   final controller = PageController(viewportFraction: 0.8, keepPage: true);
 
   @override
   Widget build(BuildContext context) {
     //ToDo: 이미지 개수에 맞춰서 설명 달기
-    final List<String> descriptions = ["일정 추가와 그룹 생성도 간편하게!"
-      , "자신의 시간표를 구성해 보세요."
-      ,"영화도 시간표에 빠르게 추가!"
-      ,"그룹과 친구 관리도 간단하게"
-      , "교내의 그룹도 빠르게 검색!"
-      , "취업과 비교과 정보도 확인해보세요."
+    final List<String> descriptions = [
+      "일정 추가와 그룹 생성도 간편하게!",
+      "자신의 시간표를 구성해 보세요.",
+      "영화도 시간표에 빠르게 추가!",
+      "그룹과 친구 관리도 간단하게",
+      "교내의 그룹도 빠르게 검색!",
+      "취업과 비교과 정보도 확인해보세요."
     ];
 
     final pages = List.generate(
-        6,
-            (index) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                //color: Colors.grey.shade300,
-                /*
+      6,
+      (index) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          //color: Colors.grey.shade300,
+          /*
                         image: new DecorationImage(
                             fit: BoxFit.fill,
                             image: AssetImage('assets/tuto$index.png')
                         )*/
-              ),
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              child: Container(
-                height: 280,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Center(
-                      child: Image.asset(
-                        'assets/tutor$index.png',fit: BoxFit.fill,),
-                      //width: 250, height: 150
-                    ),
-                    SizedBox(height: 20,),
-                    Text(descriptions[index]
-                      ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.black)
-                    )
-                  ],
-                )
-                /*Text(
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Container(
+            height: 280,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: Image.asset(
+                    'assets/tutor$index.png',
+                    fit: BoxFit.fill,
+                  ),
+                  //width: 250, height: 150
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(descriptions[index],
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black))
+              ],
+            )
+            /*Text(
                   "Page $index",
                   style: TextStyle(color: Colors.indigo),
                 )*/
-              ),
-           ),
-        );
+            ),
+      ),
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -70,10 +76,13 @@ class _TutorialScreen extends State<TutorialScreen>{
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-              padding: const EdgeInsets.only(top: 120, bottom: 12),
-              child: const Text(
+                padding: const EdgeInsets.only(top: 120, bottom: 12),
+                child: const Text(
                   '공강 구조대 서비스 안내',
-                  style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold ,color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
               SizedBox(height: 16),
@@ -108,11 +117,13 @@ class _TutorialScreen extends State<TutorialScreen>{
                 padding: const EdgeInsets.only(top: 40, bottom: 12),
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.blue,width: 1.5),
+                    side: const BorderSide(color: Colors.blue, width: 1.5),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                   ),
-                  onPressed: () {Navigator.pop(context);},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: const Text(
                     '바로 시작하기',
                     style: TextStyle(
