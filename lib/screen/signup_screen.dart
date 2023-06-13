@@ -58,13 +58,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void postMyEmail() async {
     List<String> emailList = addrTec.text.split("@");
-    // if (emailList.length != 2) {
-    //   Fluttertoast.showToast(msg: '이메일을 확인 해주세요');
-    //   return;
-    // } else if (emailList[1] != "uos.ac.kr") {
-    //   Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
-    //   return;
-    // }
+    if (emailList.length != 2) {
+      Fluttertoast.showToast(msg: '이메일을 확인 해주세요');
+      return;
+    } else if (emailList[1] != "uos.ac.kr") {
+      Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
+      return;
+    }
     String addr = addrTec.text;
     if (!_checkSpace(addr)) {
       Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
@@ -96,22 +96,15 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void postSignUp() async {
-    // if (!isauthed) {
-    //   Fluttertoast.showToast(msg: '이메일 인증 후 진행해주세요');
-    //   return;
-    // }
+    if (!isauthed) {
+      Fluttertoast.showToast(msg: '이메일 인증 후 진행해주세요');
+      return;
+    }
     if (!_checkSpace(addrTec.text) || !_checkSpace(pwdTec.text) || !_checkSpace(classnumTec.text) || !_checkSpace(nameTec.text) || !_checkSpace(nicknameTec.text)) {
       Fluttertoast.showToast(msg: '공백은 허용되지 않습니다');
       return;
     }
 
-    // if (emailList.length != 2) {
-    //   Fluttertoast.showToast(msg: '이메일을 확인 해주세요');
-    //   return;
-    // } else if (emailList[1] != "uos.ac.kr") {
-    //   Fluttertoast.showToast(msg: '학교이메일 형식만 허용됩니다');
-    //   return;
-    // }
     //요거 비밀번호 확인부분에 입력하자마자 일치하는지 여부 표시하면 좋을 듯
     if (pwdTec.text != pwdTec2.text) {
       Fluttertoast.showToast(msg: '비밀번호를 확인해주세요');

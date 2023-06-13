@@ -118,10 +118,11 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                           DateTime.now().add(
                                             Duration(
                                               days: (i - 5 + (realIndex + 1) * 5),
-                                              hours: 9,
                                             ),
                                           ),
-                                        )} ${DateFormat('Md').format(DateTime.now().add(Duration(days: (i - 5 + (realIndex + 1) * 5), hours: 9)))}',
+                                        )} ${DateFormat('Md').format(DateTime.now().add(Duration(
+                                          days: (i - 5 + (realIndex + 1) * 5),
+                                        )))}',
                                       )
                                   ],
                                 ),
@@ -336,8 +337,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
       memberBodyListsTotal = [];
       memberIdListsTotal = [];
       late ScheduleList memberSchedule;
-      var startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
-      var endDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
+      var startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5)));
+      var endDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5 + 4)));
       Uri url;
       (widget.friendMemberId == null)
           ? (widget.groupMemberId == null)
@@ -400,8 +401,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
       groupIdListsTotal = [];
       late GroupScheduleList groupSchedule;
       ScheduleList? timeTableInfo;
-      var startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5, hours: 9)));
-      var endDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5 + 4, hours: 9)));
+      var startDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5)));
+      var endDate = DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: pageIndex * 5 + 4)));
       var url = Uri.http(baseUri, '/timetable/getMemberAndGroupTimeTable');
       var response = await http.post(
         url,
@@ -490,8 +491,8 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                         is24HourMode: true,
                         isForce2Digits: true,
                         minutesInterval: 30,
-                        startInitialDate: DateTime.now().add(const Duration(hours: 9)),
-                        endInitialDate: DateTime.now().add(const Duration(hours: 10)),
+                        startInitialDate: DateTime.now(),
+                        endInitialDate: DateTime.now(),
                       );
                       if (dates != null) {
                         setState(() {
