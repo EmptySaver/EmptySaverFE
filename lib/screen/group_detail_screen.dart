@@ -83,7 +83,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         child: SingleChildScrollView(
           child: Center(
             child: SizedBox(
-              width: 350,
+              width: 380,
               child: Column(
                 children: [
                   const SizedBox(
@@ -175,48 +175,51 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                         ));
                                   },
                                   onLongPress: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return SimpleDialog(
-                                          contentPadding: const EdgeInsets.all(8),
-                                          children: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => EachPostScreen(
-                                                          mode: 'write',
-                                                          postId: snapshot.data![index]['postId'],
-                                                        ),
-                                                      )).then((value) => setState(
-                                                        () {
-                                                          groupPostListFuture = getPostList();
-                                                        },
-                                                      ));
-                                                },
-                                                child: const Text('수정')),
-                                            TextButton(
-                                                onPressed: () async {
-                                                  var url = Uri.http(baseUri, '/board/deletePost/${snapshot.data![index]['postId']}');
-                                                  var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
-                                                  if (response.statusCode == 200) {
-                                                    Fluttertoast.showToast(msg: '삭제되었습니다');
-                                                    setState(() {
-                                                      groupPostListFuture = getPostList();
-                                                    });
+                                    if (amIOwner) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return SimpleDialog(
+                                            contentPadding: const EdgeInsets.all(8),
+                                            children: [
+                                              TextButton(
+                                                  onPressed: () {
                                                     Navigator.pop(context);
-                                                  } else {
-                                                    print(utf8.decode(response.bodyBytes));
-                                                    return;
-                                                  }
-                                                },
-                                                child: const Text('삭제'))
-                                          ],
-                                        );
-                                      },
-                                    );
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => EachPostScreen(
+                                                            mode: 'write',
+                                                            postId: snapshot.data![index]['postId'],
+                                                          ),
+                                                        )).then((value) => setState(
+                                                          () {
+                                                            groupPostListFuture = getPostList();
+                                                          },
+                                                        ));
+                                                  },
+                                                  child: const Text('수정')),
+                                              TextButton(
+                                                  onPressed: () async {
+                                                    var url = Uri.http(baseUri, '/board/deletePost/${snapshot.data![index]['postId']}');
+                                                    var response = await http.delete(url, headers: {'authorization': 'Bearer $jwtToken'});
+                                                    if (response.statusCode == 200) {
+                                                      Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                      setState(() {
+                                                        groupPostListFuture = getPostList();
+                                                      });
+                                                      Navigator.pop(context);
+                                                    } else {
+                                                      print(utf8.decode(response.bodyBytes));
+                                                      return;
+                                                    }
+                                                  },
+                                                  child: const Text('삭제'))
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -336,7 +339,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                     );
                                   },
                                   child: Container(
-                                    height: 100,
+                                    // height: 120,
                                     clipBehavior: Clip.antiAlias,
                                     decoration: BoxDecoration(
                                       // border: const Border(bottom: BorderSide(style: BorderStyle.none)),
@@ -528,7 +531,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                             width: 10,
                                           ),
                                           Text(
-                                            'id:${snapshot.data![index]['memberId']} ${snapshot.data![index]['name']}',
+                                            '${snapshot.data![index]['name']}',
                                             style: const TextStyle(fontSize: 16),
                                           ),
                                           Row(
@@ -563,23 +566,24 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                               //       Icons.schedule,
                                               //       color: Colors.blueAccent,
                                               //     )),
-                                              IconButton(
-                                                  onPressed: () async {
-                                                    var url = Uri.http(baseUri, '/group/deleteMember');
-                                                    var response = await http.delete(url,
-                                                        headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
-                                                        body: jsonEncode({'memberId': snapshot.data![index]['memberId'], 'groupId': widget.groupId}));
-                                                    if (response.statusCode == 200) {
-                                                      Fluttertoast.showToast(msg: '삭제되었습니다');
-                                                      setState(() {
-                                                        groupMemberFuture = getGroupMember();
-                                                      });
-                                                    }
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.remove,
-                                                    color: Colors.redAccent,
-                                                  )),
+                                              if (amIOwner)
+                                                IconButton(
+                                                    onPressed: () async {
+                                                      var url = Uri.http(baseUri, '/group/deleteMember');
+                                                      var response = await http.delete(url,
+                                                          headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json; charset=UTF-8'},
+                                                          body: jsonEncode({'memberId': snapshot.data![index]['memberId'], 'groupId': widget.groupId}));
+                                                      if (response.statusCode == 200) {
+                                                        Fluttertoast.showToast(msg: '삭제되었습니다');
+                                                        setState(() {
+                                                          groupMemberFuture = getGroupMember();
+                                                        });
+                                                      }
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.remove,
+                                                      color: Colors.redAccent,
+                                                    )),
                                             ],
                                           ),
                                         ],

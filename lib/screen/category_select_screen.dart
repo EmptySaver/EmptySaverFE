@@ -156,7 +156,7 @@ class _CategorySelectScreenState extends ConsumerState<CategorySelectScreen> {
                             ),
                           ),
                           const SizedBox(
-                            height: 40,
+                            height: 10,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
