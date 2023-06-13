@@ -5,6 +5,7 @@ import 'package:emptysaver_fe/screen/add_schedule_screen_new.dart';
 import 'package:emptysaver_fe/screen/category_select_screen.dart';
 import 'package:emptysaver_fe/screen/group_finder_detail_screen.dart';
 import 'package:emptysaver_fe/screen/lecture_search_result_screen.dart';
+import 'package:emptysaver_fe/screen/recommend_schedule_screen.dart';
 import 'package:emptysaver_fe/screen/today_movie_screen.dart';
 import 'package:emptysaver_fe/screen/update_schedule_screen.dart';
 import 'package:flutter/material.dart';
@@ -293,6 +294,22 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (ctx) => const TodayMovieScreen(),
+                              )).then((value) {
+                            setState(() {
+                              memberScheduleFuture = getMemberSchedule();
+                            });
+                          });
+                        },
+                      ),
+                      SpeedDialChild(
+                        child: const Icon(Icons.recommend_outlined),
+                        label: '스케줄 추천',
+                        backgroundColor: Colors.teal,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => const RecommendScheduleScreen(),
                               )).then((value) {
                             setState(() {
                               memberScheduleFuture = getMemberSchedule();
