@@ -15,12 +15,10 @@ class LectureSearchResultScreen extends ConsumerStatefulWidget {
   const LectureSearchResultScreen({super.key});
 
   @override
-  ConsumerState<LectureSearchResultScreen> createState() =>
-      _LectureSearchResultScreenState();
+  ConsumerState<LectureSearchResultScreen> createState() => _LectureSearchResultScreenState();
 }
 
-class _LectureSearchResultScreenState
-    extends ConsumerState<LectureSearchResultScreen> {
+class _LectureSearchResultScreenState extends ConsumerState<LectureSearchResultScreen> {
   var baseUri = '43.201.208.100:8080';
   var jwtToken = AutoLoginController.to.state[0];
   List<Lecture> initialLectureList = [];
@@ -45,12 +43,7 @@ class _LectureSearchResultScreenState
       baseUri,
       '/subject/search',
     );
-    var response = await http.post(url,
-        headers: {
-          'authorization': 'Bearer $jwtToken',
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode({'name': word}));
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json'}, body: jsonEncode({'name': word}));
     dynamic data;
     if (response.statusCode == 200) {
       var parsedJson = jsonDecode(utf8.decode(response.bodyBytes)) as List;
@@ -71,10 +64,7 @@ class _LectureSearchResultScreenState
     );
     var response = await http.get(
       url,
-      headers: {
-        'authorization': 'Bearer $jwtToken',
-        'Content-Type': 'application/json'
-      },
+      headers: {'authorization': 'Bearer $jwtToken', 'Content-Type': 'application/json'},
     );
     dynamic data;
     if (response.statusCode == 200) {
@@ -89,10 +79,11 @@ class _LectureSearchResultScreenState
   }
 
   saveToSchedule(var id) async {
-    var url =
-        Uri.http(baseUri, '/subject/saveSubjectToMember', {'subjectId': '$id'});
-    var response =
-        await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
+    var url = Uri.http(baseUri, '/timetable/saveScheduleByCopy', {
+      'scheduleId': '$id',
+      'hideType': 'false',
+    });
+    var response = await http.post(url, headers: {'authorization': 'Bearer $jwtToken'});
     if (response.statusCode == 200) {
       Fluttertoast.showToast(msg: '추가되었습니다');
     } else {
@@ -131,10 +122,10 @@ class _LectureSearchResultScreenState
     //의사소통 교실 -> 상위 부서가 없음 == 그냥 이걸 상위 부서라고 합시더..
     getDivNameList().then((value) => setState(() {
           deptList.add(Dept(upperName: "전체", deptNameList: List.empty()));
-          print("before Value :${value}");
+          print("before Value :$value");
           value[0] = Dept(upperName: "의사소통교실", deptNameList: ["의사소통교실"]);
           deptList.addAll(value);
-          print("now Value :${value}");
+          print("now Value :$value");
         }));
 
     super.initState();
@@ -172,24 +163,17 @@ class _LectureSearchResultScreenState
           },
           behavior: HitTestBehavior.translucent,
           child: Container(
-            padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${lecture.subjectname}',
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
+                    Text('${lecture.subjectname}', style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
                     Text(
                       '${lecture.prof_nm}',
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500),
+                      style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -209,45 +193,33 @@ class _LectureSearchResultScreenState
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: Colors.grey.shade200),
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), color: Colors.grey.shade200),
                           child: Text(
                             '${lecture.shyr}학년',
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 14),
+                            style: const TextStyle(color: Colors.black, fontSize: 14),
                           ),
                         ),
                         const SizedBox(
                           width: 15,
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: Colors.grey.shade200),
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), color: Colors.grey.shade200),
                           child: Text(
                             '${lecture.subject_div}',
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 14),
+                            style: const TextStyle(color: Colors.black, fontSize: 14),
                           ),
                         ),
                         const SizedBox(
                           width: 15,
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: Colors.grey.shade200),
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), color: Colors.grey.shade200),
                           child: Text(
                             '${lecture.dept}',
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 14),
+                            style: const TextStyle(color: Colors.black, fontSize: 14),
                           ),
                         ),
                       ],
@@ -277,7 +249,7 @@ class _LectureSearchResultScreenState
             ),
           ),
         ),
-        Divider(
+        const Divider(
           thickness: 1.0,
         )
       ],
@@ -288,20 +260,18 @@ class _LectureSearchResultScreenState
     return showDialog(
         context: context,
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setDialogState) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setDialogState) {
             return AlertDialog(
               scrollable: true,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              title: Text("검색하고 싶은 학년을 모두 선택해주세요"),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              title: const Text("검색하고 싶은 학년을 모두 선택해주세요"),
               content: Column(mainAxisSize: MainAxisSize.min, children: [
-                Container(
+                SizedBox(
                   height: 330,
                   width: 270,
                   child: ListView.builder(
                       shrinkWrap: true,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       itemCount: classKindList.length,
                       itemBuilder: (context, index) {
                         return Column(
@@ -310,8 +280,7 @@ class _LectureSearchResultScreenState
                               onTap: () {
                                 setDialogState(() {
                                   print("clicked. gesture");
-                                  isClassTabList[index] =
-                                      !isClassTabList[index];
+                                  isClassTabList[index] = !isClassTabList[index];
                                 });
                               },
                               child: Row(
@@ -320,17 +289,13 @@ class _LectureSearchResultScreenState
                                       value: isClassTabList[index],
                                       checkColor: Colors.redAccent,
                                       activeColor: Colors.white,
-                                      fillColor:
-                                          MaterialStateProperty.resolveWith(
-                                              getColor),
+                                      fillColor: MaterialStateProperty.resolveWith(getColor),
                                       onChanged: (value) {
                                         setDialogState(() {
                                           isClassTabList[index] = value!;
                                         });
                                       }),
-                                  Text(classKindList[index] == "기타"
-                                      ? "기타"
-                                      : classKindList[index] + "학년")
+                                  Text(classKindList[index] == "기타" ? "기타" : "${classKindList[index]}학년")
                                 ],
                               ),
                             ),
@@ -347,23 +312,21 @@ class _LectureSearchResultScreenState
                         onPressed: () {
                           setDialogState(
                             () {
-                              isClassTabList =
-                                  List.filled(isClassTabList.length, true);
+                              isClassTabList = List.filled(isClassTabList.length, true);
                             },
                           );
                         },
-                        child: Text("전체 선택")),
+                        child: const Text("전체 선택")),
                     TextButton(
                         onPressed: () {
                           setDialogState(
                             () {
-                              isClassTabList =
-                                  List.filled(isClassTabList.length, false);
+                              isClassTabList = List.filled(isClassTabList.length, false);
                             },
                           );
                         },
-                        child: Text("전체 해제")),
-                    SizedBox(
+                        child: const Text("전체 해제")),
+                    const SizedBox(
                       width: 20,
                     ),
                     OutlinedButton(
@@ -372,51 +335,37 @@ class _LectureSearchResultScreenState
                             List<Lecture> tmpList = [];
                             tmpList.addAll(initialLectureList);
                             //학년 필터
-                            tmpList.retainWhere((element) =>
-                                classKindList.indexOf(element.shyr!) != -1
-                                    ? isClassTabList[
-                                        classKindList.indexOf(element.shyr!)]
-                                    : false);
+                            tmpList.retainWhere((element) => classKindList.contains(element.shyr!) ? isClassTabList[classKindList.indexOf(element.shyr!)] : false);
                             print("now Filtered size : ${tmpList.length}");
                             //구분 필터(전선,전필..)
-                            tmpList.retainWhere((element) =>
-                                discriminateList.contains(element.subject_div!)
-                                    ? isDiscTablList[discriminateList
-                                        .indexOf(element.subject_div!)]
-                                    : false);
+                            tmpList.retainWhere((element) => discriminateList.contains(element.subject_div!) ? isDiscTablList[discriminateList.indexOf(element.subject_div!)] : false);
                             print("now Filtered size : ${tmpList.length}");
                             //학과 필터
-                            tmpList.retainWhere((element) => deptInfo == "전체"
-                                ? true
-                                : element.dept == deptInfo);
+                            tmpList.retainWhere((element) => deptInfo == "전체" ? true : element.dept == deptInfo);
                             print("now Filtered size : ${tmpList.length}");
                             bool totalFlag = true;
                             bool initFlag = false;
                             classInfo = "";
 
-                            for (int i = 0;
-                                i < isClassTabList.length - 1;
-                                i++) {
+                            for (int i = 0; i < isClassTabList.length - 1; i++) {
                               if (isClassTabList[i]) {
                                 if (!initFlag) {
                                   initFlag = true;
                                   classInfo = classInfo! + (i + 1).toString();
                                 } else {
-                                  classInfo =
-                                      classInfo! + "," + (i + 1).toString();
+                                  classInfo = "${classInfo!},${i + 1}";
                                 }
                               } else {
                                 totalFlag = false;
                               }
                             }
                             if (isClassTabList[isClassTabList.length - 1]) {
-                              classInfo = classInfo! + ",기타";
+                              classInfo = "${classInfo!},기타";
                             }
                             if (totalFlag) classInfo = "전체";
                             if (!initFlag) {
                               print("Not Init");
-                              isClassTabList =
-                                  List.filled(isClassTabList.length, true);
+                              isClassTabList = List.filled(isClassTabList.length, true);
                               classInfo = "전체";
                               Fluttertoast.showToast(msg: "1개 이상 선택해주세요");
                             } else {
@@ -427,15 +376,15 @@ class _LectureSearchResultScreenState
                             Navigator.pop(context);
                           });
                         },
-                        child: Text("확인")),
-                    SizedBox(
+                        child: const Text("확인")),
+                    const SizedBox(
                       width: 10,
                     ),
                     OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("취소")),
+                        child: const Text("취소")),
                   ],
                 )
               ],
@@ -448,20 +397,18 @@ class _LectureSearchResultScreenState
     return showDialog(
         context: context,
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setDialogState) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setDialogState) {
             return AlertDialog(
               scrollable: true,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              title: Text("검색하고 싶은 구분을 모두 선택해주세요"),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              title: const Text("검색하고 싶은 구분을 모두 선택해주세요"),
               content: Column(mainAxisSize: MainAxisSize.min, children: [
-                Container(
+                SizedBox(
                   height: 330,
                   width: 270,
                   child: ListView.builder(
                       shrinkWrap: true,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       itemCount: discriminateList.length,
                       itemBuilder: (context, index) {
                         return Column(
@@ -469,8 +416,7 @@ class _LectureSearchResultScreenState
                             GestureDetector(
                               onTap: () {
                                 setDialogState(() {
-                                  isDiscTablList[index] =
-                                      !isDiscTablList[index];
+                                  isDiscTablList[index] = !isDiscTablList[index];
                                 });
                               },
                               child: Row(
@@ -479,9 +425,7 @@ class _LectureSearchResultScreenState
                                       value: isDiscTablList[index],
                                       checkColor: Colors.redAccent,
                                       activeColor: Colors.white,
-                                      fillColor:
-                                          MaterialStateProperty.resolveWith(
-                                              getColor),
+                                      fillColor: MaterialStateProperty.resolveWith(getColor),
                                       onChanged: (value) {
                                         setDialogState(() {
                                           isDiscTablList[index] = value!;
@@ -504,23 +448,21 @@ class _LectureSearchResultScreenState
                         onPressed: () {
                           setDialogState(
                             () {
-                              isDiscTablList =
-                                  List.filled(isDiscTablList.length, true);
+                              isDiscTablList = List.filled(isDiscTablList.length, true);
                             },
                           );
                         },
-                        child: Text("전체 선택")),
+                        child: const Text("전체 선택")),
                     TextButton(
                         onPressed: () {
                           setDialogState(
                             () {
-                              isDiscTablList =
-                                  List.filled(isDiscTablList.length, false);
+                              isDiscTablList = List.filled(isDiscTablList.length, false);
                             },
                           );
                         },
-                        child: Text("전체 해제")),
-                    SizedBox(
+                        child: const Text("전체 해제")),
+                    const SizedBox(
                       width: 20,
                     ),
                     OutlinedButton(
@@ -531,21 +473,11 @@ class _LectureSearchResultScreenState
                             List<Lecture> tmpList = [];
                             tmpList.addAll(initialLectureList);
                             //학년 필터
-                            tmpList.retainWhere((element) =>
-                                classKindList.contains(element.shyr!)
-                                    ? isClassTabList[
-                                        classKindList.indexOf(element.shyr!)]
-                                    : false);
+                            tmpList.retainWhere((element) => classKindList.contains(element.shyr!) ? isClassTabList[classKindList.indexOf(element.shyr!)] : false);
                             //구분 필터(전선,전필..)
-                            tmpList.retainWhere((element) =>
-                                discriminateList.contains(element.subject_div!)
-                                    ? isDiscTablList[discriminateList
-                                        .indexOf(element.subject_div!)]
-                                    : false);
+                            tmpList.retainWhere((element) => discriminateList.contains(element.subject_div!) ? isDiscTablList[discriminateList.indexOf(element.subject_div!)] : false);
                             //학과 필터
-                            tmpList.retainWhere((element) => deptInfo == "전체"
-                                ? true
-                                : element.dept == deptInfo);
+                            tmpList.retainWhere((element) => deptInfo == "전체" ? true : element.dept == deptInfo);
                             discriminateInfo = "";
                             bool initFlag = false;
                             int trueCnt = 0;
@@ -557,21 +489,17 @@ class _LectureSearchResultScreenState
                                   initFlag = true;
                                   discriminateInfo = discriminateList[i];
                                 } else {
-                                  discriminateInfo = discriminateInfo! +
-                                      "," +
-                                      discriminateList[i];
+                                  discriminateInfo = "${discriminateInfo!},${discriminateList[i]}";
                                 }
                               }
                             }
                             if (trueCnt == isDiscTablList.length) {
                               discriminateInfo = "전체";
                             } else if (trueCnt > 2) {
-                              discriminateInfo =
-                                  discriminateInfo! + "외${trueCnt - 2}개";
+                              discriminateInfo = "${discriminateInfo!}외${trueCnt - 2}개";
                             }
                             if (!initFlag) {
-                              isDiscTablList =
-                                  List.filled(isDiscTablList.length, true);
+                              isDiscTablList = List.filled(isDiscTablList.length, true);
                               discriminateInfo = "전체";
                               Fluttertoast.showToast(msg: "1개 이상 선택해주세요");
                             } else {
@@ -580,15 +508,15 @@ class _LectureSearchResultScreenState
                             Navigator.pop(context);
                           });
                         },
-                        child: Text("확인")),
-                    SizedBox(
+                        child: const Text("확인")),
+                    const SizedBox(
                       width: 10,
                     ),
                     OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("취소")),
+                        child: const Text("취소")),
                   ],
                 )
               ],
@@ -601,12 +529,10 @@ class _LectureSearchResultScreenState
     return showDialog(
         context: context,
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setDialogState) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setDialogState) {
             return AlertDialog(
                 scrollable: true,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                 title: Row(
                   children: [
                     IconButton(
@@ -617,10 +543,8 @@ class _LectureSearchResultScreenState
                             },
                           );
                         },
-                        icon: isUpper
-                            ? Icon(FontAwesomeIcons.x)
-                            : Icon(Icons.arrow_back_ios_new)),
-                    SizedBox(
+                        icon: isUpper ? const Icon(FontAwesomeIcons.x) : const Icon(Icons.arrow_back_ios_new)),
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(isUpper ? "대학을 선택해주세요" : "학과를 선택해주세요"),
@@ -630,15 +554,13 @@ class _LectureSearchResultScreenState
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
+                      SizedBox(
                         height: 330,
                         width: 270,
                         child: ListView.builder(
                             shrinkWrap: true,
-                            padding: EdgeInsets.all(10),
-                            itemCount: isUpper
-                                ? deptList.length
-                                : deptList[deptSubIndex].deptNameList!.length,
+                            padding: const EdgeInsets.all(10),
+                            itemCount: isUpper ? deptList.length : deptList[deptSubIndex].deptNameList!.length,
                             itemBuilder: (context, index) {
                               return Column(
                                 children: [
@@ -646,29 +568,15 @@ class _LectureSearchResultScreenState
                                     onTap: () {
                                       setDialogState(() {
                                         if (isUpper) {
-                                          if (deptList[index].upperName ==
-                                              "전체") {
+                                          if (deptList[index].upperName == "전체") {
                                             setState(() {
                                               List<Lecture> tmpList = [];
-                                              tmpList
-                                                  .addAll(initialLectureList);
+                                              tmpList.addAll(initialLectureList);
                                               //학년 필터
-                                              tmpList.retainWhere((element) =>
-                                                  classKindList.contains(
-                                                          element.shyr!)
-                                                      ? isClassTabList[
-                                                          classKindList.indexOf(
-                                                              element.shyr!)]
-                                                      : false);
+                                              tmpList.retainWhere((element) => classKindList.contains(element.shyr!) ? isClassTabList[classKindList.indexOf(element.shyr!)] : false);
                                               //구분 필터(전선,전필..)
-                                              tmpList.retainWhere((element) =>
-                                                  discriminateList.contains(
-                                                          element.subject_div!)
-                                                      ? isDiscTablList[
-                                                          discriminateList
-                                                              .indexOf(element
-                                                                  .subject_div!)]
-                                                      : false);
+                                              tmpList
+                                                  .retainWhere((element) => discriminateList.contains(element.subject_div!) ? isDiscTablList[discriminateList.indexOf(element.subject_div!)] : false);
                                               lectureList = tmpList;
                                               deptInfo = "전체";
                                               Navigator.pop(context);
@@ -684,41 +592,21 @@ class _LectureSearchResultScreenState
                                             List<Lecture> tmpList = [];
                                             tmpList.addAll(initialLectureList);
                                             //학년 필터
-                                            tmpList.retainWhere((element) =>
-                                                classKindList
-                                                        .contains(element.shyr!)
-                                                    ? isClassTabList[
-                                                        classKindList.indexOf(
-                                                            element.shyr!)]
-                                                    : false);
+                                            tmpList.retainWhere((element) => classKindList.contains(element.shyr!) ? isClassTabList[classKindList.indexOf(element.shyr!)] : false);
                                             //구분 필터(전선,전필..)
-                                            tmpList.retainWhere((element) =>
-                                                discriminateList.contains(
-                                                        element.subject_div!)
-                                                    ? isDiscTablList[
-                                                        discriminateList
-                                                            .indexOf(element
-                                                                .subject_div!)]
-                                                    : false);
+                                            tmpList.retainWhere((element) => discriminateList.contains(element.subject_div!) ? isDiscTablList[discriminateList.indexOf(element.subject_div!)] : false);
                                             //학과 필터
-                                            tmpList.retainWhere((element) =>
-                                                element.dept ==
-                                                deptList[deptSubIndex]
-                                                    .deptNameList![index]);
+                                            tmpList.retainWhere((element) => element.dept == deptList[deptSubIndex].deptNameList![index]);
                                             lectureList = tmpList;
 
-                                            deptInfo = deptList[deptSubIndex]
-                                                .deptNameList![index];
+                                            deptInfo = deptList[deptSubIndex].deptNameList![index];
                                           });
 
                                           Navigator.pop(context);
                                         }
                                       });
                                     },
-                                    child: Text(isUpper
-                                        ? deptList[index].upperName
-                                        : deptList[deptSubIndex]
-                                            .deptNameList![index]),
+                                    child: Text(isUpper ? deptList[index].upperName : deptList[deptSubIndex].deptNameList![index]),
                                   ),
                                   divider()
                                 ],
@@ -763,14 +651,11 @@ class _LectureSearchResultScreenState
                 child: TextField(
                   cursorColor: Colors.grey,
                   decoration: InputDecoration(
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                    prefixIcon:
-                        const Icon(Icons.search, color: Colors.lightBlue),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    prefixIcon: const Icon(Icons.search, color: Colors.lightBlue),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50),
-                      borderSide: const BorderSide(
-                          color: Colors.blueAccent, width: 1.5),
+                      borderSide: const BorderSide(color: Colors.blueAccent, width: 1.5),
                     ),
                     hintText: "과목 이름을 입력해주세요",
                     hintStyle: const TextStyle(fontSize: 14),
@@ -781,9 +666,7 @@ class _LectureSearchResultScreenState
                       isFilter = false;
                       List<Lecture> tmpList = [];
                       tmpList.addAll(initialLectureList);
-                      tmpList.retainWhere((element) => value.isEmpty
-                          ? true
-                          : element.subjectname!.contains(value));
+                      tmpList.retainWhere((element) => value.isEmpty ? true : element.subjectname!.contains(value));
                       lectureList = tmpList;
                     });
                   },
@@ -793,7 +676,7 @@ class _LectureSearchResultScreenState
           ),
           Visibility(
               visible: isFilter,
-              child: SizedBox(
+              child: const SizedBox(
                 height: 10,
               )),
           Visibility(
@@ -802,65 +685,61 @@ class _LectureSearchResultScreenState
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: (Row(children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     OutlinedButton(
                         onPressed: () {
                           showGradeDialog();
                         },
-                        child: Text("학년:${classInfo}"),
                         style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
-                        )))),
-                    SizedBox(
+                        ))),
+                        child: Text("학년:${classInfo}")),
+                    const SizedBox(
                       width: 20,
                     ),
                     OutlinedButton(
                       onPressed: () {
                         showDiscDialog();
                       },
-                      child: Text("구분:${discriminateInfo}"),
                       style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all(RoundedRectangleBorder(
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ))),
+                      child: Text("구분:${discriminateInfo}"),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     OutlinedButton(
                         onPressed: () {
                           showDeptDialog();
                         },
-                        child: Text("학과:${deptInfo}"),
                         style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
-                        )))),
+                        ))),
+                        child: Text("학과:${deptInfo}")),
                   ])),
                 ),
               )),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Divider(
+          const Divider(
             thickness: 1,
           ),
           Expanded(
-              child: lectureList.length > 0
+              child: lectureList.isNotEmpty
                   ? ListView.builder(
                       // padding: EdgeInsets.all(20),
                       itemCount: lectureList.length,
                       itemBuilder: (context, index) {
-                        return lectureComponent(
-                            lecture: lectureList[index], num: index);
+                        return lectureComponent(lecture: lectureList[index], num: index);
                       })
-                  : Center(
+                  : const Center(
                       child: Text("불러온 과목이 없습니다"),
                     ))
         ],

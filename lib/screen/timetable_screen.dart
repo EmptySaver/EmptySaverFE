@@ -205,11 +205,15 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
                                                         border: Border.all(width: 1, color: Colors.black),
                                                         color: ((h + i) > 17) ? Colors.primaries[(h + i) % 17] : Colors.primaries[(h + i)],
                                                       ),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Text(memberNameListsTotal[h][i] ?? 'null'),
-                                                        ],
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(3.0),
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            Center(child: Text(memberNameListsTotal[h][i] ?? 'null')),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -384,6 +388,9 @@ class _TimeTableScreenState extends ConsumerState<TimeTableScreen> {
           memberBodyListsTotal.add(bodyLists);
           memberIdListsTotal.add(idLists);
         }
+        print(memberNameListsTotal);
+        print(memberBodyListsTotal);
+        print(memberIdListsTotal);
         // print('요일 전체 : $trueIndexListsTotal');
       } else {
         print('getfailmemberschedule');
